@@ -1,0 +1,207 @@
+# Daily Scheduled test plan
+# AWS v2 autoscale example tests
+aws-autoscale-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/autoscale/postpub_parameters.yaml"
+
+# AWS v2 failover example tests
+aws-failover-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/failover/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/failover/postpub_parameters.yaml"
+
+# AWS v2 quickstart example tests
+aws-quickstart-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/quickstart/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/quickstart/postpub_parameters.yaml"
+
+# Azure v2 autoscale example tests
+azure-autoscale-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/autoscale/postpub_parameters.yaml"
+
+# Azure v2 failover example tests
+azure-failover-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/failover/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/failover/postpub_parameters.yaml"
+
+# Azure v2 quickstart example tests
+azure-quickstart-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/quickstart/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/quickstart/postpub_parameters.yaml"
+
+# Google v2 autoscale example tests
+google-autoscale-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/postpub_parameters.yaml"
+
+# Google v2 failover example tests
+google-failover-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/postpub_parameters.yaml"
+
+# Google v2 quickstart example tests
+google-standalone-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/standalone/postpub_parameters.yaml"
+
+# AWS access module tests
+aws-access-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/access/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/access/postpub_parameters.yaml"
+
+# Azure access module tests
+azure-access-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/access/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/access/postpub_parameters.yaml"
+
+# Google access module tests
+google-access-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/access/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/postpub_parameters.yaml"
+
+# AWS network module tests
+aws-network-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/network/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/network/postpub_parameters.yaml"
+
+# Azure network module tests
+azure-network-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/network/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/network/postpub_parameters.yaml"
+
+# Google network module tests
+google-network-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/postpub_parameters.yaml"
+
+# AWS dag module tests
+aws-dag-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/dag/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/dag/postpub_parameters.yaml"
+
+# Azure dag module tests
+azure-dag-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/dag/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/dag/postpub_parameters.yaml"
+
+# Google dag module tests
+google-dag-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/postpub_parameters.yaml"
+
+# AWS application module tests
+aws-application-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/application/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/application/postpub_parameters.yaml"
+
+# Azure application module tests
+azure-application-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/application/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/application/postpub_parameters.yaml"
+
+# Google application module tests
+google-application-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/postpub_parameters.yaml"
+
+# AWS bigip module tests
+aws-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+aws-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# Azure bigip module tests
+azure-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+azure-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# Google bigip module tests
+google-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+google-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# AWS function module tests
+aws-function-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/function/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/function/postpub_parameters.yaml"
+
+# Azure function module tests
+azure-function-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/function/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/function/postpub_parameters.yaml"
+
+# Google function module tests
+google-function-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters.yaml"

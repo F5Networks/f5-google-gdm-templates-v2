@@ -1,0 +1,12 @@
+---
+name: Google Examples - Network
+onStart:
+- ./create_stack.sh
+- ../../../common/verify_create.sh
+- ./tests/verify_networks.sh
+- ./tests/verify_subnets.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+onFail:
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh

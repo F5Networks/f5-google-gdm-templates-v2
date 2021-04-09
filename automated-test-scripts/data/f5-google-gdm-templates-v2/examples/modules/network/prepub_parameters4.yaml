@@ -1,0 +1,13 @@
+---
+# Required
+NUMBER NETWORKS: 5
+REGION: europe-west1
+STACK NAME: networks<NUMBER NETWORKS>-<DEWPOINT JOB ID>
+TEMPLATE URL: 'file://$PWD/f5-google-gdm-templates-v2/examples/modules/network/network.py'
+UNIQUESTRING: dd-<DEWPOINT JOB ID>
+# Optional 
+DESCRIPTION: ""
+ENABLE FLOW LOGS: "true"
+PRIVATE IP GOOGLE ACCESS: "true"
+SECONDARY IP CIDR RANGE 1: "192.168.3.0/24"
+SECONDARY RANGE NAME 1: "dd-<DEWPOINT JOB ID>"

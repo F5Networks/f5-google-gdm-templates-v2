@@ -1,0 +1,58 @@
+---
+# Example of the network template usage.
+#
+# In this example, 4 networks are created with a single subnet in each network.
+# Subnets are created using 'subnets' property, were mgmt1, external1,
+# internal1, and application1 are used in this example.
+#
+# Required subnet properties, when 'subnets:' specified:
+# ['network', 'ipCidrRange', 'region']
+#
+# Optional subnet properties (if not specified, compute.v1.subnetworks defaults
+# are used https://cloud.google.com/compute/docs/reference/rest/v1/subnetworks):
+# ['description',enableFlowLogs','logConfig','privateIpGoogleAccess',
+# 'privateIpv6GoogleAccess','purpose','role','secondaryIpRanges']
+
+imports:
+  - path: network.py
+resources:
+  - name: mgmt
+    properties:
+      name: mgmt
+      subnets:
+        - description: Subnetwork used for management
+          ipCidrRange: 10.0.0.0/24
+          name: mgmt1
+          region: us-west1
+      uniqueString: myBIGIP
+    type: network.py
+  - name: external
+    properties:
+      name: external
+      subnets:
+        - description: Subnetwork used for public traffic
+          ipCidrRange: 10.0.1.0/24
+          name: external1
+          region: us-west1
+      uniqueString: myBIGIP
+    type: network.py
+  - name: internal
+    properties:
+      name: internal
+      subnets:
+        - description: Subnetwork used for private traffic
+          ipCidrRange: 10.0.2.0/24
+          name: internal1
+          region: us-west1
+      uniqueString: myBIGIP
+    type: network.py
+  - name: application
+    properties:
+      name: application
+      subnets:
+        - description: Subnetwork used for application services
+          ipCidrRange: 10.0.3.0/24
+          name: application1
+          region: us-west1
+      uniqueString: myBIGIP
+    type: network.py

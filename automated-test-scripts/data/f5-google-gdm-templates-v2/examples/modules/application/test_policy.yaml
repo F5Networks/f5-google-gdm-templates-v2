@@ -1,0 +1,7 @@
+---
+# Network Module  Tests
+google-gdm-network-module-test:
+    test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/daily_test.yaml"
+    run: "all"
+    parameters-files:
+        - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/prepub_parameters.yaml"

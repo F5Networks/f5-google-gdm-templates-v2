@@ -1,0 +1,23 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: application.py
+resources:
+  - name: application
+    type: application.py
+    properties:
+      appContainerName: f5devcentral/f5-demo-app:latest
+      ### Enter the availability zone where you want to
+      ### deploy the application, for example 'us-west1-a'.
+      availabilityZone: us-west1-b
+      ### Instance type assigned to the application,
+      ### for example 'n1-standard-1'.
+      instanceType: n1-standard-1
+      uniqueString: myApp
+      networkSelfLink: >-
+        https://www.googleapis.com/compute/v1/global/networks/default
+      subnetSelfLink: >-
+        https://www.googleapis.com/compute/v1/global/subnetworks/default

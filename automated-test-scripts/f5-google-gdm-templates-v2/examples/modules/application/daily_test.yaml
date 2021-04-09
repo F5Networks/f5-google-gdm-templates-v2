@@ -1,0 +1,25 @@
+---
+name: Google Examples - Application
+onStart:
+- ../../../common/helper_init.sh
+- ../../../common/create_network_stack.sh
+- ../../../common/verify_create_network.sh
+- ../../../common/create_dag_stack.sh
+- ../../../common/verify_create_dag.sh
+- ./create_stack.sh
+- ../../../common/verify_create.sh
+- ../../../common/get_mgmt_ip.sh
+- ./tests/verify_application.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+- ../../../common/delete_dag_stack.sh
+- ../../../common/verify_delete_dag.sh
+- ../../../common/delete_network_stack.sh
+- ../../../common/verify_delete_network.sh
+onFail:
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+- ../../../common/delete_dag_stack.sh
+- ../../../common/verify_delete_dag.sh
+- ../../../common/delete_network_stack.sh
+- ../../../common/verify_delete_network.sh
