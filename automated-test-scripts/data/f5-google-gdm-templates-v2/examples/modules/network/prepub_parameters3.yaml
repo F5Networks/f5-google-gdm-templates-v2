@@ -3,7 +3,7 @@
 NUMBER NETWORKS: 4
 REGION: us-central1
 STACK NAME: networks<NUMBER NETWORKS>-<DEWPOINT JOB ID>
-TEMPLATE URL: 'file://$PWD/f5-google-gdm-templates-v2/examples/modules/network/network.py'
+TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
 # Optional 
 DESCRIPTION: ""

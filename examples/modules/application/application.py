@@ -36,9 +36,9 @@ def generate_config(context):
                     'boot': True,
                     'autoDelete': True,
                     'initializeParams': {
-                            'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
-                                                    'centos-cloud/global/',
-                                                    'images/centos-7-v20210401'])
+                        'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
+                                                'centos-cloud/global/',
+                                                'images/centos-7-v20210401'])
                     }
                 }],
                 'networkInterfaces': [{
@@ -73,7 +73,7 @@ def generate_config(context):
                 {
                     'name': 'applicationIp',
                     'value': '$(ref.{}.networkInterfaces[0].'
-                                'accessConfigs[0].natIP)'.format(application_name)
+                             'accessConfigs[0].natIP)'.format(application_name)
                 }
             ]
 
