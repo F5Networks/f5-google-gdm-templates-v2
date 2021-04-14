@@ -1,20 +1,22 @@
-image: ${ARTIFACTORY_SERVER}/ecosystems-cloudsolutions-docker-dev/cloud-analytics
+image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
 
 services:
   - ${ARTIFACTORY_SERVER}/dockerhub-remote/docker:dind
 
-
 stages:
+  - linters
   - smoke-tests
   - release_test_prep
   - sprinkle-tests
   - droplets
+  - release
+variables:
+  GIT_SUBMODULE_STRATEGY: recursive
 
 
 # lint python and yaml files with linters
 run_gdm_linters:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
-  stage: smoke-tests
+  stage: linters
   tags:
     - docker-executor
   except:
@@ -26,27 +28,6 @@ run_gdm_linters:
     - apk add --no-cache build-base
     - apk add --no-cache bash
     - make gdm_lint
-
-# run template generator smoke tests - validate file contents, etc.
-run_smoke_tests:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
-  stage: smoke-tests
-  tags:
-    - docker-executor
-  except:
-    refs:
-      - schedules
-      - triggers
-      - pipelines
-    variables:
-      - $RELEASE_RUNTIME_INIT_TESTS == "true"
-  script:
-    - apk add --no-cache build-base
-    - apk add --no-cache bash
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
-    - make run_smoke_tests
-
 # validate README file(s) only contain links that respond with 200 OK
 run_link_checker:
   image: ${ARTIFACTORY_SERVER}/dockerhub-remote/node:10
@@ -66,13 +47,9 @@ run_link_checker:
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - make link_check
-
 # validate parameters match style guide
 verify_parameters_match_style_guide:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: smoke-tests
   tags:
     - docker-executor
@@ -84,8 +61,6 @@ verify_parameters_match_style_guide:
   script:
     - apk add --no-cache build-base
     - apk add --no-cache bash
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - make run_compare_parameters
     - make run_expected_diff
   artifacts:
@@ -97,7 +72,6 @@ verify_parameters_match_style_guide:
 
 # validate outputs match style guide
 verify_outputs_match_style_guide:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: smoke-tests
   tags:
     - docker-executor
@@ -109,8 +83,6 @@ verify_outputs_match_style_guide:
   script:
     - apk add --no-cache build-base
     - apk add --no-cache bash
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - make run_compare_outputs
     - make run_expected_outputs_diff
   artifacts:
@@ -133,7 +105,6 @@ verify_outputs_match_style_guide:
 
 # Module: GDM Network Template
 gdm_network_module_test_job:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: sprinkle-tests
   tags:
     - docker-executor
@@ -155,10 +126,8 @@ gdm_network_module_test_job:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - pip install -r cloud-tools/master-job/requirements.txt
-    - build/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
   retry:
     max: 2
     when:
@@ -167,7 +136,6 @@ gdm_network_module_test_job:
 
 # Module: GDM Application Template
 gdm_application_module_test_job:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: sprinkle-tests
   tags:
     - docker-executor
@@ -189,10 +157,8 @@ gdm_application_module_test_job:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - pip install -r cloud-tools/master-job/requirements.txt
-    - build/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
   retry:
     max: 2
     when:
@@ -200,7 +166,6 @@ gdm_application_module_test_job:
       - stuck_or_timeout_failure
 
 pre_release_test_job:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: sprinkle-tests
   tags:
     - docker-executor
@@ -220,13 +185,11 @@ pre_release_test_job:
       - triggers
       - pipelines
   variables:
-    TEST_POLICY: cloud-tools/automated-test-scripts/data/test_policies/pre_release_test.yaml
+    TEST_POLICY: automated-test-scripts/data/test_policies/pre_release_test.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - pip install -r cloud-tools/master-job/requirements.txt
-    - build/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
   retry:
     max: 2
     when:
@@ -235,7 +198,6 @@ pre_release_test_job:
 # end of GDM Template Modules Tests
 
 post_release_test_job:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: sprinkle-tests
   tags:
     - docker-executor
@@ -255,10 +217,8 @@ post_release_test_job:
   # Added a manual trigger for now so that this job doesn't get triggered after every commit
   when: manual
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - pip install -r cloud-tools/master-job/requirements.txt
-    - build/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
   retry:
     max: 2
     when:
@@ -266,7 +226,6 @@ post_release_test_job:
       - stuck_or_timeout_failure
 
 scheduled_test_job:
-  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7-alpine
   stage: sprinkle-tests
   tags:
     - docker-executor
@@ -283,17 +242,13 @@ scheduled_test_job:
     TEST_POLICY: set in schedule!
     STACK_TYPE: dewdrop-production
   script:
-    - apk add --no-cache git
-    - git clone -b develop https://gitlab-ci-token:${CI_JOB_TOKEN}@${GITLAB_URL}/cloudsolutions/automation-templates/cloud-tools
     - pip install -r cloud-tools/master-job/requirements.txt
-    - build/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
   retry:
     max: 2
     when:
       - runner_system_failure
       - stuck_or_timeout_failure
-
-
 
 # This job gets triggered by the sprinkler.py script that get ran by the 'master_test_job' it ingests TEMPLATE_URL
 # and TEMPLATE_PARAMETERS which are passed down by the sprinkler.py script. Using the variables runs dewdrop with
@@ -327,4 +282,19 @@ dewdrop_test_run:
     -   AWS_SECRET_ACCESS_KEY=$AWS_CHINA_SECRET_ACCESS_KEY
     - fi
     - python /dewdrop/dewdrop-docker.py
+
+publish_to_github:
+  stage: release
+  only:
+    - /(^publish-(\d+\.){1,2}(\d)-(\d+)?$)/
+  script:
+    - apk add --no-cache jq
+    # Execute Release script to push source to github repo
+    - ./cloud-tools/release-tool/publish_github.sh "$ALLOWED_DIRS" "$ALLOWED_FILES"
+  variables:
+    ALLOWED_DIRS: "examples .github"
+    ALLOWED_FILES: ".gitignore .gitattributes README.md"
+    GITLAB_API_URL: "$GOOGLE_V2_URL"
+    GIT_HUB_API_TOKEN: "$GOOGLE_V2_GITHUB_API_TOKEN"
+    GITLAB_PRIVATE_TOKEN: "$GOOGLE_V2_GITLAB_API_TOKEN"
 

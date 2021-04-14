@@ -1,17 +1,17 @@
-APP CONTAINER NAME: f5devcentral/f5-demo-app:latest
+APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
-INSTANCE TYPE: n1-standard-1
-REGION: us-west1
-UNIQUESTRING: dd-<DEWPOINT JOB ID>
-TEMPLATE NAME: application.py
-TEMPLATE URL: 'file://$PWD/f5-google-gdm-templates-v2/examples/modules/application/application.py'
-NETWORK TEMPLATE URL: 'file://$PWD/f5-google-gdm-templates-v2/examples/modules/network/network.py'
-STACK NAME: application-<DEWPOINT JOB ID>
-NETWORK STACK NAME: network-<DEWPOINT JOB ID>
+ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
+INSTANCE TYPE: n1-standard-1
+NETWORK STACK NAME: network-<DEWPOINT JOB ID>
+NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 1
-ENABLE FLOW LOGS: ""
-PRIVATE IP GOOGLE ACCESS: ""
-SECONDARY IP CIDR RANGE 1: ""
-SECONDARY RANGE NAME 1: ""
+PRIVATE IP GOOGLE ACCESS: ''
+REGION: us-west1
+SECONDARY IP CIDR RANGE 1: ''
+SECONDARY RANGE NAME 1: ''
+STACK NAME: application-<DEWPOINT JOB ID>
+TEMPLATE NAME: application.py
+TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
+UNIQUESTRING: dd-<DEWPOINT JOB ID>
