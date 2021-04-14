@@ -36,8 +36,8 @@ run_link_checker:
     - docker-executor
   only:
     refs:
-      # the current intent is to run only on master and release branches
-      - master
+      # the current intent is to run only on main and release branches
+      - main
       - /^R.*/
   except:
     refs:
@@ -171,7 +171,7 @@ pre_release_test_job:
     - docker-executor
   only:
     refs:
-      - master
+      - main
   except:
     variables:
       - $ANALYTICS_MESSAGE_PROCESS == "true"
