@@ -1,0 +1,31 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: dag.py
+resources:
+  - name: dag-py
+    properties:
+      applicationInternalPort: '80'
+      applicationPort: '80'
+      guiPortMgmt: 443
+      instance-groups:
+        - <HTTPS_SELF_LINK>
+      instances:
+        - <HTTPS_SELF_LINK>
+      networkSelfLinkExternal: <HTTPS_SELF_LINK>
+      networkSelfLinkInternal: <HTTPS_SELF_LINK>
+      networkSelfLinkMgmt: <HTTPS_SELF_LINK>
+      numberOfForwardingRules: 1
+      numberOfInternalForwardingRules: 1
+      region: us-west1
+      restrictedSrcAddressApp: 1.1.1.0/24
+      restrictedSrcAddressInternalApp: 192.168.1.0/24
+      restrictedSrcAddressMgmt: 2.2.2.0/24
+      subnetSelfLinkExternal: <HTTPS_SELF_LINK>
+      subnetSelfLinkInternal: <HTTPS_SELF_LINK>
+      subnetSelfLinkMgmt: <HTTPS_SELF_LINK>
+      uniqueString: myUniqStr
+    type: dag.py
