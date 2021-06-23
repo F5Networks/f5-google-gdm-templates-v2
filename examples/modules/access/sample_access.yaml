@@ -1,0 +1,15 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: access.py
+resources:
+  - name: access
+    type: access.py
+    properties:
+      solutionType: standard
+      storageName: standard
+      secretId: standard
+      uniqueString: myApp
