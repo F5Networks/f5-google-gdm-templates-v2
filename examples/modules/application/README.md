@@ -32,6 +32,7 @@ This Google Deployment Manager template creates a client application using an ex
 | --- | --- | --- |
 | appContainerName | No | Name of the docker container to deploy in the application VM. |
 | availabilityZone | Yes | Name of the availability zone where the application will be placed. |
+| createAutoscaleGroup | No | Choose true to create the application instances in an autoscaling configuration. |
 | instanceType | Yes | App instance type. e.g. n1-standard-1 |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
 | networkSelfLink | Yes | Self Link of the network to use to deploy the application. |
@@ -43,6 +44,7 @@ This Google Deployment Manager template creates a client application using an ex
 | --- | --- | --- | --- |
 | applicationName | Application resource name. | Application | string |
 | applicationIp | Network IP for Application resource. | Application | string |
+| instanceGroupName | Instance group resource name. | Application | string |
 
 ## Resource Creation Flow Chart
 

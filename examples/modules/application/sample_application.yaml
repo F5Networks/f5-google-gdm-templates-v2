@@ -12,6 +12,7 @@ resources:
       appContainerName: f5devcentral/f5-demo-app:latest
       ### Enter the availability zone where you want to
       ### deploy the application, for example 'us-west1-a'.
+      createAutoscaleGroup: true
       availabilityZone: us-west1-b
       ### Instance type assigned to the application,
       ### for example 'n1-standard-1'.

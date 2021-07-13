@@ -6,8 +6,8 @@
 forwardingRuleCountCreated=$(gcloud compute forwarding-rules list --filter="name~'<STACK NAME>'" --format=json | jq length)
 forwardingRuleCountRequested=$(( <NUM FORWARDING RULES> + <NUM INTERNAL FORWARDING RULES> ))
 
-internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network2" '.[] | select(.name | contains($n)) | .selfLink')
-internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet2" '.[] | select(.name | contains($n)) | .selfLink')
+internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network3" '.[] | select(.name | contains($n)) | .selfLink')
+internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet3" '.[] | select(.name | contains($n)) | .selfLink')
 
 
 if [[ $forwardingRuleCountCreated = $forwardingRuleCountRequested ]]; then

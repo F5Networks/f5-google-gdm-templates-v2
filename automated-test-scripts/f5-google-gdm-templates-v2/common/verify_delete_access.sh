@@ -3,4 +3,4 @@
 #  replayEnabled = true
 #  replayTimeout = 5
 
-gcloud deployment-manager deployments describe <DAG STACK NAME>
+gcloud deployment-manager deployments describe <ACCESS STACK NAME>

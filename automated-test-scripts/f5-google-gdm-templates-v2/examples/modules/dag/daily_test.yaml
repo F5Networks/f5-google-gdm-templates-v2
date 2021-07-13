@@ -5,6 +5,7 @@ onStart:
 - ../../../common/create_network_stack.sh
 - ../../../common/verify_create_network.sh
 - ../../../common/create_instance_groups.sh
+- ../../../../sleep/1_minute.sh
 - ./create_stack.sh
 - ../../../common/verify_create.sh
 - ./tests/verify_firewall.sh

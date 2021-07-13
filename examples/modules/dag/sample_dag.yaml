@@ -8,13 +8,14 @@ imports:
 resources:
   - name: dag-py
     properties:
-      applicationInternalPort: '80'
       applicationPort: '80'
+      applicationVipPort: '80'
       guiPortMgmt: 443
-      instance-groups:
+      instanceGroups:
         - <HTTPS_SELF_LINK>
       instances:
         - <HTTPS_SELF_LINK>
+      networkSelfLinkApp: <HTTPS_SELF_LINK>
       networkSelfLinkExternal: <HTTPS_SELF_LINK>
       networkSelfLinkInternal: <HTTPS_SELF_LINK>
       networkSelfLinkMgmt: <HTTPS_SELF_LINK>
@@ -24,6 +25,7 @@ resources:
       restrictedSrcAddressApp: 1.1.1.0/24
       restrictedSrcAddressInternalApp: 192.168.1.0/24
       restrictedSrcAddressMgmt: 2.2.2.0/24
+      subnetSelfLinkApp: <HTTPS_SELF_LINK>
       subnetSelfLinkExternal: <HTTPS_SELF_LINK>
       subnetSelfLinkInternal: <HTTPS_SELF_LINK>
       subnetSelfLinkMgmt: <HTTPS_SELF_LINK>

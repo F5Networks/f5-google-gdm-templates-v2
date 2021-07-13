@@ -71,6 +71,16 @@ function get_mgmt_ip() {
     fi
 }
 
+# usage: get_instance_group_instances <instance group> <zone>
+function get_instance_group_instances() {
+    instance_group="$1"
+    zone="$2"
+
+    output=$(gcloud compute instance-groups list-instances ${instance_group} --zone=${zone} --format json)
+
+    echo $output | jq -r .[].instance
+}
+
 # usage: get_app_ip <instance> <zone> <public|private>
 function get_app_ip() {
     instance="$1"
@@ -95,6 +105,16 @@ function get_app_ip() {
             echo $output | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP'
         fi
     fi
+}
+
+# usage: get_fr_ip <rule> <region>
+function get_fr_ip() {
+    rule="$1"
+    region="$2"
+
+    output=$(gcloud compute forwarding-rules describe ${rule} --region=${region} --format json)
+
+    echo $output | jq -r .IPAddress
 }
 
 # usage: make_scp_request <host> <base> <file> <proxy_host>

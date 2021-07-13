@@ -13,13 +13,11 @@ rm -f $tmpl_file
 
 curl -k $template_url -o $tmpl_file
 
-networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>" '.[] | select(.name | contains($n)) | .selfLink')
-subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>" '.[] | select(.name | contains($n)) | .selfLink')
-
-firewallSelfLink=$(gcloud compute firewall-rules list --format json | jq -r --arg n "<DEWPOINT JOB ID>" '.[] | select(.name | contains($n)) | .selfLink')
+networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
+subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
 
 # Run GDM Application template
-properties="appContainerName:'<APP CONTAINER NAME>',availabilityZone:'<AVAILABILITY ZONE>',hostname:'<HOST NAME>',instanceType:'<INSTANCE TYPE>',uniqueString:'<UNIQUESTRING>',networkSelfLink:'$networkSelfLink',subnetSelfLink:'$subnetSelfLink',serviceAccount:'dewpt-autoscale-service-acount@f5-7656-pdsoleng-dev.iam.gserviceaccount.com'"
+properties="appContainerName:'<APP CONTAINER NAME>',createAutoscaleGroup:<AUTOSCALE>,availabilityZone:'<AVAILABILITY ZONE>',hostname:'<HOST NAME>',instanceType:'<INSTANCE TYPE>',uniqueString:'<UNIQUESTRING>',networkSelfLink:'$networkSelfLink',subnetSelfLink:'$subnetSelfLink'"
 echo $properties
 gcloud deployment-manager deployments create <STACK NAME> --template $tmpl_file --labels "delete=true" --properties $properties
 

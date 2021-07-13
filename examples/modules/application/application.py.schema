@@ -19,6 +19,10 @@ properties:
     description: Enter the name of the docker container you want to run as your application
     default: 'f5devcentral/f5-demo-app:latest'
     type: string
+  createAutoscaleGroup:
+    description: Choose true to create the application instances in an autoscaling configuration.
+    type: boolean
+    default: true
   availabilityZone:
     description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
     type: string
@@ -43,6 +47,9 @@ outputs:
     applicationIp:
       type: string
       description: Public IP of the application
+    instanceGroupName:
+      type: string
+      description: Instance group resource name.
 
 documentation:
   - README.md
