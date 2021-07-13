@@ -1,15 +1,22 @@
 #  expectValue = "Successful Traffic Test"
 #  scriptTimeout = 3
 #  replayEnabled = true
-#  replayTimeout = 10
+#  replayTimeout = 30
 
 TMP_DIR=/tmp/<DEWPOINT JOB ID>
 STATE_FILE=${TMP_DIR}/state.json
 
 # source test functions
 source ${TMP_DIR}/test_functions.sh
-
-APP_IP=$(get_app_ip <UNIQUESTRING>-application-py <AVAILABILITY ZONE> public)
+if [ "<AUTOSCALE>" == "False" ]; then
+    echo "DO STANDALONE"
+    APP_IP=$(get_app_ip <UNIQUESTRING>-application-py <AVAILABILITY ZONE> public)
+else
+    echo "DO AUTOSCALE"
+    INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-application-py-igm <AVAILABILITY ZONE>)
+    echo "INSTANCE: $INSTANCE"
+    APP_IP=$(get_app_ip $INSTANCE <AVAILABILITY ZONE> public)
+fi
 
 echo "Application IP: $APP_IP"
 ## Curl IP for response

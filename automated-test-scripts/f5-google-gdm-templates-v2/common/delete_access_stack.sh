@@ -3,4 +3,4 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-gcloud deployment-manager deployments delete <DAG STACK NAME> -q
+gcloud deployment-manager deployments delete <ACCESS STACK NAME> -q

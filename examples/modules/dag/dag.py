@@ -5,57 +5,32 @@
 from collections import OrderedDict
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
-def create_firewall_rule_mgmt(context):
-    """ Create firewall rule for mgmt """
-    source_list = str(context.properties['restrictedSrcAddressMgmt']).split()
-    firewall_rule_mgmt = {
-        'name': 'mgmtfw-' + context.env['deployment'],
-        'type': 'compute.v1.firewall',
-        'properties': {
-            'network': context.properties['networkSelfLinkMgmt'],
-            'sourceRanges': source_list,
-            'targetTags': ['mgmtfw-' + context.env['deployment']],
-            'allowed': [{
-                "IPProtocol": "TCP",
-                "ports": [str(context.properties['guiPortMgmt']), '22'],
-            },
-            ]
-        }
-    }
-    return firewall_rule_mgmt
-
-
-def create_firewall_rule_app(context):
-    """ Create firewall rule for application """
-    ports = str(context.properties['applicationPort'])
-    if int(context.properties['numberOfInternalForwardingRules']) != 0:
-        ports = ports + ' ' + str(context.properties['applicationInternalPort'])
-    ports = ports.split()
+def create_firewall_rule(context, config):
+    """ Create firewall rule """
+    ports = config['ports'].split()
     ports = list(OrderedDict.fromkeys(ports))
-    source_list = str(context.properties['restrictedSrcAddressApp'])
-    if int(context.properties['numberOfInternalForwardingRules']) != 0:
-        source_list = source_list + ' ' + str(context.properties['restrictedSrcAddressAppInternal'])
-    source_list = source_list.split()
+    source_list = config['source'].split()
     source_list = list(OrderedDict.fromkeys(source_list))
-    firewall_rule_app = {
-        'name': 'appfw-' + context.env['deployment'],
+    firewall_rule = {
+        'name': config['prefix'] + context.env['deployment'],
         'type': 'compute.v1.firewall',
         'properties': {
-            'network': context.properties['networkSelfLinkExternal'],
+            'network': config['network'],
             'sourceRanges': source_list,
-            'targetTags': ['appfw-'+ context.env['deployment']],
+            'targetTags': [config['prefix'] + context.properties['uniqueString']],
             'allowed': [{
                 "IPProtocol": "TCP",
                 "ports": ports,
-            },
-            ]
+            }]
         }
     }
-    return firewall_rule_app
+    return firewall_rule
 
 
 def create_health_check(context, source):
     """ Create health check """
+    applicaton_port = str(context.properties['applicationVipPort'])
+    applicaton_port = applicaton_port.split()[0]
     if source == "internal":
         health_check = {
             'name': context.env['deployment'] + '-' + source,
@@ -63,7 +38,7 @@ def create_health_check(context, source):
             'properties': {
                 'type': 'TCP',
                 'tcpHealthCheck': {
-                    'port': int(context.properties['applicationPort'])
+                    'port': int(applicaton_port)
                 }
             }
         }
@@ -72,7 +47,7 @@ def create_health_check(context, source):
             'name': context.env['deployment'] + '-' + source,
             'type': 'compute.v1.httpHealthCheck',
             'properties': {
-                'port': int(context.properties['applicationPort'])
+                'port': int(applicaton_port)
             }
         }
 
@@ -111,7 +86,7 @@ def create_forwarding_rule(context, name):
 
 def create_int_forwarding_rule(context, name):
     """ Create internal forwarding rule """
-    ports = str(context.properties['applicationInternalPort']).split()
+    ports = str(context.properties['applicationPort']).split()
     int_forwarding_rule = {
         'name': name,
         'type': 'compute.v1.forwardingRule',
@@ -138,7 +113,7 @@ def create_backend_service(context):
             'description': 'Backend service used for internal LB',
             "backends": [
                 {
-                    "group": context.properties['instance-groups'][0],
+                    "group": context.properties['instanceGroups'][0],
                 }
             ],
             'healthChecks': ['$(ref.' + context.env['deployment'] + '-internal.selfLink)'],
@@ -153,7 +128,6 @@ def create_backend_service(context):
 
 
 # Outputs
-
 def create_forwarding_rule_outputs(name, number_postfix):
     """ Create forwarding rule outputs """
     forwarding_rule_outputs = {
@@ -170,6 +144,7 @@ def create_internal_forwarding_rule_outputs(name, number_postfix):
         'value': '$(ref.' + name + '.IPAddress)'
     }
     return forwarding_rule_outputs
+
 
 def create_target_pool_outputs(context):
     """ Create target pool outputs """
@@ -190,6 +165,7 @@ def create_backend_service_output(context):
     }
     return backend_service
 
+
 def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
@@ -197,6 +173,7 @@ def generate_name(prefix, suffix):
 
 def generate_config(context):
     """ Entry point for the deployment resources. """
+    # pylint: disable-msg=duplicate-code
 
     name = context.properties.get('name') or \
            context.env['name']
@@ -205,19 +182,28 @@ def generate_config(context):
 
     forwarding_rules = []
     forwarding_rule_outputs = []
-    for i in list(range(int(context.properties['numberOfForwardingRules']))):
-        forwarding_rules = forwarding_rules \
-                          + [create_forwarding_rule(
-            context,
-            context.env['deployment'] + '-fr' + str(i)
-        )]
-        forwarding_rule_outputs = forwarding_rule_outputs \
-                                + [create_forwarding_rule_outputs(
-            context.env['deployment'] + '-fr' + str(i),
-            str(i)
-        )]
+    external_resources = []
+
+    int_forwarding_rules = []
+    internal_resources = []
+
+    if context.properties['numberOfForwardingRules'] != 0:
+        for i in list(range(int(context.properties['numberOfForwardingRules']))):
+            forwarding_rules = forwarding_rules \
+                            + [create_forwarding_rule(
+                context,
+                context.env['deployment'] + '-fr' + str(i)
+            )]
+            forwarding_rule_outputs = forwarding_rule_outputs \
+                                    + [create_forwarding_rule_outputs(
+                context.env['deployment'] + '-fr' + str(i),
+                str(i)
+            )]
+        external_resources = [create_target_pool(context)]
+        external_resources = external_resources \
+                            + [create_health_check(context, "external")]
+
     if context.properties['numberOfInternalForwardingRules'] != 0:
-        int_forwarding_rules = []
         for i in list(range(int(context.properties['numberOfInternalForwardingRules']))):
             int_forwarding_rules = int_forwarding_rules \
                                  + [create_int_forwarding_rule(
@@ -232,18 +218,51 @@ def generate_config(context):
         internal_resources = [create_backend_service(context)]
         internal_resources = internal_resources \
                             + [create_health_check(context, "internal")]
-    else:
-        internal_resources = []
-        int_forwarding_rules = []
 
+    # mgmt access
+    mgmt_rule_config = {
+        'ports': str(context.properties['guiPortMgmt']) + ' ' + '22',
+        'source': str(context.properties['restrictedSrcAddressMgmt']),
+        'prefix': 'mgmtfw-',
+        'network': context.properties['networkSelfLinkMgmt']
+    }
+
+    # external VIP access
+    app_ext_vip_rule_config = {
+        'ports': str(context.properties['applicationVipPort']),
+        'source': str(context.properties['restrictedSrcAddressApp']),
+        'prefix': 'appfwvip-',
+        'network': context.properties['networkSelfLinkExternal'] \
+            if context.properties['numberOfNics'] != 1 \
+                else context.properties['networkSelfLinkMgmt']
+    }
+
+    # app server access
+    app_rule_config = {
+        'ports': str(context.properties['applicationPort']),
+        'source': str(context.properties['restrictedSrcAddressAppInternal']),
+        'prefix': 'appfwint-',
+        'network': context.properties['networkSelfLinkApp']
+    }
+
+    # internal VIP access
+    app_int_vip_rule_config = {
+        'ports': str(context.properties['applicationPort']),
+        'source': str(context.properties['restrictedSrcAddressAppInternal']),
+        'prefix': 'appfwintvip-',
+        'network': context.properties['networkSelfLinkInternal']
+    }
 
     resources = [
-        create_firewall_rule_mgmt(context),
-        create_firewall_rule_app(context),
-        create_target_pool(context),
-        create_health_check(context, 'external')
+        create_firewall_rule(context, mgmt_rule_config),
+        create_firewall_rule(context, app_ext_vip_rule_config),
+        create_firewall_rule(context, app_rule_config),
     ]
+    if context.properties['numberOfNics'] >= 3:
+        resources = resources + [create_firewall_rule(context, app_int_vip_rule_config)]
 
+    # add external lb resources when numberOfForwardingRules not equal to 0
+    resources = resources + external_resources
     # add internal lb resources when numberOfIntForwardingRules not equal to 0
     resources = resources + internal_resources
     # add forwarding rules
@@ -265,7 +284,6 @@ def generate_config(context):
         outputs = outputs + [create_target_pool_outputs(context)]
     if context.properties['numberOfInternalForwardingRules'] != 0:
         outputs = outputs + [create_backend_service_output(context)]
-
 
     return {
         'resources':

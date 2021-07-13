@@ -5,6 +5,6 @@
 
 gcloud compute instance-groups managed create <STACK NAME>-ig \
     --base-instance-name <STACK NAME> \
-    --size 2 \
+    --size 1 \
     --template test-instance-template-1 \
     --region <REGION>
