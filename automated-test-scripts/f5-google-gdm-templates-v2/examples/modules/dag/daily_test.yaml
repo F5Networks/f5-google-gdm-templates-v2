@@ -5,12 +5,12 @@ onStart:
 - ../../../common/create_network_stack.sh
 - ../../../common/verify_create_network.sh
 - ../../../common/create_instance_groups.sh
+- ../../../common/create_target_pool.sh
 - ../../../../sleep/1_minute.sh
 - ./create_stack.sh
 - ../../../common/verify_create.sh
 - ./tests/verify_firewall.sh
 - ./tests/verify_forwarding_rule.sh
-- ./tests/verify_targetpool.sh
 - ../../../common/delete_stack.sh
 - ../../../common/verify_delete.sh
 - ../../../common/delete_network_stack.sh

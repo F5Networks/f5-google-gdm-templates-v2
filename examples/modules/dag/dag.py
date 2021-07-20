@@ -77,7 +77,7 @@ def create_forwarding_rule(context, name):
         'properties': {
             'region': context.properties['region'],
             'IPProtocol': 'TCP',
-            'target': '$(ref.' + context.env['deployment'] + '-tp.selfLink)',
+            'target': context.properties['targetPoolSelfLink'],
             'loadBalancingScheme': 'EXTERNAL',
         }
     }
@@ -146,16 +146,6 @@ def create_internal_forwarding_rule_outputs(name, number_postfix):
     return forwarding_rule_outputs
 
 
-def create_target_pool_outputs(context):
-    """ Create target pool outputs """
-    target_pool = {
-        'name': 'targetPool',
-        'resourceName': context.env['deployment'] + '-tp',
-        'value': '$(ref.' + context.env['deployment'] + '-tp.selfLink)'
-    }
-    return target_pool
-
-
 def create_backend_service_output(context):
     """ Create backend service outputs """
     backend_service = {
@@ -199,9 +189,6 @@ def generate_config(context):
                 context.env['deployment'] + '-fr' + str(i),
                 str(i)
             )]
-        external_resources = [create_target_pool(context)]
-        external_resources = external_resources \
-                            + [create_health_check(context, "external")]
 
     if context.properties['numberOfInternalForwardingRules'] != 0:
         for i in list(range(int(context.properties['numberOfInternalForwardingRules']))):
@@ -242,7 +229,9 @@ def generate_config(context):
         'ports': str(context.properties['applicationPort']),
         'source': str(context.properties['restrictedSrcAddressAppInternal']),
         'prefix': 'appfwint-',
-        'network': context.properties['networkSelfLinkApp']
+        'network': context.properties['networkSelfLinkApp'] \
+            if context.properties['numberOfNics'] != 1 \
+                else context.properties['networkSelfLinkMgmt']
     }
 
     # internal VIP access
@@ -250,7 +239,9 @@ def generate_config(context):
         'ports': str(context.properties['applicationPort']),
         'source': str(context.properties['restrictedSrcAddressAppInternal']),
         'prefix': 'appfwintvip-',
-        'network': context.properties['networkSelfLinkInternal']
+        'network': context.properties['networkSelfLinkInternal'] \
+            if context.properties['numberOfNics'] != 1 \
+                else context.properties['networkSelfLinkMgmt']
     }
 
     resources = [
@@ -280,10 +271,6 @@ def generate_config(context):
         }
     ]
     outputs = outputs + forwarding_rule_outputs
-    if context.properties['numberOfForwardingRules'] != 0:
-        outputs = outputs + [create_target_pool_outputs(context)]
-    if context.properties['numberOfInternalForwardingRules'] != 0:
-        outputs = outputs + [create_backend_service_output(context)]
 
     return {
         'resources':

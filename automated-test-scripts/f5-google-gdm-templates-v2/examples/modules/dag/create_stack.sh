@@ -56,6 +56,9 @@ done
 
 # instances used by the internal forwarding rule/backend service
 instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-ig --region <REGION> --format=json | jq -r .selfLink)
+targetPoolSelfLink=$(gcloud compute target-pools describe <STACK NAME>-tp --region <REGION> --format=json | jq .selfLink | tr -d '"')
+
+
 
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
@@ -67,6 +70,7 @@ instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-ig 
 
 /usr/bin/yq e ".resources[0].properties.instances[0] = \"$instances\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.guiPortMgmt = <MGMT PORT>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.applicationVipPort = \"<APP PORT>\"" -i <DEWPOINT JOB ID>.yaml
