@@ -36,6 +36,9 @@ mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r 
 appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
 appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
 
+
+targetGroupSelfLink=$(gcloud compute target-pools list --format=json | jq -r --arg n "bigip-autoscale-<DEWPOINT JOB ID>-tp" '.[] | select(.name | contains($n)) | .selfLink')
+
 if [ <NUMBER NICS> -ge 2 ]; then
     externalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network2" '.[] | select(.name | contains($n)) | .selfLink')
     externalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet2" '.[] | select(.name | contains($n)) | .selfLink')
@@ -44,6 +47,11 @@ fi
 if [ <NUMBER NICS> -ge 3 ]; then
     internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network3" '.[] | select(.name | contains($n)) | .selfLink')
     internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet3" '.[] | select(.name | contains($n)) | .selfLink')
+fi
+
+if [ <NUMBER NICS> -eq 1 ]; then
+    internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
+    internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
 fi
 
 if [ "<TEMPLATE NAME>" == "dag.py" ]; then
@@ -56,8 +64,10 @@ if [ "<TEMPLATE NAME>" == "dag.py" ]; then
     done
 
     # instances used by the internal forwarding rule/backend service
-    instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-ig --region <REGION> --format=json | jq -r .selfLink)
+    instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-igm --region <REGION> --format=json | jq -r .selfLink)
 fi
+
+instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-<DEWPOINT JOB ID>-igm --zone <AVAILABILITY ZONE> --format=json | jq -r .selfLink)
 
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
@@ -66,9 +76,6 @@ fi
 
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
-
-/usr/bin/yq e ".resources[0].properties.instances[0] = \"$instances\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.guiPortMgmt = <MGMT PORT>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.applicationVipPort = \"<APP PORT>\"" -i <DEWPOINT JOB ID>.yaml
@@ -80,6 +87,9 @@ fi
 /usr/bin/yq e ".resources[0].properties.numberOfNics = <NUMBER NICS>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
+
+/usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkMgmt = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkMgmt = \"$mgmtSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml

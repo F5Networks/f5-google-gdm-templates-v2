@@ -1,0 +1,27 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: bigip_autoscale.py
+resources:
+  - name: bigip-autoscale-py
+    properties:
+      applicationVipPort: '443'
+      availabilityZone: us-west1-b
+      bigIpRuntimeInitConfig: <URL>
+      bigIpRuntimeInitPackageUrl: <URL>
+      coolDownPeriodSec: 60
+      hostname: test.example.com
+      imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
+      instanceType: n1-standard-8
+      maxNumReplicas: 8
+      minNumReplicas: 2
+      networkSelfLink: <URL>
+      project: project-id
+      region: us-west1
+      subnetSelfLink: <URL>
+      uniqueString: dd-273a9306
+      utilizationTarget: 0.8
+    type: bigip_autoscale.py

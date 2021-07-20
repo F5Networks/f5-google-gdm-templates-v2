@@ -1,1 +1,88 @@
-TBD
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 BIGIP Autoscale module
+  author: F5 Networks
+  description: Creates a BIGIP autoscale group.
+  version: 0.1.0
+
+imports:
+  - path: bigip_autoscale.py
+
+required:
+    - availabilityZone
+    - instanceType
+    - imageName
+    - networkSelfLink
+    - subnetSelfLink
+    - bigIpRuntimeInitPackageUrl
+    - bigIpRuntimeInitConfig
+    - networkSelfLink
+    - subnetSelfLink
+    - serviceAccountEmail
+
+properties:
+  availabilityZone:
+    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+    type: string
+  applicationVipPort:
+    description: Application port number
+    type: integer
+    default: 80
+  bigIpRuntimeInitPackageUrl:
+    description: URL for BIG-IP Runtime Init package
+    type: string
+  bigIpRuntimeInitConfig:
+    description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
+    type: string
+  coolDownPeriodSec:
+    description: The application initialization period; the autoscaler uses the cool down period for scaling decisions.
+    type: integer
+    default: 60
+  instanceType:
+    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    type: string
+  imageName:
+    description: BIG-IP image name
+    type: string
+  maxNumReplicas:
+    description: Maximum number of replicas that autoscaler can provision
+    type: integer
+    default: 8
+  minNumReplicas:
+    description: Minimum number of replicas that autoscaler can provision
+    type: integer
+    default: 2
+  networkSelfLink:
+    description: Self Link of the network to use to deploy the application.
+    type: string
+  utilizationTarget:
+    description: The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric.
+    type: integer
+    default: 0.8
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
+    type: string
+  serviceAccountEmail:
+    description: Enter the Google service account to use for autoscale API calls, for example 'username@projectname.iam.serviceaccount.com'. Please note that this service account is necessary for one BIG-IP to communicate with the other, so the permissions should include access to the storage bucket. Refer [here](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html#create-and-assign-an-iam-role) for instructions on how to create the IAM service account with sufficient access.
+    type: string
+  subnetSelfLink:
+    description: Self Link of the subnetwork to use to deploy the application.
+    type: string
+
+
+outputs:
+  properties:
+    bigipAutoscaleName:
+      type: string
+      description:  BIGIP Autoscale deployment name.
+    instanceGroupName:
+      type: string
+      description: Instance group resource name.
+
+documentation:
+  - README.md
+
+examples:
+  - sample_bigip_autoscale.yaml
