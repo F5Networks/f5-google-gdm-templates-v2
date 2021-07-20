@@ -19,7 +19,7 @@ link_check:
 gdm_lint:
 	echo "Running linter (any error will result in non-zero exit code)";
 	pip install -r cloud-tools/linters/requirements.txt;
-	pylint -j 0 examples && cd examples && yamllint -s .;
+	pylint -j 0 examples && yamllint -s -d "{extends: default, yaml-files: ['*.yaml'], ignore: runtime-init*}" examples;
 run_crawler:
 	echo "Running crawler against cloud factory artifacts";
 	cd ${CRAWLER_DIR} && bash ./run_crawler.sh && cd ${CUR_DIR};
