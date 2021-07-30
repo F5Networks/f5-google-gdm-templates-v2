@@ -1,6 +1,9 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
 # Version 0.1.0
+
+# pylint: disable=W,C,R
+
 """ This template creates a network with subnets. """
 
 def generate_name(prefix, suffix):

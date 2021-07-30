@@ -26,12 +26,13 @@ if sys.argv[1] in ['standard', 'secret', 'storage',
         'compute.forwardingRules.setTarget',
         'compute.instances.updateNetworkInterface',
         'compute.networks.updatePolicy',
-        'compute.globalOperations.get'
+        'compute.globalOperations.get',
+        'logging.logEntries.create',
+        'monitoring.timeSeries.create'
     ]
 if sys.argv[1] in ['secret', 'remoteLogging', 'failover']:
-    included_permissions.append(
+    included_permissions = included_permissions + [
         'resourcemanager.projects.get',
-        'resourcemanager.projects.list',
         'secretmanager.versions.add',
         'secretmanager.versions.destroy',
         'secretmanager.versions.disable',
@@ -39,9 +40,9 @@ if sys.argv[1] in ['secret', 'remoteLogging', 'failover']:
         'secretmanager.versions.get',
         'secretmanager.versions.list',
         'secretmanager.versions.access'
-    )
+    ]
 if sys.argv[1] in ['storage', 'remoteLogging', 'failover']:
-    included_permissions.append(
+    included_permissions = included_permissions + [
         'storage.objects.get',
         'storage.objects.create',
         'storage.objects.update',
@@ -52,7 +53,7 @@ if sys.argv[1] in ['storage', 'remoteLogging', 'failover']:
         'storage.buckets.update',
         'storage.buckets.delete',
         'storage.buckets.list'
-    )
+    ]
 
 set_included_permissions = set(included_permissions)
 set_found_permissions = set(found_permissions)

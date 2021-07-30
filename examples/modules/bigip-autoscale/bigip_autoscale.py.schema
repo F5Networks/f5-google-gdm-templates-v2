@@ -9,18 +9,18 @@ info:
 
 imports:
   - path: bigip_autoscale.py
+  - path: bigip_instance_template.py
 
 required:
     - availabilityZone
     - instanceType
     - imageName
-    - networkSelfLink
-    - subnetSelfLink
     - bigIpRuntimeInitPackageUrl
     - bigIpRuntimeInitConfig
     - networkSelfLink
     - subnetSelfLink
     - serviceAccountEmail
+    - uniqueString
 
 properties:
   availabilityZone:
@@ -46,6 +46,10 @@ properties:
   imageName:
     description: BIG-IP image name
     type: string
+  instanceTemplateVersion:
+    description: Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. 
+    type: integer
+    default: 1
   maxNumReplicas:
     description: Maximum number of replicas that autoscaler can provision
     type: integer
@@ -57,9 +61,13 @@ properties:
   networkSelfLink:
     description: Self Link of the network to use to deploy the application.
     type: string
+  provisionPublicIp:
+    description: Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s).
+    type: boolean
+    default: true
   utilizationTarget:
     description: The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric.
-    type: integer
+    type: number
     default: 0.8
   uniqueString:
     description: Unique String used when creating object names or Tags.

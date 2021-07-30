@@ -3,23 +3,42 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-template_url=<TEMPLATE URL>
-echo "template_url = $template_url"
-template_file=$(basename "$template_url")
-echo "template_file = $template_file"
-tmpl_file="/tmp/$template_file"
-echo "tmpl_file = $tmpl_file"
-rm -f $tmpl_file
+# set vars
+TMP_DIR="/tmp/<DEWPOINT JOB ID>"
+tmpl_file='/tmp/application.py'
+instance_tmpl_file='/tmp/application_instance_template.py'
 
-curl -k $template_url -o $tmpl_file
+# grab template and schema
+curl -k <TEMPLATE URL> -o $tmpl_file
+curl -k <TEMPLATE URL>.schema -o "${tmpl_file}.schema"
+curl -k <INSTANCE TEMPLATE URL> -o $instance_tmpl_file
+
+# source test functions
+source ${TMP_DIR}/test_functions.sh
 
 networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
 subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
 
-# Run GDM Application template
-properties="appContainerName:'<APP CONTAINER NAME>',createAutoscaleGroup:<AUTOSCALE>,availabilityZone:'<AVAILABILITY ZONE>',hostname:'<HOST NAME>',instanceType:'<INSTANCE TYPE>',uniqueString:'<UNIQUESTRING>',networkSelfLink:'$networkSelfLink',subnetSelfLink:'$subnetSelfLink'"
-echo $properties
-gcloud deployment-manager deployments create <STACK NAME> --template $tmpl_file --labels "delete=true" --properties $properties
+# Run GDM Dag template
+/usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".imports[1].path = \"${instance_tmpl_file}\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].name = \"application\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].type = \"application.py\"" -i <DEWPOINT JOB ID>.yaml
 
-# clean up file on disk
-rm -f $tmpl_file
+/usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.createAutoscaleGroup = <AUTOSCALE>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.availabilityZone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.hostname = \"<HOST NAME>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.instanceTemplateVersion = 1" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.networkSelfLink = \"$networkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnetSelfLink = \"$subnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+
+# print out config file
+/usr/bin/yq e <DEWPOINT JOB ID>.yaml
+
+labels="delete=true"
+
+gcloud="gcloud deployment-manager deployments create <STACK NAME> --labels $labels --config <DEWPOINT JOB ID>.yaml"
+$gcloud

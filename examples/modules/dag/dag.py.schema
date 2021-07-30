@@ -19,6 +19,7 @@ required:
     - numberOfForwardingRules
     - networkSelfLinkMgmt
     - networkSelfLinkApp
+    - uniqueString
 
 
 properties:
@@ -88,6 +89,9 @@ properties:
     restrictedSrcAddressAppInternal:
         description: This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space.
         type: string
+    targetPoolSelfLink:
+        type: string
+        description: self link to target pool resource.
     uniqueString:
         type: string
         description: Unique String used when creating object names or Tags.

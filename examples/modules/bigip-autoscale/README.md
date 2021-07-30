@@ -41,10 +41,12 @@ This Google Deployment Manager template creates an autoscale group of BIGIP inst
 | bigIpRuntimeInitPackageUrl | Yes | URL for BIG-IP Runtime Init package | 
 | bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | coolDownPeriodSec | No | The application initialization period; the autoscaler uses the cool down period for scaling decisions. |
+| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. | 
 | networkSelfLink | Yes | Self Link of the network to use to deploy the application.  | 
 | maxNumReplicas | No | Maximum number of replicas that autoscaler can provision  |
 | minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
+| provisionPublicIp | No | Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s). |
 | serviceAccountEmail | Yes | Enter the Google service account to use for autoscale API calls, for example 'username@projectname.iam.serviceaccount.com'. |
 | subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the application. | 
 | targetGroupSelfLink | No | Target Pool self-link used for external loadbalancing |

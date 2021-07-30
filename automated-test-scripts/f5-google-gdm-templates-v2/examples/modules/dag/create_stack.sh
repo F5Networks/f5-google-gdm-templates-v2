@@ -59,7 +59,6 @@ instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-ig 
 targetPoolSelfLink=$(gcloud compute target-pools describe <STACK NAME>-tp --region <REGION> --format=json | jq .selfLink | tr -d '"')
 
 
-
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].name = \"dag\"" -i <DEWPOINT JOB ID>.yaml

@@ -10,6 +10,4 @@ resources:
     type: access.py
     properties:
       solutionType: standard
-      storageName: standard
-      secretId: standard
       uniqueString: myApp
