@@ -31,8 +31,6 @@ This Google Deployment Manager template creates an IAM Service Account to be use
 | Parameter | Required | Description |
 | --- | --- | --- |
 | solutionType | Yes | Type of solution you want to deploy - standard, secret, storageBucket, secretStorage, failover |
-| storageName | Yes | Storage Bucket for remote logging, failover solution etc. |
-| secretId | Yes | ID of the secret stored in Secret Manager |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
 
 ### Template Outputs

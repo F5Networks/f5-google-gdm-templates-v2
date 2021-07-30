@@ -5,33 +5,26 @@ runtime_parameters:
     metadataProvider:
       environment: gcp
       type: compute
-      field: hostname
-  - name: PROJECT_ID
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: project
-      field: projectId
-  - name: SERVICE_ACCOUNT_EMAIL
+      field: name
+  - name: REGION
     type: url
-    value: 'http://metadata.google.internal/computeMetadata/v1/instance/service-accounts/default/email'
+    value: 'http://metadata.google.internal/computeMetadata/v1/instance/attributes/region'
     headers:
       - name: Metadata-Flavor
         value: Google
-  - name: SERVICE_ACCOUNT_CREDENTIAL
-    type: secret
-    secretProvider:
-      type: SecretsManager
-      environment: gcp
-      version: latest
-      secretId: my-secret-id-01
+  - name: UNIQUE_STRING
+    type: url
+    value: 'http://metadata.google.internal/computeMetadata/v1/instance/attributes/unique-string'
+    headers:
+      - name: Metadata-Flavor
+        value: Google
   - name: SPLUNK_API_KEY
     type: secret
     secretProvider:
       type: SecretsManager
       environment: gcp
       version: latest
-      secretId: my-secret-id-02
+      secretId: my-secret-id-01
 bigip_ready_enabled: []
 extension_packages:
   install_operations:
@@ -78,7 +71,7 @@ extension_services:
           My_System:
             class: System
             autoPhonehome: true
-            hostname: '{{{HOST_NAME}}}'
+            hostname: '{{{HOST_NAME}}}.local'
     - extensionType: as3
       type: inline
       value:
@@ -146,13 +139,11 @@ extension_services:
               members:
                 - addressDiscovery: gce
                   addressRealm: private
-                  projectId: '{{{PROJECT_ID}}}'
-                  tagKey: 'appAutoscaleGroup'
-                  tagValue: 'myUniqueStr'
+                  tagKey: appautoscalegroup
+                  tagValue: '{{{UNIQUE_STRING}}}'
+                  region: '{{{REGION}}}'
                   servicePort: 80
                   updateInterval: 60
-                  encodedCredentials: '{{{SERVICE_ACCOUNT_CREDENTIAL}}}'
-                  credentialUpdate: false
               monitors:
                 - http
           HTTP_Service:
@@ -201,44 +192,6 @@ extension_services:
         controls:
           class: Controls
           logLevel: info
-        My_Metrics_Namespace:
-          class: Telemetry_Namespace
-          My_System_Poller:
-            class: Telemetry_System_Poller
-            interval: 60
-            actions:
-              - includeData: {}
-                locations:
-                  system:
-                    cpu: true
-          My_Scaling_Endpoints:
-            class: Telemetry_Endpoints
-            items:
-              throughputIn:
-                name: throughputIn
-                path: /mgmt/tm/sys/performance/throughput?$top=1&$select=Current
-              hostname:
-                name: hostname
-                path: /mgmt/tm/sys/global-settings?$select=hostname
-          My_Custom_Endpoints_Poller:
-            class: Telemetry_System_Poller
-            interval: 60
-            endpointList:
-              - My_Scaling_Endpoints/hostname
-              - My_Scaling_Endpoints/throughputIn
-          My_Telemetry_System:
-            class: Telemetry_System
-            systemPoller:
-              - My_System_Poller
-              - My_Custom_Endpoints_Poller
-          My_Google_Cloud_Monitoring:
-            class: Telemetry_Consumer
-            type: Google_Cloud_Monitoring
-            privateKey:
-              cipherText: '{{{SERVICE_ACCOUNT_CREDENTIAL}}}'
-            projectId: '{{{PROJECT_ID}}}'
-            privateKeyId: yourPrivateKeyId
-            serviceEmail: '{{{SERVICE_ACCOUNT_EMAIL}}}'
         My_Remote_Logs_Namespace:
           class: Telemetry_Namespace
           My_Listener:

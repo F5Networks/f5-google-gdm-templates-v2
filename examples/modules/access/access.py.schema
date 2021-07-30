@@ -11,19 +11,13 @@ imports:
   - path: access.py
 
 required:
-    - availabilityZone
-    - instanceType
+    - solutionType
+    - uniqueString
 
 properties:
   solutionType:
     description: Type of solution you want to deploy - standard, secret, storage, remoteLogging, failover 
     default: 'standard'
-    type: string
-  storageName:
-    description: Storage Bucket for remote logging, failover solution etc.
-    type: string
-  secretId:
-    description: ID of the secret stored in Secret Manager
     type: string
   uniqueString:
     description: Unique String used when creating object names or Tags.

@@ -1,0 +1,31 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: autoscale.py
+  - path: ../../modules/access/access.py
+  - path: ../../modules/application/application.py
+  - path: ../../modules/bigip-autoscale/bigip_autoscale.py
+  - path: ../../modules/dag/dag.py
+  - path: ../../modules/network/network.py
+resources:
+  - name: autoscale-py
+    type: autoscale.py
+    properties:
+      appContainerName: f5devcentral/f5-demo-app:latest
+      availabilityZone: us-west1-a
+      bigIpRuntimeInitPackageUrl: <URL>
+      bigIpRuntimeInitConfig: <URL>
+      coolDownPeriodSec: 60
+      imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
+      instanceType: n1-standard-8
+      maxNumReplicas: 8
+      minNumReplicas: 2
+      region: us-west1
+      restrictedSrcAddressMgmt: ''
+      restrictedSrcAddressApp: ''
+      restrictedSrcAddressAppInternal: ''
+      uniqueString: myuniquestr
+      utilizationTarget: 0.8

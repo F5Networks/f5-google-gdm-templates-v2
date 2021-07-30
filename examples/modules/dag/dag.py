@@ -1,6 +1,9 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
 # Version 0.1.0
+
+# pylint: disable=W,C,R
+
 """Creates the dag """
 from collections import OrderedDict
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -25,7 +28,6 @@ def create_firewall_rule(context, config):
         }
     }
     return firewall_rule
-
 
 def create_health_check(context, source):
     """ Create health check """
@@ -104,6 +106,7 @@ def create_int_forwarding_rule(context, name):
     return int_forwarding_rule
 
 
+# move to bigip-autoscale
 def create_backend_service(context):
     """ Create backend service """
     backend_service = {
@@ -127,7 +130,6 @@ def create_backend_service(context):
     return backend_service
 
 
-# Outputs
 def create_forwarding_rule_outputs(name, number_postfix):
     """ Create forwarding rule outputs """
     forwarding_rule_outputs = {
@@ -160,10 +162,8 @@ def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
 
-
 def generate_config(context):
     """ Entry point for the deployment resources. """
-    # pylint: disable-msg=duplicate-code
 
     name = context.properties.get('name') or \
            context.env['name']
@@ -229,9 +229,7 @@ def generate_config(context):
         'ports': str(context.properties['applicationPort']),
         'source': str(context.properties['restrictedSrcAddressAppInternal']),
         'prefix': 'appfwint-',
-        'network': context.properties['networkSelfLinkApp'] \
-            if context.properties['numberOfNics'] != 1 \
-                else context.properties['networkSelfLinkMgmt']
+        'network': context.properties['networkSelfLinkApp']
     }
 
     # internal VIP access

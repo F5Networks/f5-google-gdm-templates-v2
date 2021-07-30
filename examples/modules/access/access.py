@@ -2,6 +2,8 @@
 #
 # Version 0.1.0
 
+# pylint: disable=W,C,R
+
 """Creates the access"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
@@ -40,12 +42,13 @@ def create_custom_role(context, role_name, solution_type):
             'compute.forwardingRules.setTarget',
             'compute.instances.updateNetworkInterface',
             'compute.networks.updatePolicy',
-            'compute.globalOperations.get'
+            'compute.globalOperations.get',
+            'logging.logEntries.create',
+            'monitoring.timeSeries.create'
         ]
     if solution_type in ['secret', 'remoteLogging', 'failover']:
-        included_permissions.append(
+        included_permissions = included_permissions + [
             'resourcemanager.projects.get',
-            'resourcemanager.projects.list',
             'secretmanager.versions.add',
             'secretmanager.versions.destroy',
             'secretmanager.versions.disable',
@@ -53,9 +56,9 @@ def create_custom_role(context, role_name, solution_type):
             'secretmanager.versions.get',
             'secretmanager.versions.list',
             'secretmanager.versions.access'
-        )
+        ]
     if solution_type in ['storage', 'remoteLogging', 'failover']:
-        included_permissions.append(
+        included_permissions = included_permissions + [
             'storage.objects.get',
             'storage.objects.create',
             'storage.objects.update',
@@ -66,7 +69,7 @@ def create_custom_role(context, role_name, solution_type):
             'storage.buckets.update',
             'storage.buckets.delete',
             'storage.buckets.list'
-        )
+        ]
 
     custom_role = {
         'name': role_name,
@@ -97,16 +100,6 @@ def generate_config(context):
 
     solution_type = context.properties['solutionType']
 
-    # storage_name = context.properties.get(
-    #     'storageName',
-    #     False
-    # )
-
-    # secret_id = context.properties.get(
-    #     'secretId',
-    #     False
-    # )
-
     resources = [
         create_custom_role(context, role_name, solution_type)
     ]
@@ -118,21 +111,18 @@ def generate_config(context):
             'properties': {
                 'accountId': ''.join([context.env['deployment'], '-admin']),
                 'displayName': service_account_name
-            },
-            'accessControl': {
-                'gcpIamPolicy': {
-                    'bindings': {
-                        'role': '$(ref.' + role_name + '.name)',
-                        'members': [''.join(['serviceAccount:',
-                                             context.env['deployment'],
-                                             '-admin',
-                                             '@', context.env['project'],
-                                             '.iam.gserviceaccount.com'])]
-                    }
-                }
-            },
-            'metadata': {
-                'dependsOn': [role_name]
+            }
+        }
+    )
+
+    resources.append(
+        {
+            'name': ''.join([context.env['deployment'], '-bind-iam-policy']),
+            'type': 'gcp-types/cloudresourcemanager-v1:virtual.projects.iamMemberBinding',
+            'properties': {
+                'resource': context.env['project'],
+                'role': 'projects/' + context.env['project'] + '/roles/' + role_name,
+                'member': 'serviceAccount:$(ref.' + service_account_name + '.email)'
             }
         }
     )

@@ -1,5 +1,5 @@
 ---
-name: Google Examples - Application
+name: Google Examples - BIG-IP Autoscale
 onStart:
 - ../../../common/helper_init.sh
 - ../../../common/create_network_stack.sh
@@ -24,4 +24,3 @@ onFail:
   - ../../../common/verify_delete.sh
   - ../../../common/delete_network_stack.sh
   - ../../../common/verify_delete_network.sh
-
