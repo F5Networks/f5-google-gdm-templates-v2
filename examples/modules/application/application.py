@@ -71,8 +71,13 @@ def create_instance_template(context, instance_template_name):
         'type': 'application_instance_template.py',
         'properties': {
             'appContainerName': context.properties['appContainerName'],
+            'application': context.properties['application'],
+            'cost': context.properties['cost'],
+            'environment': context.properties['environment'],
+            'group': context.properties['group'],
             'instanceType': context.properties['instanceType'],
             'networkSelfLink': context.properties['networkSelfLink'],
+            'owner': context.properties['owner'],
             'subnetSelfLink': context.properties['subnetSelfLink'],
             'uniqueString': context.properties['uniqueString']
         }

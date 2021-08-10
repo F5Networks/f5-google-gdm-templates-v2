@@ -50,6 +50,10 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 
 /usr/bin/yq e ".resources[0].name = \"autoscale-py\"" -i $config_file
 /usr/bin/yq e ".resources[0].type = \"autoscale.py\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.availabilityZone = \"<AVAILABILITY ZONE>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i $config_file

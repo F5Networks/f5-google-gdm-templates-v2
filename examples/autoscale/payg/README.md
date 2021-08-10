@@ -97,14 +97,19 @@ This solution leverages traditional Autoscale configuration management practices
 | Parameter | Required | Description |
 | --- | --- | --- |
 | appContainerName | No | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
+| application | No | Application label. |
 | availabilityZone | Yes | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 | bigIpRuntimeInitPackageUrl | Yes | Supply a URL for the bigip-runtime-init package |
 | bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | coolDownPeriodSec | No | The application initialization period; the autoscaler uses the cool down period for scaling decisions. |
+| cost | No | Cost Center label. |
+| environment | No | Environment label. | 
+| group | No | Group label. |
 | instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. |
 | imageName | Yes | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --filter="name~f5"`. |
 | maxNumReplicas | No | Maximum number of replicas that autoscaler can provision |
 | minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
+| owner | No | Owner label. |
 | region | Yes | Google Cloud region used for this deployment. |
 | restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
 | restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |

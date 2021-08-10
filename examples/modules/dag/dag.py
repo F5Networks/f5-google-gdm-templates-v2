@@ -81,6 +81,13 @@ def create_forwarding_rule(context, name):
             'IPProtocol': 'TCP',
             'target': context.properties['targetPoolSelfLink'],
             'loadBalancingScheme': 'EXTERNAL',
+            'labels': {
+                'application': context.properties['application'],
+                'cost': context.properties['cost'],
+                'environment': context.properties['environment'],
+                'group': context.properties['group'],
+                'owner': context.properties['owner']
+            }
         }
     }
     return forwarding_rule
@@ -100,7 +107,14 @@ def create_int_forwarding_rule(context, name):
             'backendService': '$(ref.' + context.env['deployment'] + '-bes.selfLink)',
             'loadBalancingScheme': 'INTERNAL',
             'network': context.properties['networkSelfLinkInternal'],
-            'subnetwork': context.properties['subnetSelfLinkInternal']
+            'subnetwork': context.properties['subnetSelfLinkInternal'],
+            'labels': {
+                'application': context.properties['application'],
+                'cost': context.properties['cost'],
+                'environment': context.properties['environment'],
+                'group': context.properties['group'],
+                'owner': context.properties['owner']
+            },
         }
     }
     return int_forwarding_rule

@@ -44,6 +44,13 @@ def generate_config(context):
                 'subnetwork': context.properties['subnetSelfLink'],
                 'accessConfigs': access_configs
             }],
+            'labels': {
+                'application': context.properties['application'],
+                'cost': context.properties['cost'],
+                'environment': context.properties['environment'],
+                'group': context.properties['group'],
+                'owner': context.properties['owner']
+            },
             'metadata': {
                 'items': [{
                     'key': 'startup-script',

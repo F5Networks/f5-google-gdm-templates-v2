@@ -26,6 +26,10 @@ properties:
   availabilityZone:
     description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
     type: string
+  application:
+    description: Application label.
+    default: f5app
+    type: string
   applicationVipPort:
     description: Application port number
     type: integer
@@ -40,6 +44,18 @@ properties:
     description: The application initialization period; the autoscaler uses the cool down period for scaling decisions.
     type: integer
     default: 60
+  cost:
+    description: Cost Center label.
+    type: string
+    default: f5cost
+  environment:
+    description: Environment label.
+    type: string
+    default: f5env
+  group:
+    description: Group label.
+    type: string
+    default: f5group
   instanceType:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
@@ -47,7 +63,7 @@ properties:
     description: BIG-IP image name
     type: string
   instanceTemplateVersion:
-    description: Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. 
+    description: Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
     type: integer
     default: 1
   maxNumReplicas:
@@ -61,6 +77,10 @@ properties:
   networkSelfLink:
     description: Self Link of the network to use to deploy the application.
     type: string
+  owner:
+    description: Owner label.
+    type: string
+    default: f5owner
   provisionPublicIp:
     description: Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s).
     type: boolean

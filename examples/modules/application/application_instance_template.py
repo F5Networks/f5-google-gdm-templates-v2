@@ -15,7 +15,12 @@ def generate_config(context):
     'properties': {
         'properties': {
             'labels': {
-                'appautoscalegroup': context.properties['uniqueString']
+                'appautoscalegroup': context.properties['uniqueString'],
+                'application': context.properties['application'],
+                'cost': context.properties['cost'],
+                'environment': context.properties['environment'],
+                'group': context.properties['group'],
+                'owner': context.properties['owner']
             },
             'tags': {
                 'items': ['appfwint-'+ context.properties['uniqueString']]

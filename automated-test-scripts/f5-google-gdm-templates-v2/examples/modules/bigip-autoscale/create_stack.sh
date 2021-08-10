@@ -25,6 +25,10 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 /usr/bin/yq e ".resources[0].name = \"bigip-autoscale-py\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"bigip_autoscale.py\"" -i <DEWPOINT JOB ID>.yaml
 
+/usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.serviceAccountEmail = \"<SERVICE ACCOUNT EMAIL>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.project = \"<PROJECT>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.minNumReplicas = <SCALING MIN>" -i <DEWPOINT JOB ID>.yaml

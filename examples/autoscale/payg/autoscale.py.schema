@@ -32,6 +32,10 @@ properties:
     description: Enter the name of the docker container you want to run as your application
     default: 'f5devcentral/f5-demo-app:latest'
     type: string
+  application:
+    description: Application label.
+    default: f5app
+    type: string
   availabilityZone:
     description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
     type: string
@@ -47,6 +51,18 @@ properties:
     description: The application initialization period; the autoscaler uses the cool down period for scaling decisions.
     type: integer
     default: 60
+  cost:
+    description: Cost Center label.
+    type: string
+    default: f5cost
+  environment:
+    description: Environment label.
+    type: string
+    default: f5env
+  group:
+    description: Group label.
+    type: string
+    default: f5group
   instanceType:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
@@ -61,6 +77,10 @@ properties:
     description: Minimum number of replicas that autoscaler can provision
     type: integer
     default: 2
+  owner:
+    description: Owner label.
+    type: string
+    default: f5owner
   region:
     type: string
     description: cloud region used for this deployment.
