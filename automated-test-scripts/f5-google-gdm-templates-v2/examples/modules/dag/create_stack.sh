@@ -90,6 +90,10 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <STACK NAME>-tp --regi
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkExternal = \"$externalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkInternal = \"$internalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkInternal = \"$internalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i <DEWPOINT JOB ID>.yaml
 
 # print out config file
 /usr/bin/yq e <DEWPOINT JOB ID>.yaml

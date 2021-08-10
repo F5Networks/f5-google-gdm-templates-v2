@@ -31,12 +31,17 @@ This Google Deployment Manager template creates a client application using an ex
 | Parameter | Required | Description |
 | --- | --- | --- |
 | appContainerName | No | Name of the docker container to deploy in the application VM. |
+| application | No | Application label. |
 | availabilityZone | Yes | Name of the availability zone where the application will be placed. |
 | createAutoscaleGroup | No | Choose true to create the application instances in an autoscaling configuration. |
+| cost | No | Cost Center label. |
+| environment | No | Environment label. | 
+| group | No | Group label. |
 | instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | App instance type. e.g. n1-standard-1 |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
 | networkSelfLink | Yes | Self Link of the network to use to deploy the application. |
+| owner | No | Owner label. |
 | subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the application. |
 
 ### Template Outputs

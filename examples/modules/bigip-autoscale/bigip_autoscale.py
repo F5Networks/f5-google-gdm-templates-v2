@@ -18,12 +18,17 @@ def create_instance_template(context, instance_template_name):
         'name': instance_template_name,
         'type': 'bigip_instance_template.py',
         'properties': {
+            'application': context.properties['application'],
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'cost': context.properties['cost'],
+            'environment': context.properties['environment'],
+            'group': context.properties['group'],
             'imageName': context.properties['imageName'],
             'instanceType': context.properties['instanceType'],
             'networkSelfLink': context.properties['networkSelfLink'], # depends on network
             'provisionPublicIp': context.properties['provisionPublicIp'],
+            'owner': context.properties['owner'],
             'region': context.properties['region'],
             'serviceAccountEmail': context.properties['serviceAccountEmail'], # depends on access
             'subnetSelfLink': context.properties['subnetSelfLink'], # depends on network
