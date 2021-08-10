@@ -61,8 +61,7 @@ This solution leverages traditional Autoscale configuration management practices
       ```
   - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
   - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
-    - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-pve-payg-25mbps
-)
+    - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-pve-payg-25mbps)
 
 
 ## Important Configuration Notes
@@ -118,6 +117,14 @@ This solution leverages traditional Autoscale configuration management practices
 | Name | Description | Type |
 | --- | --- | --- |
 | deployment_name | Name of parent deployment | string |
+| appUsername | Application user name | Application Template | string |
+| appVmssName | Application Virtual Machine Scale Set name | Application Template | string |
+| appVmssId | Application Virtual Machine Scale Set resource ID | Application Template | string |
+| bigIpUsername | BIG-IP user name | BIG-IP Template | string |
+| virtualNetworkId | Virtual Network resource ID | Network Template | string |
+| bigIpVmssId | BIG-IP Virtual Machine Scale Set resource ID | BIG-IP Template | string |
+| bigIpVmssName | BIG-IP Virtual Machine Scale Set name| BIG-IP Template | string |
+| wafPublicIps | WAF Service Public IP Addresses | DAG Template | array |
 
 
 ## Deploying this Solution
@@ -157,7 +164,7 @@ The F5 BIG-IP Runtime Init configuration file can also be formatted in json and/
 
 Example:
 ```yaml
-    bigIpRuntimeInitConfig: "{\"controls\":{\"logLevel\":\"silly\"},\"pre_onboard_enabled\":[],\"runtime_parameters\":[{\"name\":\"ADMIN_PASS\",\"type\":\"static\",\"value\":\"ComplexPassword10+\"},{\"name\":\"ROOT_PASS\",\"type\":\"static\",\"value\":\"RootComplexPass20$\"},{\"name\":\"HOST_NAME\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"compute\",\"field\":\"name\"}},{\"name\":\"SELF_IP_INTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":2}},{\"name\":\"SELF_IP_EXTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0}},{\"name\":\"GATEWAY\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0,\"ipcalc\":\"first\"}}],\"bigip_ready_enabled\":[{\"name\":\"provision_modules\",\"type\":\"inline\",\"commands\":[\"tmsh modify sys provision asm level nominal\"]},{\"name\":\"provision_rest\",\"type\":\"inline\",\"commands\":[\"/usr/bin/setdb provision.extramb 500\",\"/usr/bin/setdb restjavad.useextramb true\"]},{\"name\":\"save_sys_config\",\"type\":\"inline\",\"commands\":[\"tmsh save sys config\"]}],\"post_onboard_enabled\":[],\"extension_packages\":{\"install_operations\":[{\"extensionType\":\"do\",\"extensionVersion\":\"1.22.0\"},{\"extensionType\":\"as3\",\"extensionVersion\":\"3.29.0\",\"verifyTls\":false,\"extensionUrl\":\"https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.29.0/f5-appsvcs-3.29.0-3.noarch.rpm\",\"extensionHash\":\"bcbba79b42b700b8d2b46937b65e6d09b035515a7a7e40aaeebb360fcfe7aa66\"},{\"extensionType\":\"fast\",\"extensionVersion\":\"1.10.0\"}]},\"extension_services\":{\"service_operations\":[{\"extensionType\":\"do\",\"type\":\"url\",\"value\":\"https://raw.githubusercontent.com/F5Networks/f5-bigip-runtime-init/main/examples/declarations/do_w_admin.json\",\"verifyTls\":false},{\"extensionType\":\"as3\",\"type\":\"url\",\"value\":\"https://cdn.f5.com/product/cloudsolutions/templates/f5-azure-arm-templates/examples/modules/bigip/autoscale_as3.json\"}]},\"post_hook\":[{\"name\":\"example_webhook\",\"type\":\"webhook\",\"url\":\"https://postman-echo.com/post\",\"properties\":{\"optionalKey1\":\"optional_value1\",\"optionalKey2\":\"optional_value2\"}}]}"
+    bigIpRuntimeInitConfig: "{\"controls\":{\"logLevel\":\"silly\"},\"pre_onboard_enabled\":[],\"runtime_parameters\":[{\"name\":\"ADMIN_PASS\",\"type\":\"static\",\"value\":\"ComplexPassword10+\"},{\"name\":\"ROOT_PASS\",\"type\":\"static\",\"value\":\"RootComplexPass20$\"},{\"name\":\"HOST_NAME\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"compute\",\"field\":\"name\"}},{\"name\":\"SELF_IP_INTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":2}},{\"name\":\"SELF_IP_EXTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0}},{\"name\":\"GATEWAY\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0,\"ipcalc\":\"first\"}}],\"bigip_ready_enabled\":[{\"name\":\"provision_modules\",\"type\":\"inline\",\"commands\":[\"tmsh modify sys provision asm level nominal\"]},{\"name\":\"provision_rest\",\"type\":\"inline\",\"commands\":[\"/usr/bin/setdb provision.extramb 500\",\"/usr/bin/setdb restjavad.useextramb true\"]},{\"name\":\"save_sys_config\",\"type\":\"inline\",\"commands\":[\"tmsh save sys config\"]}],\"post_onboard_enabled\":[],\"extension_packages\":{\"install_operations\":[{\"extensionType\":\"do\",\"extensionVersion\":\"1.22.0\"},{\"extensionType\":\"as3\",\"extensionVersion\":\"3.29.0\",\"verifyTls\":false,\"extensionUrl\":\"https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.29.0/f5-appsvcs-3.29.0-3.noarch.rpm\",\"extensionHash\":\"bcbba79b42b700b8d2b46937b65e6d09b035515a7a7e40aaeebb360fcfe7aa66\"},{\"extensionType\":\"fast\",\"extensionVersion\":\"1.10.0\"}]},\"extension_services\":{\"service_operations\":[{\"extensionType\":\"do\",\"type\":\"url\",\"value\":\"https://raw.githubusercontent.com/F5Networks/f5-bigip-runtime-init/main/examples/declarations/do_w_admin.json\",\"verifyTls\":false},{\"extensionType\":\"as3\",\"type\":\"url\",\"value\":\"https://cdn.f5.com/product/cloudsolutions/templates/f5-google-gdm-templates-v2/examples/modules/bigip/autoscale_as3.json\"}]},\"post_hook\":[{\"name\":\"example_webhook\",\"type\":\"webhook\",\"url\":\"https://postman-echo.com/post\",\"properties\":{\"optionalKey1\":\"optional_value1\",\"optionalKey2\":\"optional_value2\"}}]}"
     cooldownPeriodSec: 60    
 ```
 
@@ -191,8 +198,6 @@ Example:
                 - addressDiscovery: gce
                   addressRealm: private
                   region: us-west1
-                  encodedCredentials: "<base 64 encoded credentials>"
-                  credentialUpdate: false
                   servicePort: 80
                   updateInterval: 60
 ```
@@ -225,9 +230,9 @@ This section describes how to validate the template deployment, test the WAF ser
 
 ### Validating the Deployment
 
-To view the status of the example and module template deployments, navigate to **Instance Groups > *INSTANCE_GROUP***. You should see a series of deployments, including one each for the example templates as well as the accessTemplate, appTemplate, networkTemplate, dagTemplate, and bigipTemplate. The deployment status for each template deployment should be "Succeeded".
+To view the status of the example and module template deployments, navigate to **Deployment Manager > *Deployments* > *Deployment Name***. You should see a series of deployments, including one each for the example template as well as the access, application, network, dag, and bigip templates. The deployment status for the parent template deployment should indicate that the template has been successfully deployed.
 
-Expected Deploy time for entire stack =~ 13-15 minutes.
+Expected Deploy time for entire stack =~ 8-10 minutes.
 
 If any of the deployments are in a failed state, proceed to the [Troubleshooting Steps](#troubleshooting-steps) section below.
 
@@ -239,7 +244,7 @@ To test the WAF service, perform the following steps:
 - Obtain the IP address of the WAF service:
   - **gcloud CLI**: 
       ```bash
-      gcloud compute instances describe ${instance} --zone=${zone} --format json | jq -r '.networkInterfaces[0].wafPublicIps
+      gcloud compute forwarding-rules describe ${forwarding_rule} --region=${region} --format='value(IPAddress)'
       ```
 - Verify the application is responding:
   - Paste the IP address in a browser: ```https://${IP_ADDRESS_FROM_OUTPUT}```
@@ -268,11 +273,11 @@ To test the WAF service, perform the following steps:
   - **gcloud CLI**: 
     - Public IPs: 
       ```shell
-      gcloud compute instances describe ${instance} --zone=${zone} --format json | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="Management NAT")|.natIP
+      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.networkIP)'
       ```
     - Private IPs: 
       ```shell 
-      gcloud compute instances describe ${instance} --zone=${zone} --format json | jq -r 'if (.networkInterfaces | length) > 1 then .networkInterfaces[1].networkIP else .networkInterfaces[0].networkIP end'
+      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.accessConfigs[0].natIP)'
       ```
 - Login in via SSH:
   - **SSH key authentication**: 
@@ -389,6 +394,18 @@ If a new configuration update fails (for example, invalid config, typo, etc.) an
 
 ## Deleting this Solution
 
+### Deleting the deployment via Google Cloud Console 
+
+1. Navigate to **Deployment Manager** > Select "Deployments" Icon.
+
+2. Select your parent template deployment by clicking the check box next to the deployment name.
+
+3. Click **Delete**.
+
+4. Choose an option for retaining template resources.
+
+5. Click **Delete All** to confirm.
+
 ### Deleting the deployment using the gcloud CLI
 
 ```bash
@@ -410,7 +427,7 @@ Click on the name of a failed deployment and then click Events. Click the link i
 Additionally, if the template passed validation but individual template resources have failed to deploy, you can see more information by expanding Deployment Details, then clicking on the Operation details column for the failed resource. **When creating a GitHub issue for a template, please include as much information as possible from the failed Google Cloud deployment/resource events.**
 
 Common deployment failure causes include:
-- Required fields were left empty or contained incorrect values (input type mismatch, prohibited characters, malformed JSON, etc.) causing template validation failure
+- Required fields were left empty or contained incorrect values (input type mismatch, prohibited characters, malformed YAML, etc.) causing template validation failure
 - Insufficient permissions to create the deployment or resources created by a deployment
 - Resource limitations (exceeded limit of IP addresses or compute resources, etc.)
 - Google Cloud service issues (these will usually surface as 503 internal server errors in the deployment status error message)
@@ -418,10 +435,9 @@ Common deployment failure causes include:
 If all deployments completed "successfully" but maybe the BIG-IP or Service is not reachable, then log in to the BIG-IP instance via SSH to confirm BIG-IP deployment was successful (for example, if startup scripts completed as expected on the BIG-IP). To verify BIG-IP deployment, perform the following steps:
 - Obtain the IP address of the BIG-IP instance. See instructions [above](#accessing-the-bigip-ip)
 - Check startup-script to make sure was installed/interpolated correctly:
-  - ```cat /var/lib/waagent/customData  | base64 -d```
+  - ```cat /config/cloud/runtime-init.conf```
 - Check the logs (in order of invocation):
   - cloud-agent logs:
-    - */var/log/waagent.log*
     - */var/log/boot.log*
     - */var/log/cloud-init.log*
     - */var/log/cloud-init-output.log*
