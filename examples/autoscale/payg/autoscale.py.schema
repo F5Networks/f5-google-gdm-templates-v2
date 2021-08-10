@@ -81,11 +81,11 @@ properties:
     type: number
     default: 0.8
 
-# outputs:
-  # properties:
-    # deploymentName:
-      # type: string
-      # description: Autoscale WAF deployment name.
+outputs:
+  properties:
+    deploymentName:
+      type: string
+      description: Autoscale WAF deployment name.
 
 documentation:
   - README.md
