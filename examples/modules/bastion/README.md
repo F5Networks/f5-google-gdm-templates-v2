@@ -31,24 +31,24 @@ This Google Deployment Manager template creates a bastion host *********TBD*****
 | Parameter | Required | Description |
 | --- | --- | --- |
 | application | No | Application label. |
-| availabilityZone | Yes | Name of the availability zone where the application will be placed. |
-| createAutoscaleGroup | No | Choose true to create the application instances in an autoscaling configuration. |
+| availabilityZone | Yes | Name of the availability zone where the bastion host will be placed. |
+| createAutoscaleGroup | No | Choose true to create the bastion instances in an autoscaling configuration. |
 | cost | No | Cost Center label. |
 | environment | No | Environment label. | 
 | group | No | Group label. |
-| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
+| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the bastion instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | App instance type. e.g. n1-standard-1 |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
-| networkSelfLink | Yes | Self Link of the network to use to deploy the application. |
+| networkSelfLink | Yes | Self Link of the network to use to deploy the bastion. |
 | owner | No | Owner label. |
-| subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the application. |
+| subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the bastion. |
 
 ### Template Outputs
 
 | Name | Description | Required Resource | Type |
 | --- | --- | --- | --- |
-| bastionName | Application resource name. | Bastion | string |
-| bastionIp | Network IP for Application resource. | Bastion | string |
+| bastionName | Bastion resource name. | Bastion | string |
+| bastionIp | Network IP for Bastion resource. | Bastion | string |
 | bastionInstanceGroupName | Instance group resource name. | Bastion | string |
 
 ## Resource Creation Flow Chart

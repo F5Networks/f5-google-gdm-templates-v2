@@ -1,4 +1,4 @@
-#  expectValue = "Successful Traffic Test"
+#  expectValue = "Successful Test"
 #  scriptTimeout = 3
 #  replayEnabled = true
 #  replayTimeout = 30
@@ -21,10 +21,10 @@ fi
 echo "Bastion IP: $BASTION_IP"
 ## Curl IP for response
 if [ -n "$BASTION_IP" ]; then
-    response=$(curl http://$BASTION_IP)
+    response=$(make_ssh_request "$BASTION_IP" "cat /etc/motd")
 fi
 echo "Response: $response"
 
-if echo $response | grep "Demo App"; then
-    echo "Successful Traffic Test"
+if echo $response | grep "Welcome to Bastion Host"; then
+    echo "Successful Test"
 fi

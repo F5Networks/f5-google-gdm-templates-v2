@@ -32,9 +32,7 @@ def generate_config(context):
                 'boot': True,
                 'autoDelete': True,
                 'initializeParams': {
-                    'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
-                                            'centos-cloud/global/',
-                                            'images/family/centos-7'])
+                    'sourceImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
                 }
             }],
             'networkInterfaces': [{
@@ -50,16 +48,15 @@ def generate_config(context):
                     'key': 'startup-script',
                     'value': ''.join([
                         '#!/bin/bash\n',
-                        'echo "***** Welcome to Bastion Host *****" > /etc/ssh_banner',
-                        'echo "[INFO] Installing banner ..."',
-                        'echo -e "\n Banner /etc/ssh_banner" >> /etc/ssh/sshd_config',
-                        'echo "[INFO] Configuring TCP forwarding"',
-                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
-                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config',
-                        'echo "[INFO] Configuring X11 forwarding"',
-                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
-                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config'
-                                      ])
+                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n',
+                        'echo "[INFO] Configure SSH Port"\n',
+                        'sudo sh -c \'awk \'!/Port/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
+                        'sudo sh -c \'echo "Port 22" >> /etc/ssh/sshd_config\'\n',
+                        'echo "[INFO] Configuring X11 forwarding"\n',
+                        'sudo sh -c \'awk \'!/X11Forwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
+                        'sudo sh -c \'echo "X11Forwarding yes" >> /etc/ssh/sshd_config\'\n',
+                        'echo "[INFO] Done."\n',
+                    ])
                 }]
             }
         }

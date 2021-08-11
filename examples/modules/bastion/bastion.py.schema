@@ -24,10 +24,10 @@ properties:
     default: f5app
     type: string
   availabilityZone:
-    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+    description: Enter the availability zone where you want to deploy the bastion, for example 'us-west1-a'.
     type: string
   createAutoscaleGroup:
-    description: Choose true to create the application instances in an autoscaling configuration.
+    description: Choose true to create the bastion instances in an autoscaling configuration.
     type: boolean
     default: true
   cost:
@@ -43,17 +43,17 @@ properties:
     type: string
     default: f5group
   instanceTemplateVersion:
-    description: Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter.
+    description: Version of the instance template to create. When updating deployment properties of the bastion instances, you must provide a unique value for this parameter.
     type: integer
     default: 1
   instanceType:
-    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    description: Instance type assigned to the bastion, for example 'n1-standard-1'.
     type: string
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
   networkSelfLink:
-    description: Self Link of the network to use to deploy the application.
+    description: Self Link of the network to use to deploy the bastion.
     type: string
   owner:
     description: Owner label.
@@ -63,14 +63,14 @@ properties:
     type: string
     description: cloud region used for this deployment.
   subnetSelfLink:
-    description: Self Link of the subnetwork to use to deploy the application.
+    description: Self Link of the subnetwork to use to deploy the bastion.
     type: string
 
 outputs:
   properties:
     bastionName:
       type: string
-      description: Application resource name.
+      description: Bastion resource name.
     bastionIp:
       type: string
       description: Public IP of the bastion host

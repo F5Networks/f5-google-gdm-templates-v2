@@ -5,8 +5,8 @@
 
 # set vars
 TMP_DIR="/tmp/<DEWPOINT JOB ID>"
-tmpl_file='/tmp/application.py'
-instance_tmpl_file='/tmp/application_instance_template.py'
+tmpl_file='/tmp/bastion.py'
+instance_tmpl_file='/tmp/bastion_instance_template.py'
 
 # grab template and schema
 curl -k <TEMPLATE URL> -o $tmpl_file
@@ -22,10 +22,9 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".imports[1].path = \"${instance_tmpl_file}\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].name = \"application\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].type = \"application.py\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].name = \"bastion\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].type = \"bastion.py\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.createAutoscaleGroup = <AUTOSCALE>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.availabilityZone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.hostname = \"<HOST NAME>\"" -i <DEWPOINT JOB ID>.yaml

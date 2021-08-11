@@ -37,7 +37,7 @@ def create_instance(context, bastion_name):
                 'boot': True,
                 'autoDelete': True,
                 'initializeParams': {
-                    'sourceImage': context.properties['osImage']
+                    'sourceImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
                 }
             }],
             'networkInterfaces': [{
@@ -53,15 +53,14 @@ def create_instance(context, bastion_name):
                     'key': 'startup-script',
                     'value': ''.join([
                         '#!/bin/bash\n',
-                        'echo "***** Welcome to Bastion Host *****" > /etc/ssh_banner',
-                        'echo "[INFO] Installing banner ..."',
-                        'echo -e "\n Banner /etc/ssh_banner" >> /etc/ssh/sshd_config',
-                        'echo "[INFO] Configuring TCP forwarding"',
-                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
-                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config',
-                        'echo "[INFO] Configuring X11 forwarding"',
-                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
-                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config'
+                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n',
+                        'echo "[INFO] Configure SSH Port"\n',
+                        'sudo sh -c \'awk \'!/Port/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
+                        'sudo sh -c \'echo "Port 22" >> /etc/ssh/sshd_config\'\n',
+                        'echo "[INFO] Configuring X11 forwarding"\n',
+                        'sudo sh -c \'awk \'!/X11Forwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
+                        'sudo sh -c \'echo "X11Forwarding yes" >> /etc/ssh/sshd_config\'\n',
+                        'echo "[INFO] Done."\n',
                     ])
                 }]
             }
@@ -75,7 +74,6 @@ def create_instance_template(context, instance_template_name):
         'name': instance_template_name,
         'type': 'bastion_instance_template.py',
         'properties': {
-            'appContainerName': context.properties['appContainerName'],
             'application': context.properties['application'],
             'cost': context.properties['cost'],
             'environment': context.properties['environment'],
