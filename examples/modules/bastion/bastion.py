@@ -4,7 +4,7 @@
 
 # pylint: disable=W,C,R
 
-"""Creates the application"""
+"""Creates the bastion"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
 
@@ -12,10 +12,10 @@ def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
 
-def create_instance(context, application_name):
+def create_instance(context, bastion_name):
     """ Create standalone instance """
     instance = {
-        'name': application_name,
+        'name': bastion_name,
         'type': 'compute.v1.instance',
         'properties': {
             'zone': context.properties['availabilityZone'],
@@ -37,9 +37,7 @@ def create_instance(context, application_name):
                 'boot': True,
                 'autoDelete': True,
                 'initializeParams': {
-                    'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
-                                            'centos-cloud/global/',
-                                            'images/family/centos-7'])
+                    'sourceImage': context.properties['osImage']
                 }
             }],
             'networkInterfaces': [{
@@ -53,11 +51,18 @@ def create_instance(context, application_name):
             'metadata': {
                 'items': [{
                     'key': 'startup-script',
-                    'value': ''.join(['#!/bin/bash\n',
-                                        'yum -y install docker\n',
-                                        'service docker start\n',
-                                        'docker run --name f5demo -p 80:80 -p 443:443 -d ',
-                                        context.properties['appContainerName']])
+                    'value': ''.join([
+                        '#!/bin/bash\n',
+                        'echo "***** Welcome to Bastion Host *****" > /etc/ssh_banner',
+                        'echo "[INFO] Installing banner ..."',
+                        'echo -e "\n Banner /etc/ssh_banner" >> /etc/ssh/sshd_config',
+                        'echo "[INFO] Configuring TCP forwarding"',
+                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
+                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config',
+                        'echo "[INFO] Configuring X11 forwarding"',
+                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
+                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config'
+                    ])
                 }]
             }
         }
@@ -68,7 +73,7 @@ def create_instance_template(context, instance_template_name):
     """ Create autoscale instance template """
     instance_template = {
         'name': instance_template_name,
-        'type': 'application_instance_template.py',
+        'type': 'bastion_instance_template.py',
         'properties': {
             'appContainerName': context.properties['appContainerName'],
             'application': context.properties['application'],
@@ -84,13 +89,13 @@ def create_instance_template(context, instance_template_name):
     }
     return instance_template
 
-def create_instance_group(context, application_name, instance_template_name):
+def create_instance_group(context, bastion_name, instance_template_name):
     """ Create autoscale instance group """
     instance_group = {
-        'name': application_name + '-igm',
+        'name': bastion_name + '-igm',
         'type': 'compute.v1.instanceGroupManager',
         'properties': {
-            'baseInstanceName': application_name + 'vm',
+            'baseInstanceName': bastion_name + 'vm',
             'instanceTemplate': '$(ref.' + instance_template_name + '.selfLink)',
             'targetSize': 2,
             'updatePolicy': {
@@ -102,14 +107,14 @@ def create_instance_group(context, application_name, instance_template_name):
     }
     return instance_group
 
-def create_autoscaler(context, application_name):
+def create_autoscaler(context, bastion_name):
     """ Create autoscaler """
     autoscaler = {
-        'name': application_name + '-as',
+        'name': bastion_name + '-as',
         'type': 'compute.v1.autoscalers',
         'properties': {
             'zone': context.properties['availabilityZone'],
-            'target': '$(ref.' + application_name + '-igm.selfLink)',
+            'target': '$(ref.' + bastion_name + '-igm.selfLink)',
             'autoscalingPolicy': {
                 "minNumReplicas": 1,
                 'maxNumReplicas': 8,
@@ -122,20 +127,20 @@ def create_autoscaler(context, application_name):
     }
     return autoscaler
 
-def create_application_ip_output(application_name):
+def create_bastion_ip_output(bastion_name):
     """ Create instance app IP output """
-    application_ip = {
-        'name': 'applicationIp',
+    bastion_ip = {
+        'name': 'bastionIp',
         'value': '$(ref.{}.networkInterfaces[0].'
-                    'accessConfigs[0].natIP)'.format(application_name)
+                    'accessConfigs[0].natIP)'.format(bastion_name)
     }
-    return application_ip
+    return bastion_ip
 
-def create_instance_group_output(application_name):
+def create_instance_group_output(bastion_name):
     """ Create instance group output """
     instance_group = {
         'name': 'instanceGroup',
-        'value': '$(ref.' + application_name + '-igm.selfLink)'
+        'value': '$(ref.' + bastion_name + '-igm.selfLink)'
     }
     return instance_group
 
@@ -144,30 +149,30 @@ def generate_config(context):
 
     name = context.properties.get('name') or \
         context.env['name']
-    application_name = generate_name(context.properties['uniqueString'], name)
-    instance_template_name = application_name + '-template-v' + \
+    bastion_name = generate_name(context.properties['uniqueString'], name)
+    instance_template_name = bastion_name + '-template-v' + \
             str(context.properties['instanceTemplateVersion'])
 
     resources = []
     do_autoscale = context.properties['createAutoscaleGroup']
     if do_autoscale:
         resources = resources + [create_instance_template(context, instance_template_name)] + \
-            [create_instance_group(context, application_name, instance_template_name)] + \
-                [create_autoscaler(context, application_name)]
+            [create_instance_group(context, bastion_name, instance_template_name)] + \
+                [create_autoscaler(context, bastion_name)]
     else:
-        resources = resources + [create_instance(context, application_name)]
+        resources = resources + [create_instance(context, bastion_name)]
 
     outputs = [
         {
-            'name': 'applicationName',
-            'value': application_name
+            'name': 'bastionName',
+            'value': bastion_name
         }
     ]
 
     if do_autoscale:
-        outputs = outputs + [create_instance_group_output(application_name)]
+        outputs = outputs + [create_instance_group_output(bastion_name)]
     else:
-        outputs = outputs + [create_application_ip_output(application_name)]
+        outputs = outputs + [create_bastion_ip_output(bastion_name)]
 
     return {
         'resources':

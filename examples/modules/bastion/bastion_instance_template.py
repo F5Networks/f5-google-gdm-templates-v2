@@ -48,11 +48,18 @@ def generate_config(context):
             'metadata': {
                 'items': [{
                     'key': 'startup-script',
-                    'value': ''.join(['#!/bin/bash\n',
-                                        'yum -y install docker\n',
-                                        'service docker start\n',
-                                        'docker run --name f5demo -p 80:80 -p 443:443 -d ',
-                                        context.properties['appContainerName']])
+                    'value': ''.join([
+                        '#!/bin/bash\n',
+                        'echo "***** Welcome to Bastion Host *****" > /etc/ssh_banner',
+                        'echo "[INFO] Installing banner ..."',
+                        'echo -e "\n Banner /etc/ssh_banner" >> /etc/ssh/sshd_config',
+                        'echo "[INFO] Configuring TCP forwarding"',
+                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
+                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config',
+                        'echo "[INFO] Configuring X11 forwarding"',
+                        'awk \'!/AllowTcpForwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config',
+                        'echo "AllowTcpForwarding yes" >> /etc/ssh/sshd_config'
+                                      ])
                 }]
             }
         }

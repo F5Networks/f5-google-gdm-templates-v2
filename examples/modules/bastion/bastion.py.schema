@@ -2,14 +2,14 @@
 # Copyright 2021 F5 Networks All rights reserved.
 
 info:
-  title: F5 Sample Application
+  title: F5 Sample Bastion
   author: F5 Networks
-  description: Creates a sample client application.
+  description: Creates a sample bastion host(s).
   version: 0.1.0
 
 imports:
-  - path: application.py
-  - path: application_instance_template.py
+  - path: bastion.py
+  - path: bastion_instance_template.py
 
 required:
     - availabilityZone
@@ -22,10 +22,6 @@ properties:
   application:
     description: Application label.
     default: f5app
-    type: string
-  appContainerName:
-    description: Enter the name of the docker container you want to run as your application
-    default: 'f5devcentral/f5-demo-app:latest'
     type: string
   availabilityZone:
     description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
@@ -72,18 +68,18 @@ properties:
 
 outputs:
   properties:
-    applicationName:
+    bastionName:
       type: string
       description: Application resource name.
-    applicationIp:
+    bastionIp:
       type: string
-      description: Public IP of the application
-    instanceGroupName:
+      description: Public IP of the bastion host
+    bastionInstanceGroupName:
       type: string
-      description: Instance group resource name.
+      description: Instance group resource name for bastion hosts.
 
 documentation:
   - README.md
 
 examples:
-  - sample_application.yaml
+  - sample_bastion.yaml
