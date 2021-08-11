@@ -1,0 +1,89 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 Sample Application
+  author: F5 Networks
+  description: Creates a sample client application.
+  version: 0.1.0
+
+imports:
+  - path: application.py
+  - path: application_instance_template.py
+
+required:
+    - availabilityZone
+    - instanceType
+    - networkSelfLink
+    - subnetSelfLink
+    - uniqueString
+
+properties:
+  application:
+    description: Application label.
+    default: f5app
+    type: string
+  appContainerName:
+    description: Enter the name of the docker container you want to run as your application
+    default: 'f5devcentral/f5-demo-app:latest'
+    type: string
+  availabilityZone:
+    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+    type: string
+  createAutoscaleGroup:
+    description: Choose true to create the application instances in an autoscaling configuration.
+    type: boolean
+    default: true
+  cost:
+    description: Cost Center label.
+    type: string
+    default: f5cost
+  environment:
+    description: Environment label.
+    type: string
+    default: f5env
+  group:
+    description: Group label.
+    type: string
+    default: f5group
+  instanceTemplateVersion:
+    description: Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter.
+    type: integer
+    default: 1
+  instanceType:
+    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    type: string
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
+    type: string
+  networkSelfLink:
+    description: Self Link of the network to use to deploy the application.
+    type: string
+  owner:
+    description: Owner label.
+    type: string
+    default: f5owner
+  region:
+    type: string
+    description: cloud region used for this deployment.
+  subnetSelfLink:
+    description: Self Link of the subnetwork to use to deploy the application.
+    type: string
+
+outputs:
+  properties:
+    applicationName:
+      type: string
+      description: Application resource name.
+    applicationIp:
+      type: string
+      description: Public IP of the application
+    instanceGroupName:
+      type: string
+      description: Instance group resource name.
+
+documentation:
+  - README.md
+
+examples:
+  - sample_application.yaml
