@@ -21,7 +21,7 @@ fi
 echo "Bastion IP: $BASTION_IP"
 ## Curl IP for response
 if [ -n "$BASTION_IP" ]; then
-    response=$(make_ssh_request "$BASTION_IP" "cat /etc/motd")
+    response=$(ssh -o "StrictHostKeyChecking=no" -o ConnectTimeout=7 -i /etc/ssl/private/dewpt_private.pem dewpt@"$BASTION_IP" "cat /etc/motd")
 fi
 echo "Response: $response"
 
