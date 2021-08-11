@@ -9,7 +9,7 @@ onStart:
 - ./create_stack.sh
 - ../../../common/verify_create.sh
 - ../../../common/get_mgmt_ip.sh
-- ./tests/verify_application.sh
+- ./tests/verify_bastion.sh
 - ../../../common/delete_dag_stack.sh
 - ../../../common/verify_delete_dag.sh
 - ../../../common/delete_stack.sh

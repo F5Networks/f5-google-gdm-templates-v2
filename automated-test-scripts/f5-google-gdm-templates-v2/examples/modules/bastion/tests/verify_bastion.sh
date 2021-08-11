@@ -10,18 +10,18 @@ STATE_FILE=${TMP_DIR}/state.json
 source ${TMP_DIR}/test_functions.sh
 if [ "<AUTOSCALE>" == "False" ]; then
     echo "DO STANDALONE"
-    APP_IP=$(get_app_ip <UNIQUESTRING>-application <AVAILABILITY ZONE> public)
+    BASTION_IP=$(get_app_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)
 else
     echo "DO AUTOSCALE"
-    INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-application-igm <AVAILABILITY ZONE>)
+    INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-bastion-igm <AVAILABILITY ZONE>)
     echo "INSTANCE: $INSTANCE"
-    APP_IP=$(get_app_ip $INSTANCE <AVAILABILITY ZONE> public)
+    BASTION_IP=$(get_app_ip $INSTANCE <AVAILABILITY ZONE> public)
 fi
 
-echo "Application IP: $APP_IP"
+echo "Bastion IP: $BASTION_IP"
 ## Curl IP for response
-if [ -n "$APP_IP" ]; then
-    response=$(curl http://$APP_IP)
+if [ -n "$BASTION_IP" ]; then
+    response=$(curl http://$BASTION_IP)
 fi
 echo "Response: $response"
 

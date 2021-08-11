@@ -25,8 +25,8 @@ PRIVATE IP GOOGLE ACCESS: ''
 REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
-STACK NAME: application-<DEWPOINT JOB ID>
-TEMPLATE NAME: application.py
-TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
-INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/application/application_instance_template.py'
+STACK NAME: bastion-<DEWPOINT JOB ID>
+TEMPLATE NAME: bastion.py
+TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
+INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion_instance_template.py'
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
