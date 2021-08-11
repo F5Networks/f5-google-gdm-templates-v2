@@ -7,7 +7,6 @@
 """Creates the bastion"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
-
 def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
