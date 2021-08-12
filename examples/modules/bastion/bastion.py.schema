@@ -9,7 +9,6 @@ info:
 
 imports:
   - path: bastion.py
-  - path: bastion_instance_template.py
 
 required:
     - availabilityZone

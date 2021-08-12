@@ -81,6 +81,40 @@ def create_application_deployment(context):
     }
     return deployment
 
+def create_bastion_deployment(context):
+    """ Create template deployment """
+    deployment = {
+        'name': 'bastion',
+        'type': '../../modules/bastion/bastion.py',
+        'properties': {
+            'application': context.properties['application'],
+            'availabilityZone': context.properties['availabilityZone'],
+            'cost': context.properties['cost'],
+            'createAutoscaleGroup': True,
+            'environment': context.properties['environment'],
+            'group': context.properties['group'],
+            'osImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts',
+            'instanceTemplateVersion': 1,
+            'instanceType': 'n1-standard-1',
+            'networkSelfLink': COMPUTE_URL_BASE + \
+                               'projects/' + context.env['project'] + \
+                               '/global/networks/' + \
+                               context.properties['uniqueString'] + \
+                               '-network0',
+            'subnetSelfLink': COMPUTE_URL_BASE + \
+                              'projects/' + \
+                              context.env['project'] + \
+                              '/regions/' + \
+                              context.properties['region'] + \
+                              '/subnetworks/' + \
+                              context.properties['uniqueString'] + \
+                              '-application1',
+            'uniqueString': context.properties['uniqueString'],
+            'update': context.properties['update']
+        }
+    }
+    return deployment
+
 def create_bigip_deployment(context):
     """ Create template deployment """
     deployment = {
@@ -196,6 +230,10 @@ def generate_config(context):
                 [create_application_deployment(context)] + \
                 [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
+
+
+    if not context.properties['provisionPublicIp']:
+        resources = resources + [create_bastion_deployment(context)]
 
     outputs = [
         {

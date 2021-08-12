@@ -60,10 +60,10 @@ def create_instance(context, bastion_name):
     }
     return instance
 
-def create_instance_template(context):
+def create_instance_template(context, instance_template_name):
     """ Create autoscale instance template """
     instance_template = {
-        'name': context.env['name'],
+        'name': instance_template_name,
         'type': 'compute.v1.instanceTemplate',
         'properties': {
             'properties': {
@@ -85,7 +85,7 @@ def create_instance_template(context):
                     'boot': True,
                     'autoDelete': True,
                     'initializeParams': {
-                        'sourceImage': context.propertiesp['osImage']
+                        'sourceImage': context.properties['osImage']
                     }
                 }],
                 'networkInterfaces': [{
@@ -179,12 +179,13 @@ def generate_config(context):
     name = context.properties.get('name') or \
         context.env['name']
     bastion_name = generate_name(context.properties['uniqueString'], name)
-
+    instance_template_name = bastion_name + '-template-v' + \
+                             str(context.properties['instanceTemplateVersion'])
     resources = []
     do_autoscale = context.properties['createAutoscaleGroup']
     if do_autoscale:
-        resources = resources + [create_instance_template(context)] + \
-            [create_instance_group(context, bastion_name)] + \
+        resources = resources + [create_instance_template(context, instance_template_name)] + \
+            [create_instance_group(context, bastion_name, instance_template_name)] + \
                 [create_autoscaler(context, bastion_name)]
     else:
         resources = resources + [create_instance(context, bastion_name)]
