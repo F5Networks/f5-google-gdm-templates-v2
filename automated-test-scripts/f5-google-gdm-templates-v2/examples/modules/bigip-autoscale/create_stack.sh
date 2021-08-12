@@ -6,12 +6,10 @@
 # set vars
 TMP_DIR="/tmp/<DEWPOINT JOB ID>"
 tmpl_file='/tmp/bigip_autoscale.py'
-instance_tmpl_file='/tmp/bigip_instance_template.py'
 
 # grab template and schema
 curl -k <TEMPLATE URL> -o $tmpl_file
 curl -k <TEMPLATE URL>.schema -o "${tmpl_file}.schema"
-curl -k <INSTANCE TEMPLATE URL> -o $instance_tmpl_file
 
 # source test functions
 source ${TMP_DIR}/test_functions.sh
@@ -21,7 +19,6 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".imports[1].path = \"${instance_tmpl_file}\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].name = \"bigip-autoscale-py\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"bigip_autoscale.py\"" -i <DEWPOINT JOB ID>.yaml
 
@@ -45,6 +42,7 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 /usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.instanceTemplateVersion = 1" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.update = True" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.networkSelfLink = \"$networkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLink = \"$subnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 

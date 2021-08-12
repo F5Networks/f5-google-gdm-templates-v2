@@ -104,6 +104,7 @@ This solution leverages traditional Autoscale configuration management practices
 | cost | No | Cost Center label. |
 | environment | No | Environment label. | 
 | group | No | Group label. |
+| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. |
 | imageName | Yes | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --filter="name~f5"`. |
 | maxNumReplicas | No | Maximum number of replicas that autoscaler can provision |
@@ -115,6 +116,7 @@ This solution leverages traditional Autoscale configuration management practices
 | restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
 | secretId | No | ID of the secret stored in Secret Manager |
 | uniqueString | Yes | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| update | No | Specify true when updating the deployment. |
 | utilizationTarget | No | The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric. |
 
 ### Template Outputs
@@ -355,9 +357,11 @@ By default, Rolling Upgrades are configured to upgrade in batches of 20% with ze
           "value": "https://raw.githubusercontent.com/f5networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
         },
     ```
-2. Re-deploy the template with new **bigIpRuntimeInitConfig** parameter updated in your configuration file.
+2. Modify the **update** parameter to True. This removes dependencies that are required for the initial deployment only.
+3. Modify the **instanceTemplateVersion** parameter to 2 (or a subsequent version number if you have redeployed multiple times). Specifying a unique value causes the deployment to create a new instance template for the VM instances.
+4. Re-deploy the template with new **bigIpRuntimeInitConfig** parameter updated in your configuration file.
     ```bash
-    gcloud deployment-manager deployments create <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
+    gcloud deployment-manager deployments update <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
     ```  
 
 #### Upgrading the BIG-IP VE Image
@@ -367,7 +371,7 @@ As new BIG-IP versions are released, existing Managed Instance Groups can be upg
 
 2. Re-deploy the template with new **bigIpImage** parameter.
     ```bash 
-    gcloud deployment-manager deployments create <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
+    gcloud deployment-manager deployments update <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
     ```  
 
 #### Lifecycle Troubleshooting
@@ -413,8 +417,18 @@ If a new configuration update fails (for example, invalid config, typo, etc.) an
 
 ### Deleting the deployment using the gcloud CLI
 
+Before deleting this solution, if you had previously updated the deployment, you must first redeploy while specifying "False" for the update input parameter in your configuration file:
+
 ```bash
-gcloud deployment-manager deployments delete ${DEPLOYMENT_NAME} -q
+    gcloud deployment-manager deployments update <your-deployment-name> --config <your-updated-file-name.yaml>
+```
+
+Do not change the instanceTemplateVersion input parameter value when redeploying before delete.
+
+After redeploying with update:false, you can delete the deployment without dependency errors:
+
+```bash
+  gcloud deployment-manager deployments delete <your-deployment-name> -q
 ```
 
 

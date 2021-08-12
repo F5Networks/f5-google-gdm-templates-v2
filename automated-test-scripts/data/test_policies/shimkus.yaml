@@ -46,11 +46,24 @@ google-gdm-bigip-autoscale-module-test:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters1.yaml"
 
+# BIG-IP standalone module
+google-gdm-bigip-standalone-module-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "random"
+  random-num-of-tests: 1
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters4.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters5.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters6.yaml"
+
 # Autoscale PAYG example
 google-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 2
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters1.yaml"
