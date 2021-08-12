@@ -16,7 +16,7 @@
 
 ## Introduction
 
-This Google Deployment Manager template creates a bastion host *********TBD********** required to support F5 solutions.
+This Google Deployment Manager template creates a bastion host used for accessing BIGIP within private network which is required to support F5 solutions.
 
 ## Prerequisites
 
