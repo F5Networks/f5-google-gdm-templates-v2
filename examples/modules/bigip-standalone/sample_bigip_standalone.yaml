@@ -1,0 +1,70 @@
+---
+# Example of the bigip-Standalone Usage.
+#
+# In this example, 3 interfaces are created.
+# The first 2 interfaces are configured with public ip's.
+# The second interface uses a static ip address.
+#
+# Required properties::
+# ['bigIpRuntimeInitConfig', 'bigIpRuntimeInitPackageUrl', 'imageName',
+# 'instanceType', 'name', 'network', 'region', 'subnetwork',
+# 'uniquestring', 'zone', ]
+#
+# Optional subnet properties (if not specified, compute.v1.instance defaults
+# are used or template defaults are used
+# https://cloud.google.com/compute/docs/reference/rest/v1/instances):
+# ['advancedMachineFeatures', 'canIpForward', 'confidentialInstanceConfig',
+# 'deletionProtection', 'description', 'disks', 'displayDevice',
+# 'guestAccelerators', 'hostname', 'labels', 'machineType', 'minCpuPlatform',
+# 'privateIpv6GoogleAccess', 'reservationAffinity', 'resourcePolicies',
+# 'scheduling', 'serviceAccounts', 'shieldedInstanceConfig',
+# 'shieldedInstanceIntegrityPolicy', 'tags' ]
+# additional networkInterfaces options:
+# [ 'description', 'networkIP', 'ipv6Address', 'networkTier', 'stackType',
+# 'queueCount', 'nicType', 'aliasIpRanges', 'ipv6AccessConfigs',
+# 'accessConfigs', 'name' ]
+
+imports:
+  - path: bigip_standalone.py
+resources:
+  - name: bigip_standalone.py
+    properties:
+      bigIpRuntimeInitConfig: https://myConfigUrl
+      bigIpRuntimeInitPackageUrl: https://myPackageUrl
+      imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
+      instanceType: n1-standard-4
+      name: bigip1
+      networkInterfaces:
+        - accessConfigs:
+            - name: External Nat
+              type: ONE_TO_ONE_NAT
+          description: Interface used for external traffic
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myExtTrafficNet
+          subnetwork: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myExternalTrafficSubnetwork
+        - accessConfigs:
+            - name: Management Nat
+              type: ONE_TO_ONE_NAT
+          description: Interface used for management
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myManagementTrafficNetwork
+          subnetwork: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myManagmentTrafficSubnetwork
+          networkIP: 10.0.31.180
+          aliasIpRanges:
+            - ipCidrRange: 10.0.31.181
+              subnetworkRangeName: myAlias Subnet
+        - description: Interface used for internal traffic
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myApplicationNetwork
+          subnetwork: >-
+            https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationSubnetwork
+      region: us-west1
+      tags:
+        items:
+          - mgmtfw
+          - appfw
+      uniqueString: myapp
+      zone: us-west1-a
+    type: bigip_standalone.py

@@ -29,6 +29,7 @@ def create_firewall_rule(context, config):
     }
     return firewall_rule
 
+
 def create_health_check(context, source):
     """ Create health check """
     applicaton_port = str(context.properties['applicationVipPort'])
@@ -142,6 +143,15 @@ def create_backend_service(context):
         },
     }
     return backend_service
+
+
+def create_firewall_rule_outputs(context, config):
+    """ Create firewall rule targetTag outputs """
+    firewall_rule_target_tag_outputs = {
+        'name': 'targetTag:' + str(config['prefix']),
+        'value': str(config['prefix']) + str(context.properties['uniqueString'])
+    }
+    return firewall_rule_target_tag_outputs
 
 
 def create_forwarding_rule_outputs(name, number_postfix):
@@ -271,7 +281,8 @@ def generate_config(context):
     # add forwarding rules
     resources = resources + forwarding_rules
     resources = resources + int_forwarding_rules
-
+    # add firewall target tag outputs
+    firewall_rule_target_tag_outputs = [create_firewall_rule_outputs(context, mgmt_rule_config)] + [create_firewall_rule_outputs(context, app_ext_vip_rule_config)] + [create_firewall_rule_outputs(context, app_rule_config)]
     outputs = [
         {
             'name': 'dagName',
@@ -282,7 +293,7 @@ def generate_config(context):
             'value': context.properties['region']
         }
     ]
-    outputs = outputs + forwarding_rule_outputs
+    outputs = outputs + forwarding_rule_outputs + firewall_rule_target_tag_outputs
 
     return {
         'resources':

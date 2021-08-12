@@ -10,6 +10,9 @@
 ../../examples/modules/bigip-autoscale/sample_bigip_autoscale.yaml:
 - No Key Diff
 - No Value Diff
+../../examples/modules/bigip-standalone/sample_bigip_standalone.yaml:
+- No Key Diff
+- No Value Diff
 ../../examples/modules/dag/sample_dag.yaml:
 - No Key Diff
 - No Value Diff

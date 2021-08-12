@@ -11,7 +11,7 @@ source ${TMP_DIR}/test_functions.sh
 
 case "<PUBLIC IP>" in
   "False")
-    IP=$(get_mgmt_ip bigip1-<STACK NAME> <AVAILABILITY ZONE> private)
+    IP=$(get_mgmt_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> private)
     if [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" == "<REGION>-c" ]]; then
         IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE2> private)
     elif [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" != "<REGION>-c" ]]; then
@@ -26,7 +26,7 @@ case "<PUBLIC IP>" in
     APP_IP_INTERNAL=$(get_app_ip application-<STACK NAME> <AVAILABILITY ZONE> private)
     ;;
   *)
-    IP=$(get_mgmt_ip bigip1-<STACK NAME> <AVAILABILITY ZONE> public)
+    IP=$(get_mgmt_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> public)
     if [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" == "<REGION>-c" ]]; then
         IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE2> public)
     elif [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" != "<REGION>-c" ]]; then
