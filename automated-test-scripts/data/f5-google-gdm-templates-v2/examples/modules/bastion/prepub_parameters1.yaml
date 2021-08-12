@@ -14,6 +14,7 @@ APP PORT: 80 443
 NUM FORWARDING RULES: 0
 NUM INTERNAL FORWARDING RULES: 0
 MGMT PORT: 443
+OS IMAGE: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
 INSTANCE TYPE: n1-standard-1

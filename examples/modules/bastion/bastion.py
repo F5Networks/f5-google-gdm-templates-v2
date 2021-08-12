@@ -52,14 +52,7 @@ def create_instance(context, bastion_name):
                     'key': 'startup-script',
                     'value': ''.join([
                         '#!/bin/bash\n',
-                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n',
-                        'echo "[INFO] Configure SSH Port"\n',
-                        'sudo sh -c \'awk \'!/Port/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
-                        'sudo sh -c \'echo "Port 22" >> /etc/ssh/sshd_config\'\n',
-                        'echo "[INFO] Configuring X11 forwarding"\n',
-                        'sudo sh -c \'awk \'!/X11Forwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
-                        'sudo sh -c \'echo "X11Forwarding yes" >> /etc/ssh/sshd_config\'\n',
-                        'echo "[INFO] Done."\n',
+                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n'
                     ])
                 }]
             }

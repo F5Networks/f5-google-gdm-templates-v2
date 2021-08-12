@@ -40,6 +40,7 @@ This Google Deployment Manager template creates a bastion host *********TBD*****
 | instanceType | Yes | App instance type. e.g. n1-standard-1 |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
 | networkSelfLink | Yes | Self Link of the network to use to deploy the bastion. |
+| osImage | No | Self link for OS Image  |
 | owner | No | Owner label. |
 | subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the bastion. |
 

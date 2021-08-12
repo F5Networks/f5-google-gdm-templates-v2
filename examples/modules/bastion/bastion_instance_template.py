@@ -32,7 +32,7 @@ def generate_config(context):
                 'boot': True,
                 'autoDelete': True,
                 'initializeParams': {
-                    'sourceImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
+                    'sourceImage': context.propertiesp['osImage']
                 }
             }],
             'networkInterfaces': [{
@@ -48,14 +48,7 @@ def generate_config(context):
                     'key': 'startup-script',
                     'value': ''.join([
                         '#!/bin/bash\n',
-                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n',
-                        'echo "[INFO] Configure SSH Port"\n',
-                        'sudo sh -c \'awk \'!/Port/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
-                        'sudo sh -c \'echo "Port 22" >> /etc/ssh/sshd_config\'\n',
-                        'echo "[INFO] Configuring X11 forwarding"\n',
-                        'sudo sh -c \'awk \'!/X11Forwarding/\' /etc/ssh/sshd_config > temp && mv temp /etc/ssh/sshd_config\'\n',
-                        'sudo sh -c \'echo "X11Forwarding yes" >> /etc/ssh/sshd_config\'\n',
-                        'echo "[INFO] Done."\n',
+                        'sudo sh -c \'echo "***** Welcome to Bastion Host *****" > /etc/motd\'\n'
                     ])
                 }]
             }

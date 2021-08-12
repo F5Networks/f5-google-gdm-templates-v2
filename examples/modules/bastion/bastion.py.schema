@@ -59,6 +59,10 @@ properties:
     description: Owner label.
     type: string
     default: f5owner
+  osImage:
+    description: Self link for OS Image
+    type: string
+    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
   region:
     type: string
     description: cloud region used for this deployment.
