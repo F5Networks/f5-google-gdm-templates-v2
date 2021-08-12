@@ -1,9 +1,4 @@
-pre_onboard_enabled:
-  - name: provision_rest
-    type: inline
-    commands:
-      - /usr/bin/setdb provision.extramb 1000
-      - /usr/bin/setdb restjavad.useextramb true
+pre_onboard_enabled: []
 runtime_parameters:
   - name: HOST_NAME
     type: metadata

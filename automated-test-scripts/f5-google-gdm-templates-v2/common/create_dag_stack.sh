@@ -30,16 +30,22 @@ appSubnetSelfLink=''
 instances=''
 instanceGroupSelfLink=''
 
-mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
-mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
+if [ <NUMBER NICS> -lt 2 ]; then
+    mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
+    mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
 
-appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
-appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
+    appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
+    appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
+fi
 
-
-targetGroupSelfLink=$(gcloud compute target-pools list --format=json | jq -r --arg n "bigip-autoscale-<DEWPOINT JOB ID>-tp" '.[] | select(.name | contains($n)) | .selfLink')
 
 if [ <NUMBER NICS> -ge 2 ]; then
+    mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
+    mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
+
+    appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
+    appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
+
     externalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network2" '.[] | select(.name | contains($n)) | .selfLink')
     externalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet2" '.[] | select(.name | contains($n)) | .selfLink')
 fi
@@ -54,7 +60,7 @@ if [ <NUMBER NICS> -eq 1 ]; then
     internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
 fi
 
-if [ "<TEMPLATE NAME>" == "dag.py" ]; then
+if [ "<TEMPLATE NAME>" == "dag.py" && <AUTOSCALE> ]; then
     # instances used by the external forwarding rule/target pool
     instances=()
     response=$(gcloud compute instance-groups list-instances <STACK NAME>-ig --region <REGION> --format=json | jq -r .[].instance)
@@ -66,8 +72,10 @@ if [ "<TEMPLATE NAME>" == "dag.py" ]; then
     # instances used by the internal forwarding rule/backend service
     instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-igm --region <REGION> --format=json | jq -r .selfLink)
 fi
-
-instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-<DEWPOINT JOB ID>-igm --zone <AVAILABILITY ZONE> --format=json | jq -r .selfLink)
+if <AUTOSCALE>; then
+    instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-<DEWPOINT JOB ID>-igm --zone <AVAILABILITY ZONE> --format=json | jq -r .selfLink)
+    targetGroupSelfLink=$(gcloud compute target-pools list --format=json | jq -r --arg n "bigip-autoscale-<DEWPOINT JOB ID>-tp" '.[] | select(.name | contains($n)) | .selfLink')
+fi
 
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
@@ -85,11 +93,7 @@ instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.numberOfNics = <NUMBER NICS>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkMgmt = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkMgmt = \"$mgmtSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
@@ -99,7 +103,13 @@ instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkExternal = \"$externalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkInternal = \"$internalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkInternal = \"$internalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
+if <AUTOSCALE>; then
+    /usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 
+fi
 # print out config file
 /usr/bin/yq e <DEWPOINT JOB ID>.yaml
 
