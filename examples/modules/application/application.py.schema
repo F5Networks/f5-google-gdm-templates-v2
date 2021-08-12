@@ -9,7 +9,6 @@ info:
 
 imports:
   - path: application.py
-  - path: application_instance_template.py
 
 required:
     - availabilityZone
@@ -56,6 +55,10 @@ properties:
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
+  update:
+    description: Specify true when updating the deployment
+    type: boolean
+    default: false
   networkSelfLink:
     description: Self Link of the network to use to deploy the application.
     type: string

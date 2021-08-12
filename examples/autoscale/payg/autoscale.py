@@ -62,9 +62,21 @@ def create_application_deployment(context):
         'group': context.properties['group'],
         'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
-        'networkSelfLink': '$(ref.network.selfLink)',
-        'subnetSelfLink': '$(ref.network.subnets.' + context.properties['uniqueString'] + '-application1.selfLink)',
-        'uniqueString': context.properties['uniqueString']
+        'networkSelfLink': COMPUTE_URL_BASE + \
+            'projects/' + context.env['project'] + \
+                '/global/networks/' + \
+                    context.properties['uniqueString'] + \
+                        '-network0',
+        'subnetSelfLink': COMPUTE_URL_BASE + \
+            'projects/' + \
+                context.env['project'] + \
+                    '/regions/' + \
+                        context.properties['region'] + \
+                            '/subnetworks/' + \
+                                context.properties['uniqueString'] + \
+                                    '-application1',
+        'uniqueString': context.properties['uniqueString'],
+        'update': context.properties['update']
       }
     }
     return deployment
@@ -88,14 +100,30 @@ def create_bigip_deployment(context):
           'instanceType': context.properties['instanceType'],
           'maxNumReplicas': context.properties['maxNumReplicas'],
           'minNumReplicas': context.properties['minNumReplicas'],
-          'networkSelfLink': '$(ref.network.selfLink)',
+          'networkSelfLink': COMPUTE_URL_BASE + \
+              'projects/' + \
+                  context.env['project'] + \
+                      '/global/networks/' + \
+                          context.properties['uniqueString'] + \
+                              '-network0',
           'owner': context.properties['owner'],
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': '$(ref.access.serviceAccountEmail)',
-          'subnetSelfLink': '$(ref.network.subnets.' + context.properties['uniqueString'] + '-mgmt1.selfLink)',
+          'serviceAccountEmail': context.env['deployment'] + \
+              '-admin@' + \
+                  context.env['project'] + \
+                      '.iam.gserviceaccount.com',
+          'subnetSelfLink': COMPUTE_URL_BASE + \
+              'projects/' + \
+                  context.env['project'] + \
+                      '/regions/' + \
+                          context.properties['region'] + \
+                              '/subnetworks/' + \
+                                  context.properties['uniqueString'] + \
+                                      '-mgmt1',
           'uniqueString': context.properties['uniqueString'],
+          'update': context.properties['update'],
           'utilizationTarget': context.properties['utilizationTarget']
         }
     }
@@ -114,9 +142,26 @@ def create_dag_deployment(context):
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'guiPortMgmt': 8443,
-        'instanceGroups': ['$(ref.bigip.instanceGroupName)'],
-        'networkSelfLinkApp': '$(ref.network.selfLink)',
-        'networkSelfLinkMgmt': '$(ref.network.selfLink)',
+        'instanceGroups': [COMPUTE_URL_BASE + \
+            'projects/' + \
+                context.env['project'] + \
+                    '/zones/' + \
+                        context.properties['availabilityZone'] + \
+                            '/instanceGroups/' + \
+                                context.env['deployment'] + \
+                                    '-igm'],
+        'networkSelfLinkApp': COMPUTE_URL_BASE + \
+            'projects/' + \
+                context.env['project'] + \
+                    '/global/networks/' + \
+                        context.properties['uniqueString'] + \
+                            '-network0',
+        'networkSelfLinkMgmt': COMPUTE_URL_BASE + \
+            'projects/' + \
+                context.env['project'] + \
+                    '/global/networks/' + \
+                        context.properties['uniqueString'] + \
+                            '-network0',
         'numberOfForwardingRules': 1,
         'numberOfInternalForwardingRules': 0,
         'numberOfNics': 1,
@@ -125,8 +170,16 @@ def create_dag_deployment(context):
         'restrictedSrcAddressApp': context.properties['restrictedSrcAddressApp'],
         'restrictedSrcAddressAppInternal': context.properties['restrictedSrcAddressAppInternal'],
         'restrictedSrcAddressMgmt': context.properties['restrictedSrcAddressMgmt'],
-        'targetPoolSelfLink': '$(ref.bigip.targetPool)',
-        'uniqueString': context.properties['uniqueString']
+        'targetPoolSelfLink': COMPUTE_URL_BASE + \
+            'projects/' + \
+                context.env['project'] + \
+                    '/regions/' + \
+                        context.properties['region'] + \
+                            '/targetPools/' + \
+                                context.env['deployment'] + \
+                                    '-tp',
+        'uniqueString': context.properties['uniqueString'],
+        'update': context.properties['update']
       }
     }
     return deployment

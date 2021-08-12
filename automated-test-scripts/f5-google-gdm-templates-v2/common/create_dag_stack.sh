@@ -72,7 +72,7 @@ if [ "<TEMPLATE NAME>" == "dag.py" && <AUTOSCALE> ]; then
     # instances used by the internal forwarding rule/backend service
     instanceGroupSelfLink=$(gcloud compute instance-groups describe <STACK NAME>-igm --region <REGION> --format=json | jq -r .selfLink)
 fi
-if <AUTOSCALE>; then
+if [ "<AUTOSCALE>" == "True" ]; then
     instanceGroupSelfLink=$(gcloud compute instance-groups describe bigip-autoscale-<DEWPOINT JOB ID>-igm --zone <AVAILABILITY ZONE> --format=json | jq -r .selfLink)
     targetGroupSelfLink=$(gcloud compute target-pools list --format=json | jq -r --arg n "bigip-autoscale-<DEWPOINT JOB ID>-tp" '.[] | select(.name | contains($n)) | .selfLink')
 fi
@@ -83,6 +83,7 @@ fi
 /usr/bin/yq e ".resources[0].type = \"dag.py\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.update = True" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.guiPortMgmt = <MGMT PORT>" -i <DEWPOINT JOB ID>.yaml
@@ -94,7 +95,6 @@ fi
 
 /usr/bin/yq e ".resources[0].properties.numberOfNics = <NUMBER NICS>" -i <DEWPOINT JOB ID>.yaml
 
-
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkMgmt = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkMgmt = \"$mgmtSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.networkSelfLinkApp = \"$appNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
@@ -105,10 +105,10 @@ fi
 /usr/bin/yq e ".resources[0].properties.subnetSelfLinkInternal = \"$internalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
-if <AUTOSCALE>; then
+
+if [ "<AUTOSCALE>" == "True" ]; then
     /usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-
 fi
 # print out config file
 /usr/bin/yq e <DEWPOINT JOB ID>.yaml
