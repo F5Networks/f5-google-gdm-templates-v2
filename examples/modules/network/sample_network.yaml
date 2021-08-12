@@ -24,7 +24,7 @@ resources:
           ipCidrRange: 10.0.0.0/24
           name: mgmt1
           region: us-west1
-      uniqueString: myBIGIP
+      uniqueString: myapp
     type: network.py
   - name: external
     properties:
@@ -34,7 +34,7 @@ resources:
           ipCidrRange: 10.0.1.0/24
           name: external1
           region: us-west1
-      uniqueString: myBIGIP
+      uniqueString: myapp
     type: network.py
   - name: internal
     properties:
@@ -44,7 +44,7 @@ resources:
           ipCidrRange: 10.0.2.0/24
           name: internal1
           region: us-west1
-      uniqueString: myBIGIP
+      uniqueString: myapp
     type: network.py
   - name: application
     properties:
@@ -54,5 +54,5 @@ resources:
           ipCidrRange: 10.0.3.0/24
           name: application1
           region: us-west1
-      uniqueString: myBIGIP
+      uniqueString: myapp
     type: network.py

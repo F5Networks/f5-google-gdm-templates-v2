@@ -55,6 +55,7 @@ This Google Deployment Manager template creates various cloud resources to get t
 | restrictedSrcAddressApp | No | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. | 
 | restrictedSrcAddressInternalApp | No | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. This is only required when using an internal load balancer (numberOfForwardingRules equals 1).
 | uniqueString | Yes | Unique String used when creating object names or Tags.
+| update | No | Specify true when updating the deployment |
 
 ### Template Outputs
 

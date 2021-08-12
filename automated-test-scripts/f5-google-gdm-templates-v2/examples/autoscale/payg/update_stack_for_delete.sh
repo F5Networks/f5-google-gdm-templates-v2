@@ -1,11 +1,11 @@
-#  expectValue = "completed with warnings"
+#  expectValue = "completed successfully"
 #  scriptTimeout = 5
 #  replayEnabled = false
 #  replayTimeout = 0
 
 
 # set vars
-config_file='/tmp/examples/autoscale/<LICENSE TYPE>/update_<DEWPOINT JOB ID>-config.yaml'
+config_file='/tmp/examples/autoscale/<LICENSE TYPE>/update_delete_<DEWPOINT JOB ID>-config.yaml'
 
 # Updated runtime init config from create_stack.sh
 config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DEWPOINT JOB ID>-runtime.yaml'
@@ -40,7 +40,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp = \"<RESTRICTED SRC ADDRESS APP>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"<RESTRICTED SRC ADDRESS APP INTERNAL>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.update = True" -i $config_file
+/usr/bin/yq e ".resources[0].properties.update = False" -i $config_file
 /usr/bin/yq e ".resources[0].properties.utilizationTarget = <SCALING UTILIZATION TARGET>" -i $config_file
 
 # print out config file

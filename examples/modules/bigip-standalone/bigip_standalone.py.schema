@@ -1,0 +1,91 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: Bigip-Standalone
+  author: F5 Networks
+  description: |
+    Creates a bigip with n number of interfaces.
+
+    For more information on this resource:
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+  version: 0.1.0
+imports:
+  - path: bigip_standalone.py
+
+required:
+  - bigIpRuntimeInitConfig
+  - bigIpRuntimeInitPackageUrl
+  - imageName
+  - instanceType
+  - name
+  - networkInterfaces
+  - region
+  - uniqueString
+  - zone
+
+properties:
+  bigIpRuntimeInitConfig:
+    description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
+    type: string
+  bigIpRuntimeInitPackageUrl:
+    description: URL for BIG-IP Runtime Init package
+    type: string
+  imageName:
+    description: BIG-IP image name
+    type: string
+  instanceType:
+    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    type: string
+  name:
+    description: Instance resource name.
+    type: string
+  networkInterfaces:
+    type: array
+    description: |
+      Interface configuration for Instance.
+        Example:
+          networkInterfaces:
+            - accessConfigs:
+                - name: Management Nat
+                  type: ONE_TO_ONE_NAT
+              description: Interface used for management
+              network: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myManagementTrafficNetwork
+              subnetwork: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myManagmentTrafficSubnetwork
+              networkIP: 10.0.31.180
+              aliasIpRanges:
+                - ipCidrRange: 10.0.31.181
+                  subnetworkRangeName: myAlias Subnet
+  region:
+    description: |
+      Enter the region where you want to deploy the application, for example 'us-west1'.
+    type: string
+  tags:
+    items:
+      description: |
+        An array of tags used to match against network interfaces.
+          Example:
+          tags:
+            items:
+            - myMgmtFwTag
+              myAppFwTag
+      type: array
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
+    type: string
+  zone:
+    description: Enter the zone where you want to deploy the application, for example 'us-west1-a'.
+    type: string
+outputs:
+  properties:
+    instanceName:
+      type: string
+      description:  Bigip deployment name.
+
+documentation:
+  - README.md
+
+examples:
+  - sample_bigip_standalone.yaml

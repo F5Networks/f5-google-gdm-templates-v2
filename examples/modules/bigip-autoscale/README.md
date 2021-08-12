@@ -57,6 +57,7 @@ This Google Deployment Manager template creates an autoscale group of BIGIP inst
 | targetGroupSelfLink | No | Target Pool self-link used for external loadbalancing |
 | utilizationTarget | No | The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric. |
 | uniqueString | Yes | Unique String used when creating object names or Tags.|
+| update | No | Specify true when updating the deployment |
 
 
 ### Template Outputs

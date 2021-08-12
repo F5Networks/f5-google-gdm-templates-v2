@@ -9,7 +9,6 @@ info:
 
 imports:
   - path: bigip_autoscale.py
-  - path: bigip_instance_template.py
 
 required:
     - availabilityZone
@@ -92,6 +91,10 @@ properties:
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
+  update:
+    description: Specify true when updating the deployment
+    type: boolean
+    default: false
   serviceAccountEmail:
     description: Enter the Google service account to use for autoscale API calls, for example 'username@projectname.iam.serviceaccount.com'. Please note that this service account is necessary for one BIG-IP to communicate with the other, so the permissions should include access to the storage bucket. Refer [here](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html#create-and-assign-an-iam-role) for instructions on how to create the IAM service account with sufficient access.
     type: string

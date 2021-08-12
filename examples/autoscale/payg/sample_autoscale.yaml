@@ -28,4 +28,5 @@ resources:
       restrictedSrcAddressApp: ''
       restrictedSrcAddressAppInternal: ''
       uniqueString: myuniquestr
+      update: false
       utilizationTarget: 0.8

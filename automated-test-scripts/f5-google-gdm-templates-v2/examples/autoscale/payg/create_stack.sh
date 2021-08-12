@@ -70,6 +70,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp = \"<RESTRICTED SRC ADDRESS APP>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"<RESTRICTED SRC ADDRESS APP INTERNAL>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.update = False" -i $config_file
 /usr/bin/yq e ".resources[0].properties.utilizationTarget = <SCALING UTILIZATION TARGET>" -i $config_file
 
 # print out config file

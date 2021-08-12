@@ -21,7 +21,12 @@ def create_instance(context, application_name):
             'zone': context.properties['availabilityZone'],
             'hostname': context.properties['hostname'],
             'labels': {
-                'appautoscalegroup': context.properties['uniqueString']
+                'appautoscalegroup': context.properties['uniqueString'],
+                'application': context.properties['application'],
+                'cost': context.properties['cost'],
+                'environment': context.properties['environment'],
+                'group': context.properties['group'],
+                'owner': context.properties['owner']
             },
             'tags': {
                 'items': ['appfwint-'+ context.properties['uniqueString']]
@@ -68,27 +73,67 @@ def create_instance_template(context, instance_template_name):
     """ Create autoscale instance template """
     instance_template = {
         'name': instance_template_name,
-        'type': 'application_instance_template.py',
+        'type': 'compute.v1.instanceTemplate',
         'properties': {
-            'appContainerName': context.properties['appContainerName'],
-            'application': context.properties['application'],
-            'cost': context.properties['cost'],
-            'environment': context.properties['environment'],
-            'group': context.properties['group'],
-            'instanceType': context.properties['instanceType'],
-            'networkSelfLink': context.properties['networkSelfLink'],
-            'owner': context.properties['owner'],
-            'subnetSelfLink': context.properties['subnetSelfLink'],
-            'uniqueString': context.properties['uniqueString']
+            'properties': {
+                'labels': {
+                    'appautoscalegroup': context.properties['uniqueString'],
+                    'application': context.properties['application'],
+                    'cost': context.properties['cost'],
+                    'environment': context.properties['environment'],
+                    'group': context.properties['group'],
+                    'owner': context.properties['owner']
+                },
+                'tags': {
+                    'items': ['appfwint-'+ context.properties['uniqueString']]
+                },
+                'machineType': context.properties['instanceType'],
+                'disks': [{
+                    'deviceName': 'boot',
+                    'type': 'PERSISTENT',
+                    'boot': True,
+                    'autoDelete': True,
+                    'initializeParams': {
+                        'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
+                                                'centos-cloud/global/',
+                                                'images/family/centos-7'])
+                    }
+                }],
+                'networkInterfaces': [{
+                    'network': context.properties['networkSelfLink'],
+                    'subnetwork': context.properties['subnetSelfLink'],
+                    'accessConfigs': [{
+                        'name': 'External NAT',
+                        'type': 'ONE_TO_ONE_NAT'
+                    }],
+                }],
+                'metadata': {
+                    'items': [{
+                        'key': 'startup-script',
+                        'value': ''.join(['#!/bin/bash\n',
+                                            'yum -y install docker\n',
+                                            'service docker start\n',
+                                            'docker run --name f5demo -p 80:80 -p 443:443 -d ',
+                                            context.properties['appContainerName']])
+                    }]
+                }
+            }
         }
     }
+    if not context.properties['update']:
+        instance_template['metadata'] = {
+            'dependsOn': [
+                context.properties['networkSelfLink'].split("/").pop(),
+                context.properties['subnetSelfLink'].split("/").pop()
+            ]
+        }
     return instance_template
 
 def create_instance_group(context, application_name, instance_template_name):
     """ Create autoscale instance group """
     instance_group = {
         'name': application_name + '-igm',
-        'type': 'compute.v1.instanceGroupManager',
+        'type': 'compute.beta.instanceGroupManager',
         'properties': {
             'baseInstanceName': application_name + 'vm',
             'instanceTemplate': '$(ref.' + instance_template_name + '.selfLink)',
