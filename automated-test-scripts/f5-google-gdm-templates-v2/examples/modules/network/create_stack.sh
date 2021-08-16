@@ -24,6 +24,7 @@ until [ $i -gt $c ]; do
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].name = \"subnet${i}\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].ipCidrRange = \"10.0.${i}.0/24\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i <DEWPOINT JOB ID>.yaml
     ((i=i+1))
 done
 
