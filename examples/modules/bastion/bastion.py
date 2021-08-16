@@ -23,7 +23,7 @@ def create_instance(context, bastion_name):
                 'appautoscalegroup': context.properties['uniqueString']
             },
             'tags': {
-                'items': ['appfwint-'+ context.properties['uniqueString']]
+                'items': ['mgmtfw-'+ context.properties['uniqueString'], 'appfwvip-'+ context.properties['uniqueString']]
             },
             'machineType': ''.join([COMPUTE_URL_BASE, 'projects/',
                                     context.env['project'], '/zones/',
@@ -76,7 +76,7 @@ def create_instance_template(context, instance_template_name):
                     'owner': context.properties['owner']
                 },
                 'tags': {
-                    'items': ['appfwint-'+ context.properties['uniqueString']]
+                    'items': ['mgmtfw-'+ context.properties['uniqueString'], 'appfwvip-'+ context.properties['uniqueString']]
                 },
                 'machineType': context.properties['instanceType'],
                 'disks': [{
@@ -108,13 +108,13 @@ def create_instance_template(context, instance_template_name):
             }
         }
     }
-    # if not context.properties['update']:
-    #     instance_template['metadata'] = {
-    #         'dependsOn': [
-    #             context.properties['networkSelfLink'].split("/").pop(),
-    #             context.properties['subnetSelfLink'].split("/").pop()
-    #         ]
-    #     }
+    if not context.properties['update']:
+        instance_template['metadata'] = {
+            'dependsOn': [
+                context.properties['networkSelfLink'].split("/").pop(),
+                context.properties['subnetSelfLink'].split("/").pop()
+            ]
+        }
     return instance_template
 
 

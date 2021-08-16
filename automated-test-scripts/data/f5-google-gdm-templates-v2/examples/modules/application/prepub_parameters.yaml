@@ -25,6 +25,7 @@ PRIVATE IP GOOGLE ACCESS: ''
 REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
+PROVISION PUBLIC IP: true
 STACK NAME: application-<DEWPOINT JOB ID>
 TEMPLATE NAME: application.py
 TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'

@@ -19,6 +19,8 @@ def create_network_deployment(context):
         'properties': {
             'name': 'network0',
             'uniqueString': context.properties['uniqueString'],
+            'provisionPublicIp': context.properties['provisionPublicIp'],
+            'region': context.properties['region'],
             'subnets': [{
                 'description': 'Subnetwork used for management',
                 'name': 'mgmt1',

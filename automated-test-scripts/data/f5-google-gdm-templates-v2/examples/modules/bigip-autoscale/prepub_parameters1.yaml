@@ -33,6 +33,7 @@ NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 2
 NUMBER NICS: 1
 PRIVATE IP GOOGLE ACCESS: ''
+PROVISION PUBLIC IP: true
 REGION: us-east1
 SERVICE ACCOUNT EMAIL: dewpt-ha-service-account@f5-7656-pdsoleng-dev.iam.gserviceaccount.com
 PROJECT: f5-7656-pdsoleng-dev

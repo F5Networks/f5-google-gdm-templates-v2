@@ -2,6 +2,7 @@
 APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
+BASTION AUTOSCALE: true
 BIGIP RUNTIME INIT PACKAGEURL: 'https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/develop/develop/dist/f5-bigip-runtime-init-1.2.1-1.gz.run'
 BIGIP VERSION: 16-0-1-1-0-0-6
 ENABLE FLOW LOGS: ''
