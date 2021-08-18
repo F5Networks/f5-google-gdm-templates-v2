@@ -1,0 +1,23 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: bastion.py
+resources:
+  - name: bastion
+    type: bastion.py
+    properties:
+      ### Enter the availability zone where you want to
+      ### deploy the bastion, for example 'us-west1-a'.
+      createAutoscaleGroup: true
+      availabilityZone: us-west1-b
+      ### Instance type assigned to the bastion,
+      ### for example 'n1-standard-1'.
+      instanceType: n1-standard-1
+      uniqueString: myApp
+      networkSelfLink: >-
+        https://www.googleapis.com/compute/v1/global/networks/default
+      subnetSelfLink: >-
+        https://www.googleapis.com/compute/v1/global/subnetworks/default

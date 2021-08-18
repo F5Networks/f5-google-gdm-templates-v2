@@ -47,6 +47,7 @@ def generate_config(context):
         'role',
         'secondaryIpRanges'
     ]
+    nats = []
     for subnet in context.properties.get('subnets', []):
         subnet['network'] = network_self_link
         subnet_name = generate_name(context.properties['uniqueString'], subnet['name'])
@@ -68,6 +69,20 @@ def generate_config(context):
                 'properties': properties
             }
         )
+
+        if not context.properties['provisionPublicIp']:
+            nats.append({
+                'name': generate_name(context.properties['uniqueString'], subnet_name + '-nat'),
+                'natIpAllocateOption': 'AUTO_ONLY',
+                'sourceSubnetworkIpRangesToNat': 'LIST_OF_SUBNETWORKS',
+                'subnetworks': [
+                    {
+                        'name': '$(ref.{}.selfLink)'.format(subnet_name),
+
+                    }
+                ]
+            })
+
         outputs[subnet_name] = {
             'selfLink': '$(ref.{}.selfLink)'.format(subnet_name),
             'cidrRange': '$(ref.{}.ipCidrRange)'.format(subnet_name),
@@ -75,6 +90,18 @@ def generate_config(context):
             'network': '$(ref.{}.network)'.format(subnet_name),
             'gatewayAddress': '$(ref.{}.gatewayAddress)'.format(subnet_name)
         }
+    if not context.properties['provisionPublicIp']:
+        resources.append({
+            'name': generate_name(context.properties['uniqueString'], 'router'),
+            'type': 'compute.v1.router',
+            'properties':
+                {
+                    'name': generate_name(context.properties['uniqueString'], 'rt'),
+                    'network': network_self_link,
+                    'region': context.properties['region'],
+                    'nats': nats
+                }
+        })
     return {
         'resources':
             resources,

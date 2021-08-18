@@ -65,7 +65,7 @@ def create_instance_template(context, instance_template_name):
                                             'tee <$npipe -a ${LOG_FILE} /dev/ttyS0 &',
                                             'exec 1>&-',
                                             'exec 1>$npipe',
-                                            'exec 2>&1'
+                                            'exec 2>&1\n',
                                             'echo $(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Startup Script Start' ,
                                             '# Optional optimizations required as early as possible in boot sequence before MCDP starts up.',
                                             '/usr/bin/setdb provision.extramb 1000',

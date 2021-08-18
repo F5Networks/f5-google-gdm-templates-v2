@@ -4,7 +4,7 @@ SOLUTION TYPE: standard
 STORAGE NAME: <ACCESS STACK NAME>-bucket
 SECRET ID: <ACCESS STACK NAME>-secret
 APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
-AUTOSCALE: true
+AUTOSCALE: false
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
 DAG STACK NAME: dag-<DEWPOINT JOB ID>
@@ -14,6 +14,7 @@ APP PORT: 80 443
 NUM FORWARDING RULES: 0
 NUM INTERNAL FORWARDING RULES: 0
 MGMT PORT: 443
+OS IMAGE: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
 INSTANCE TYPE: n1-standard-1
@@ -22,12 +23,12 @@ NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 2
 NUMBER NICS: 1
 PRIVATE IP GOOGLE ACCESS: ''
+PROVISION PUBLIC IP: true
 REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
-PROVISION PUBLIC IP: true
-STACK NAME: application-<DEWPOINT JOB ID>
-TEMPLATE NAME: application.py
-TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
-INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/application/application_instance_template.py'
+STACK NAME: bastion-<DEWPOINT JOB ID>
+TEMPLATE NAME: bastion.py
+TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
+INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion_instance_template.py'
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
