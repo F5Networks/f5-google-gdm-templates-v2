@@ -3,4 +3,4 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-printf 'yes' | gcloud compute instance-groups managed delete <STACK NAME>-ig --region <REGION>
+printf 'yes' | gcloud compute instance-groups managed delete <UNIQUESTRING>-bigip-ig --region <REGION>

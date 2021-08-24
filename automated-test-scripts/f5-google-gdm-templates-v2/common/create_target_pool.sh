@@ -4,5 +4,5 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-gcloud compute target-pools create <STACK NAME>-tp \
+gcloud compute target-pools create <UNIQUESTRING>-bigip-tp \
     --region <REGION>

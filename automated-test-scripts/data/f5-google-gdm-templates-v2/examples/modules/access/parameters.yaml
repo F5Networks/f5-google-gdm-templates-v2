@@ -1,7 +1,7 @@
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
 REGION: us-west1
-STACK NAME: access-<DEWPOINT JOB ID>
+STACK NAME: <UNIQUESTRING>-access
 TEMPLATE NAME: access.py
 TEMPLATE URL: 'file://$PWD/examples/modules/access/access.py'
 UNIQUESTRING: dd-<DEWPOINT JOB ID>

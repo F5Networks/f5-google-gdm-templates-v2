@@ -4,15 +4,17 @@
 
 # pylint: disable=W,C,R
 
-"""Creates the bastion"""
+"""Creates the bastion."""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
+
 def generate_name(prefix, suffix):
-    """ Generate unique name """
+    """Generate unique name."""
     return prefix + "-" + suffix
 
+
 def create_instance(context, bastion_name):
-    """ Create standalone instance """
+    """Create standalone instance."""
     instance = {
         'name': bastion_name,
         'type': 'compute.v1.instance',
@@ -23,7 +25,7 @@ def create_instance(context, bastion_name):
                 'appautoscalegroup': context.properties['uniqueString']
             },
             'tags': {
-                'items': ['mgmtfw-'+ context.properties['uniqueString'], 'appfwvip-'+ context.properties['uniqueString']]
+                'items': [context.properties['uniqueString'] + '-mgmt-fw', context.properties['uniqueString'] + '-app-vip-fw']
             },
             'machineType': ''.join([COMPUTE_URL_BASE, 'projects/',
                                     context.env['project'], '/zones/',
@@ -60,8 +62,9 @@ def create_instance(context, bastion_name):
     }
     return instance
 
+
 def create_instance_template(context, instance_template_name):
-    """ Create autoscale instance template """
+    """Create autoscale instance template."""
     instance_template = {
         'name': instance_template_name,
         'type': 'compute.v1.instanceTemplate',
@@ -76,7 +79,7 @@ def create_instance_template(context, instance_template_name):
                     'owner': context.properties['owner']
                 },
                 'tags': {
-                    'items': ['mgmtfw-'+ context.properties['uniqueString'], 'appfwvip-'+ context.properties['uniqueString']]
+                    'items': [context.properties['uniqueString'] + '-mgmt-fw', context.properties['uniqueString'] + '-app-vip-fw']
                 },
                 'machineType': context.properties['instanceType'],
                 'disks': [{
@@ -119,7 +122,7 @@ def create_instance_template(context, instance_template_name):
 
 
 def create_instance_group(context, bastion_name, instance_template_name):
-    """ Create autoscale instance group """
+    """Create autoscale instance group."""
     instance_group = {
         'name': bastion_name + '-igm',
         'type': 'compute.v1.instanceGroupManager',
@@ -136,8 +139,9 @@ def create_instance_group(context, bastion_name, instance_template_name):
     }
     return instance_group
 
+
 def create_autoscaler(context, bastion_name):
-    """ Create autoscaler """
+    """Create autoscaler."""
     autoscaler = {
         'name': bastion_name + '-as',
         'type': 'compute.v1.autoscalers',
@@ -156,37 +160,39 @@ def create_autoscaler(context, bastion_name):
     }
     return autoscaler
 
+
 def create_bastion_ip_output(bastion_name):
-    """ Create instance app IP output """
+    """Create instance app IP output."""
     bastion_ip = {
         'name': 'bastionIp',
         'value': '$(ref.{}.networkInterfaces[0].'
-                    'accessConfigs[0].natIP)'.format(bastion_name)
+                 'accessConfigs[0].natIP)'.format(bastion_name)
     }
     return bastion_ip
 
+
 def create_instance_group_output(bastion_name):
-    """ Create instance group output """
+    """Create instance group output."""
     instance_group = {
         'name': 'instanceGroup',
         'value': '$(ref.' + bastion_name + '-igm.selfLink)'
     }
     return instance_group
 
-def generate_config(context):
-    """ Entry point for the deployment resources. """
 
+def generate_config(context):
+    """Entry point for the deployment resources."""
     name = context.properties.get('name') or \
         context.env['name']
     bastion_name = generate_name(context.properties['uniqueString'], name)
     instance_template_name = bastion_name + '-template-v' + \
-                             str(context.properties['instanceTemplateVersion'])
+        str(context.properties['instanceTemplateVersion'])
     resources = []
     do_autoscale = context.properties['createAutoscaleGroup']
     if do_autoscale:
         resources = resources + [create_instance_template(context, instance_template_name)] + \
             [create_instance_group(context, bastion_name, instance_template_name)] + \
-                [create_autoscaler(context, bastion_name)]
+            [create_autoscaler(context, bastion_name)]
     else:
         resources = resources + [create_instance(context, bastion_name)]
 

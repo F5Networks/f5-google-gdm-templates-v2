@@ -1,4 +1,4 @@
-ACCESS STACK NAME: access-<DEWPOINT JOB ID>
+ACCESS STACK NAME: <UNIQUESTRING>-access
 ACCESS TEMPLATE URL: 'file://$PWD/examples/modules/access/access.py'
 SOLUTION TYPE: standard
 STORAGE NAME: <ACCESS STACK NAME>-bucket
@@ -7,7 +7,7 @@ APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 AUTOSCALE: true
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
-DAG STACK NAME: dag-<DEWPOINT JOB ID>
+DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
 APP INTERNAL PORT: 22 80 443
 APP PORT: 443
@@ -28,7 +28,7 @@ SCALING MIN: 2
 SCALING UTILIZATION TARGET: 0.8
 SCALING COOL DOWN PERIOD: 60
 TEST_ADMIN_PASSWORD: TestPassword2010+
-NETWORK STACK NAME: network-<DEWPOINT JOB ID>
+NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 2
 NUMBER NICS: 1
@@ -39,7 +39,7 @@ SERVICE ACCOUNT EMAIL: dewpt-ha-service-account@f5-7656-pdsoleng-dev.iam.gservic
 PROJECT: f5-7656-pdsoleng-dev
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
-STACK NAME: bigip-autoscale-<DEWPOINT JOB ID>
+STACK NAME: <UNIQUESTRING>-bigip-autoscale
 TEMPLATE NAME: bigip_autoscale.py
 TEMPLATE URL: 'file://$PWD/examples/modules/bigip-autoscale/bigip_autoscale.py'
 INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/bigip-autoscale/bigip_instance_template.py'

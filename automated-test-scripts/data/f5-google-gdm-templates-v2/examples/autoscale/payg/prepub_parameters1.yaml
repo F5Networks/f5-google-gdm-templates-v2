@@ -29,7 +29,7 @@ SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
 SECRET ID: <ACCESS STACK NAME>-secret
 SECRET VALUE: 'B!giq2017'
-STACK NAME: autoscale-<DEWPOINT JOB ID>
+STACK NAME: <UNIQUESTRING>-autoscale
 STORAGE NAME: <STACK NAME>-bucket
 TEMPLATE NAME: autoscale.py
 TEMPLATE URL: 'file://$PWD/examples/autoscale/payg/autoscale.py'

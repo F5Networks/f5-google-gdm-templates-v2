@@ -2,20 +2,22 @@
 #
 # Version 0.1.0
 
-# pylint: disable=W,C,R
+# pylint: disable=W,C,R,duplicate-code,line-too-long
 
 """ This template creates a network with subnets. """
 
+
 def generate_name(prefix, suffix):
-    """ Generate unique name """
+    """Generate unique name."""
     return prefix + "-" + suffix
 
+
 def generate_config(context):
-    """ Entry point for the deployment resources. """
+    """Entry point for the deployment resources."""
 
     name = context.properties.get('name') or \
         context.env['name']
-    net_name = generate_name(context.properties['uniqueString'], name)
+    net_name = generate_name(context.properties['uniqueString'], name + '-network')
     network_self_link = '$(ref.{}.selfLink)'.format(net_name)
     auto_create_subnetworks = context.properties.get(
         'autoCreateSubnets',
@@ -50,7 +52,7 @@ def generate_config(context):
     nats = []
     for subnet in context.properties.get('subnets', []):
         subnet['network'] = network_self_link
-        subnet_name = generate_name(context.properties['uniqueString'], subnet['name'])
+        subnet_name = generate_name(context.properties['uniqueString'], subnet['name'] + '-subnet')
 
         # Setup properties
         properties = {p: subnet[p] for p in required_properties}

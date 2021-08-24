@@ -3,7 +3,7 @@
 #  replayEnabled = true
 #  replayTimeout = 180
 
-vms_ip_addresses=$(gcloud compute instances list --filter="name~'bigip-autoscale-<DEWPOINT JOB ID>'" --format=json | jq .[].networkInterfaces[].accessConfigs[].natIP | tr -d '"')
+vms_ip_addresses=$(gcloud compute instances list --filter="name~'<UNIQUESTRING>'" --format=json | jq .[].networkInterfaces[].accessConfigs[].natIP | tr -d '"')
 count=0
 
 for ip_address in $vms_ip_addresses

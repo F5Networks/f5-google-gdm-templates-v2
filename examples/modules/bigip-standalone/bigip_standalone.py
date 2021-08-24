@@ -5,9 +5,11 @@
 """Creates BIGIP Instance"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
+
 def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
+
 
 def create_instance(context):
     """ Create standalone instance """
@@ -178,6 +180,7 @@ def metadata(context):
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
                                     '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp\'',
+                                    '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/bin/touch /config/startup_finished',
                                     'EOF',

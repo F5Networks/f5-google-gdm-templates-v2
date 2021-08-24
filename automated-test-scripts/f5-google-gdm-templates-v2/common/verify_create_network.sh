@@ -11,7 +11,7 @@ dash="-"
 networks=()
 
 for i in "${network_names[@]}"; do
-    networks+=("$unique_string$dash$i")
+    networks+=("$unique_string$dash$i${dash}network")
 done
 
 networks_gcloud=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>" '.[] | select(.name | contains($n)) | .name')

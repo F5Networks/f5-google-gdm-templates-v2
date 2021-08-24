@@ -18,9 +18,9 @@ onStart:
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 onFail:
-  - ../../../common/delete_dag_stack.sh
-  - ../../../common/verify_delete_dag.sh
-  - ../../../common/delete_stack.sh
-  - ../../../common/verify_delete.sh
-  - ../../../common/delete_network_stack.sh
-  - ../../../common/verify_delete_network.sh
+- ../../../common/delete_dag_stack.sh
+- ../../../common/verify_delete_dag.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+- ../../../common/delete_network_stack.sh
+- ../../../common/verify_delete_network.sh
