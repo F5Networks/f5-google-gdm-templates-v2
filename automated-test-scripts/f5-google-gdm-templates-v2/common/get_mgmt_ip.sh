@@ -9,34 +9,34 @@ STATE_FILE=${TMP_DIR}/state.json
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-case "<PUBLIC IP>" in
+case "<PROVISION PUBLIC IP>" in
   "False")
     IP=$(get_mgmt_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> private)
     if [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" == "<REGION>-c" ]]; then
-        IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE2> private)
+        IP2=$(get_mgmt_ip <STACK NAME> <AVAILABILITY ZONE2> private)
     elif [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" != "<REGION>-c" ]]; then
-        IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE> private)        
+        IP2=$(get_mgmt_ip <STACK NAME> <AVAILABILITY ZONE> private)        
     else
         IP2=''
     fi
     # TODO: hardcoded bastion host - in us-west-1 until bastion host creation
     # along with the test can be automated
     BASTION_IP=$(gcloud compute instances describe bastion-<DEWPOINT JOB ID> --zone <AVAILABILITY ZONE> --format json | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP')
-    APP_IP=$(get_app_ip application-<STACK NAME> <AVAILABILITY ZONE> private)
-    APP_IP_INTERNAL=$(get_app_ip application-<STACK NAME> <AVAILABILITY ZONE> private)
+    APP_IP=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
+    APP_IP_INTERNAL=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
     ;;
   *)
     IP=$(get_mgmt_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> public)
     if [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" == "<REGION>-c" ]]; then
-        IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE2> public)
+        IP2=$(get_mgmt_ip <STACK NAME> <AVAILABILITY ZONE2> public)
     elif [[ "<TEMPLATE URL>" == *"failover"* ]] && [[ "<AVAILABILITY ZONE2>" != "<REGION>-c" ]]; then
-        IP2=$(get_mgmt_ip bigip2-<STACK NAME> <AVAILABILITY ZONE> public)        
+        IP2=$(get_mgmt_ip <STACK NAME> <AVAILABILITY ZONE> public)        
     else
         IP2=''
     fi
     BASTION_IP=''
-    APP_IP=$(get_app_ip application-<STACK NAME> <AVAILABILITY ZONE> public)
-    APP_IP_INTERNAL=$(get_app_ip application-<STACK NAME> <AVAILABILITY ZONE> private)
+    APP_IP=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> public)
+    APP_IP_INTERNAL=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
     ;;
 esac
 
@@ -58,6 +58,7 @@ fi
 set_state "applicationAddress" "$APP_IP"
 set_state "applicationAddressInternal" "$APP_IP_INTERNAL"
 
+echo "State file -"
 cat ${STATE_FILE}
 
 echo "Success"

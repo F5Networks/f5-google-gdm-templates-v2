@@ -10,7 +10,7 @@ unique_string=$(/usr/bin/yq e .resources[0].properties.uniqueString <DEWPOINT JO
 dash="-"
 subnetss=()
 for i in "${subnet_name[@]}"; do
-    subnets+=("$unique_string$dash$i")
+    subnets+=("$unique_string$dash$i${dash}subnet")
 done
 subnets_gcloud=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>" '.[] | select(.name | contains($n)) | .name')
 

@@ -3,7 +3,7 @@
 #  replayEnabled = true
 #  replayTimeout = 3
 
-service_account=$(gcloud iam service-accounts list --filter="displayName ~ <UNIQUESTRING>" --format=json | jq -r --arg n "<STACK NAME>" '.[] | select(.name | contains($n)) | .name')
+service_account=$(gcloud iam service-accounts list --filter="displayName ~ <UNIQUESTRING>" --format=json | jq -r --arg n "<UNIQUESTRING>" '.[] | select(.name | contains($n)) | .name')
 
 echo "$service_account"
 

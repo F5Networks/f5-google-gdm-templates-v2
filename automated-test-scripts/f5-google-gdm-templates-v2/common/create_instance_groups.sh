@@ -3,7 +3,7 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-gcloud compute instance-groups managed create <STACK NAME>-ig \
+gcloud compute instance-groups managed create <UNIQUESTRING>-bigip-ig \
     --base-instance-name <STACK NAME> \
     --size 1 \
     --template test-instance-template-1 \

@@ -3,11 +3,11 @@
 #  replayEnabled = true
 #  replayTimeout = 3
 
-forwardingRuleCountCreated=$(gcloud compute forwarding-rules list --filter="name~'<STACK NAME>'" --format=json | jq length)
+forwardingRuleCountCreated=$(gcloud compute forwarding-rules list --filter="name~'<UNIQUESTRING>'" --format=json | jq length)
 forwardingRuleCountRequested=$(( <NUM FORWARDING RULES> + <NUM INTERNAL FORWARDING RULES> ))
 
-internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network3" '.[] | select(.name | contains($n)) | .selfLink')
-internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet3" '.[] | select(.name | contains($n)) | .selfLink')
+internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network3-network" '.[] | select(.name | contains($n)) | .selfLink')
+internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet3-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 
 
 if [[ $forwardingRuleCountCreated = $forwardingRuleCountRequested ]]; then
@@ -15,7 +15,7 @@ if [[ $forwardingRuleCountCreated = $forwardingRuleCountRequested ]]; then
         echo "Successful"
     else
         # Validating Int Forwarding Rule points to internal network
-        testNetworkSelfLink=$(gcloud compute forwarding-rules list --filter="name~'<DEWPOINT JOB ID>'" --format=json | jq '.[] | select(.name=="<STACK NAME>-intfr0") | .network' | tr -d '"')
+        testNetworkSelfLink=$(gcloud compute forwarding-rules list --filter="name~'<UNIQUESTRING>'" --format=json | jq '.[] | select(.name=="<UNIQUESTRING>-intfr0-fr") | .network' | tr -d '"')
         if [[ $internalNetworkSelfLink == $testNetworkSelfLink ]]; then
             echo "Successful"
         fi

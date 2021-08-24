@@ -2,7 +2,7 @@
 #
 # Version 0.1.0
 
-# pylint: disable=W,C,R
+# pylint: disable=W,C,R,duplicate-code,line-too-long
 
 """Creates the access"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -88,14 +88,13 @@ def create_custom_role(context, role_name, solution_type):
 
 
 def generate_config(context):
-    """ Entry point for the deployment resources. """
-
+    """Entry point for the deployment resources."""
     name = context.properties.get('name') or \
         context.env['name']
     service_account_name = generate_name(context.properties['uniqueString'],
-                                         name)
-    role_name = generate_name('BigIPAccessRole',
-                              context.properties['uniqueString'],
+                                         'bigip-sa')
+    role_name = generate_name(context.properties['uniqueString'],
+                              'bigipaccessrole',
                               ['-'])
 
     solution_type = context.properties['solutionType']
@@ -109,7 +108,7 @@ def generate_config(context):
             'name': service_account_name,
             'type': 'iam.v1.serviceAccount',
             'properties': {
-                'accountId': ''.join([context.env['deployment'], '-admin']),
+                'accountId': ''.join([context.properties['uniqueString'], '-admin']),
                 'displayName': service_account_name
             }
         }
@@ -117,7 +116,7 @@ def generate_config(context):
 
     resources.append(
         {
-            'name': ''.join([context.env['deployment'], '-bind-iam-policy']),
+            'name': ''.join([context.properties['uniqueString'], '-bigip-bind-iam-policy']),
             'type': 'gcp-types/cloudresourcemanager-v1:virtual.projects.iamMemberBinding',
             'properties': {
                 'resource': context.env['project'],

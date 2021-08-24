@@ -1,4 +1,4 @@
-ACCESS STACK NAME: access-<DEWPOINT JOB ID>
+ACCESS STACK NAME: <UNIQUESTRING>-access
 ACCESS TEMPLATE URL: 'file://$PWD/examples/modules/access/access.py'
 SOLUTION TYPE: standard
 STORAGE NAME: <ACCESS STACK NAME>-bucket
@@ -7,7 +7,7 @@ APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 AUTOSCALE: false
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
-DAG STACK NAME: dag-<DEWPOINT JOB ID>
+DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
 APP INTERNAL PORT: 22 80 443
 APP PORT: 80 443
@@ -17,7 +17,7 @@ MGMT PORT: 443
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
 INSTANCE TYPE: n1-standard-1
-NETWORK STACK NAME: network-<DEWPOINT JOB ID>
+NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 2
 NUMBER NICS: 1
@@ -25,8 +25,8 @@ PRIVATE IP GOOGLE ACCESS: ''
 REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
+STACK NAME: <UNIQUESTRING>-application
 PROVISION PUBLIC IP: true
-STACK NAME: application-<DEWPOINT JOB ID>
 TEMPLATE NAME: application.py
 TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
 INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/application/application_instance_template.py'

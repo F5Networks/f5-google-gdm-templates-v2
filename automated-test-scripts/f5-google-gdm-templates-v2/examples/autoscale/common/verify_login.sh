@@ -13,8 +13,8 @@ PASSWORD='<SECRET VALUE>'
 MGMT_PORT='8443'
 SSH_PORT='22'
 
-INSTANCE1=$(gcloud compute instance-groups list-instances autoscale-<DEWPOINT JOB ID>-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance)
-INSTANCE2=$(gcloud compute instance-groups list-instances autoscale-<DEWPOINT JOB ID>-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[1].instance)
+INSTANCE1=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance)
+INSTANCE2=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[1].instance)
 if [[ <PROVISION PUBLIC IP> == True ]]; then
     IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE> public)
     IP2=$(get_mgmt_ip ${INSTANCE2} <AVAILABILITY ZONE> public)
@@ -26,8 +26,6 @@ if [[ <PROVISION PUBLIC IP> == True ]]; then
     echo "PASSWORD_RESPONSE1: ${PASSWORD_RESPONSE1}"
     echo "PASSWORD_RESPONSE2: ${PASSWORD_RESPONSE2}"
 else
-
-
     if [ "<BASTION AUTOSCALE>" == "False" ]; then
         echo "STANDALONE CASE"
         BASTION_IP=$(get_app_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)

@@ -2,7 +2,7 @@
 #
 # Version 0.1.0
 
-# pylint: disable=W,C,R
+# pylint: disable=W,C,R,duplicate-code,line-too-long
 
 """Creates the application"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -12,6 +12,7 @@ def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
 
+
 def create_instance_template(context, instance_template_name):
     """ Create autoscale instance template """
     instance_template = {
@@ -20,7 +21,7 @@ def create_instance_template(context, instance_template_name):
         'properties': {
             'properties': {
                 'tags': {
-                    'items': ['mgmtfw-'+ context.properties['uniqueString'], 'appfwvip-'+ context.properties['uniqueString']]
+                    'items': [context.properties['uniqueString'] + '-mgmt-fw', context.properties['uniqueString'] + '-app-vip-fw']
                 },
                 'machineType': context.properties['instanceType'],
                 'serviceAccounts': [{
@@ -115,7 +116,7 @@ def create_instance_template(context, instance_template_name):
             'dependsOn': [
                 context.properties['networkSelfLink'].split("/").pop(),
                 context.properties['subnetSelfLink'].split("/").pop(),
-                context.properties['uniqueString'] + '-access'
+                context.properties['uniqueString'] + '-bigip-sa'
             ]
         }
     if context.properties['provisionPublicIp']:
@@ -123,15 +124,16 @@ def create_instance_template(context, instance_template_name):
             [{'name': 'Management NAT','type': 'ONE_TO_ONE_NAT'}]
     return instance_template
 
+
 def create_instance_group(context, instance_template_name):
-    """ Create autoscale instance group """
+    """Create autoscale instance group."""
     instance_group = {
-        'name': context.env['deployment'] + '-igm',
+        'name': context.properties['uniqueString'] + '-bigip-igm',
         'type': 'compute.beta.instanceGroupManager',
         'properties': {
-            'baseInstanceName': context.env['deployment'] + '-vm',
+            'baseInstanceName': context.properties['uniqueString'] + '-bigip-vm',
             'instanceTemplate': '$(ref.' + instance_template_name + '.selfLink)',
-            'targetPools': ['$(ref.' + context.env['deployment'] + '-tp.selfLink)'],
+            'targetPools': ['$(ref.' + context.properties['uniqueString'] + '-bigip-tp.selfLink)'],
             'targetSize': 2,
             'updatePolicy': {
                 'minimalAction': 'REPLACE',
@@ -142,14 +144,15 @@ def create_instance_group(context, instance_template_name):
     }
     return instance_group
 
+
 def create_autoscaler(context):
-    """ Create autoscaler """
+    """Create autoscaler."""
     autoscaler = {
-        'name': context.env['deployment'] + '-as',
+        'name': context.properties['uniqueString'] + '-bigip-as',
         'type': 'compute.v1.autoscalers',
         'properties': {
             'zone': context.properties['availabilityZone'],
-            'target': '$(ref.' + context.env['deployment'] + '-igm.selfLink)',
+            'target': '$(ref.' + context.properties['uniqueString'] + '-bigip-igm.selfLink)',
             'autoscalingPolicy': {
                 "minNumReplicas": context.properties['minNumReplicas'],
                 'maxNumReplicas': context.properties['maxNumReplicas'],
@@ -162,13 +165,14 @@ def create_autoscaler(context):
     }
     return autoscaler
 
+
 def create_health_check(context, source):
-    """ Create health check """
+    """Create health check."""
     applicaton_port = str(context.properties['applicationVipPort'])
     applicaton_port = applicaton_port.split()[0]
     if source == "internal":
         health_check = {
-            'name': context.env['deployment'] + '-' + source,
+            'name': context.properties['uniqueString'] + '-' + source + '-hc',
             'type': 'compute.v1.healthCheck',
             'properties': {
                 'type': 'TCP',
@@ -179,7 +183,7 @@ def create_health_check(context, source):
         }
     else:
         health_check = {
-            'name': context.env['deployment'] + '-' + source,
+            'name': context.properties['uniqueString'] + '-' + source + '-hc',
             'type': 'compute.v1.httpHealthCheck',
             'properties': {
                 'port': int(applicaton_port)
@@ -191,12 +195,12 @@ def create_health_check(context, source):
 def create_target_pool(context):
     """ Create target pool """
     target_pool = {
-        'name': context.env['deployment'] + '-tp',
+        'name': context.properties['uniqueString'] + '-bigip-tp',
         'type': 'compute.v1.targetPool',
         'properties': {
             'region': context.properties['region'],
             'sessionAffinity': 'CLIENT_IP',
-            'healthChecks': ['$(ref.' + context.env['deployment'] + '-external.selfLink)'],
+            'healthChecks': ['$(ref.' + context.properties['uniqueString'] + '-external-hc.selfLink)'],
         }
     }
     return target_pool
@@ -205,8 +209,8 @@ def create_target_pool_outputs(context):
     """ Create target pool outputs """
     target_pool = {
         'name': 'targetPool',
-        'resourceName': context.env['deployment'] + '-tp',
-        'value': '$(ref.' + context.env['deployment'] + '-tp.selfLink)'
+        'resourceName': context.properties['uniqueString'] + '-bigip-tp',
+        'value': '$(ref.' + context.properties['uniqueString'] + '-bigip-tp.selfLink)'
     }
     return target_pool
 
@@ -220,8 +224,8 @@ def create_instance_group_output(context):
                           '/zones/',
                           context.properties['availabilityZone'],
                           '/instanceGroups/',
-                          context.env['deployment'],
-                          '-igm'
+                          context.properties['uniqueString'],
+                          '-bigip-igm'
                           ])
     }
     return instance_group
@@ -232,7 +236,7 @@ def generate_config(context):
     name = context.properties.get('name') or \
            context.env['name']
     bigip_autoscale_deployment_name = generate_name(context.properties['uniqueString'], name)
-    instance_template_name = context.env['deployment'] + \
+    instance_template_name = context.properties['uniqueString'] + \
         '-template-v' + \
             str(context.properties['instanceTemplateVersion'])
 

@@ -2,7 +2,7 @@
 #  scriptTimeout = 3
 #  replayEnabled = true
 #  replayTimeout = 30
-vms_status=$(gcloud compute instances list --filter="name~'bigip-autoscale-<DEWPOINT JOB ID>'" --format=json | jq .[].status | tr -d '"' )
+vms_status=$(gcloud compute instances list --filter="name~'<UNIQUESTRING>'" --format=json | jq .[].status | tr -d '"' )
 
 count=0
 for status in $vms_status

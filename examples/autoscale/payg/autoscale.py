@@ -4,15 +4,17 @@
 
 # pylint: disable=W,C,R
 
-"""Creates the application"""
+"""Creates the application."""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
+
 def generate_name(prefix, suffix):
-    """ Generate unique name """
+    """Generate unique name."""
     return prefix + "-" + suffix
 
+
 def create_network_deployment(context):
-    """ Create template deployment """
+    """Create template deployment."""
     deployment = {
         'name': 'network',
         'type': '../../modules/network/network.py',
@@ -29,7 +31,7 @@ def create_network_deployment(context):
             },
             {
                 'description': 'Subnetwork used for application services',
-                'name': 'application1',
+                'name': 'app1',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.1.0/24'
             }]
@@ -37,8 +39,9 @@ def create_network_deployment(context):
     }
     return deployment
 
+
 def create_access_deployment(context):
-    """ Create template deployment """
+    """Create template deployment."""
     deployment = {
       'name': 'access',
       'type': '../../modules/access/access.py',
@@ -49,8 +52,9 @@ def create_access_deployment(context):
     }
     return deployment
 
+
 def create_application_deployment(context):
-    """ Create template deployment """
+    """Create template deployment."""
     deployment = {
       'name': 'application',
       'type': '../../modules/application/application.py',
@@ -68,7 +72,7 @@ def create_application_deployment(context):
             'projects/' + context.env['project'] + \
                 '/global/networks/' + \
                     context.properties['uniqueString'] + \
-                        '-network0',
+                        '-network0-network',
         'subnetSelfLink': COMPUTE_URL_BASE + \
             'projects/' + \
                 context.env['project'] + \
@@ -76,15 +80,16 @@ def create_application_deployment(context):
                         context.properties['region'] + \
                             '/subnetworks/' + \
                                 context.properties['uniqueString'] + \
-                                    '-application1',
+                                    '-app1-subnet',
         'uniqueString': context.properties['uniqueString'],
         'update': context.properties['update']
       }
     }
     return deployment
 
+
 def create_bastion_deployment(context):
-    """ Create template deployment """
+    """Create template deployment."""
     deployment = {
         'name': 'bastion',
         'type': '../../modules/bastion/bastion.py',
@@ -102,7 +107,7 @@ def create_bastion_deployment(context):
                                'projects/' + context.env['project'] + \
                                '/global/networks/' + \
                                context.properties['uniqueString'] + \
-                               '-network0',
+                               '-network0-network',
             'subnetSelfLink': COMPUTE_URL_BASE + \
                               'projects/' + \
                               context.env['project'] + \
@@ -110,7 +115,7 @@ def create_bastion_deployment(context):
                               context.properties['region'] + \
                               '/subnetworks/' + \
                               context.properties['uniqueString'] + \
-                              '-application1',
+                              '-app1-subnet',
             'uniqueString': context.properties['uniqueString'],
             'update': context.properties['update']
         }
@@ -141,12 +146,12 @@ def create_bigip_deployment(context):
                   context.env['project'] + \
                       '/global/networks/' + \
                           context.properties['uniqueString'] + \
-                              '-network0',
+                              '-network0-network',
           'owner': context.properties['owner'],
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': context.env['deployment'] + \
+          'serviceAccountEmail': context.properties['uniqueString'] + \
               '-admin@' + \
                   context.env['project'] + \
                       '.iam.gserviceaccount.com',
@@ -157,7 +162,7 @@ def create_bigip_deployment(context):
                           context.properties['region'] + \
                               '/subnetworks/' + \
                                   context.properties['uniqueString'] + \
-                                      '-mgmt1',
+                                      '-mgmt1-subnet',
           'uniqueString': context.properties['uniqueString'],
           'update': context.properties['update'],
           'utilizationTarget': context.properties['utilizationTarget']
@@ -184,20 +189,20 @@ def create_dag_deployment(context):
                     '/zones/' + \
                         context.properties['availabilityZone'] + \
                             '/instanceGroups/' + \
-                                context.env['deployment'] + \
-                                    '-igm'],
+                                context.properties['uniqueString'] + \
+                                    '-bigip-igm'],
         'networkSelfLinkApp': COMPUTE_URL_BASE + \
             'projects/' + \
                 context.env['project'] + \
                     '/global/networks/' + \
                         context.properties['uniqueString'] + \
-                            '-network0',
+                            '-network0-network',
         'networkSelfLinkMgmt': COMPUTE_URL_BASE + \
             'projects/' + \
                 context.env['project'] + \
                     '/global/networks/' + \
                         context.properties['uniqueString'] + \
-                            '-network0',
+                            '-network0-network',
         'numberOfForwardingRules': 1,
         'numberOfInternalForwardingRules': 0,
         'numberOfNics': 1,
@@ -212,8 +217,8 @@ def create_dag_deployment(context):
                     '/regions/' + \
                         context.properties['region'] + \
                             '/targetPools/' + \
-                                context.env['deployment'] + \
-                                    '-tp',
+                                context.properties['uniqueString'] + \
+                                    '-bigip-tp',
         'uniqueString': context.properties['uniqueString'],
         'update': context.properties['update']
       }
