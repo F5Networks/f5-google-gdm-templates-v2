@@ -1,0 +1,22 @@
+AUTOFILL EVAL LICENSE KEY: null
+AVAILABILITY ZONE: <REGION>-b
+BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
+BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/develop/develop/dist/f5-bigip-runtime-init-1.2.1-1.gz.run
+BIGIP VERSION: 16-0-1-1-0-0-6
+IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
+IMAGE SUFFIX: '10129040615'
+IMAGE TYPE: all-modules-2boot-loc
+INSTANCE NAME: bigip1
+INSTANCE TYPE: n1-standard-4
+INTERFACE NAME: Interface
+LICENSE TYPE: byol
+NUMBER NICS: 2
+REGION: us-central1
+RESTRICTED SRC ADDRESS: '0.0.0.0/0'
+RESTRICTED SRC ADDRESS APP: '0.0.0.0/0'
+RESTRICTED SRC ADDRESS APP INTERNAL: '10.0.1.0/24'
+STACK NAME: quickstart-<DEWPOINT JOB ID>
+STORAGE NAME: <ACCESS STACK NAME>-bucket
+TEMPLATE NAME: quickstart.py
+TEMPLATE URL: file://$PWD/examples/quickstart/quickstart.py
+UNIQUESTRING: dd-<DEWPOINT JOB ID>

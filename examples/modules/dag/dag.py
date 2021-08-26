@@ -28,12 +28,6 @@ def create_firewall_rule(context, config):
             }]
         }
     }
-    if not context.properties['update']:
-        firewall_rule['metadata'] = {
-            'dependsOn': [
-                config['network'].split("/").pop()
-            ]
-        }
     return firewall_rule
 
 
@@ -98,12 +92,6 @@ def create_forwarding_rule(context, name):
             }
         }
     }
-    if not context.properties['update']:
-        forwarding_rule['metadata'] = {
-            'dependsOn': [
-                context.properties['targetPoolSelfLink'].split("/").pop()
-            ]
-        }
     return forwarding_rule
 
 

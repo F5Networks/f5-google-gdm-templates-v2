@@ -35,8 +35,12 @@ case "<PROVISION PUBLIC IP>" in
         IP2=''
     fi
     BASTION_IP=''
-    APP_IP=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> public)
-    APP_IP_INTERNAL=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
+    if [[ <NUMBER NICS> -gt 1 ]]; then
+        APP_IP=$(get_app_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> public)
+    else
+        APP_IP=$(get_mgmt_ip <UNIQUESTRING>-<INSTANCE NAME> <AVAILABILITY ZONE> public)
+    fi
+    APP_IP_INTERNAL=$(get_app_ip <UNIQUESTRING>-app <AVAILABILITY ZONE> private)
     ;;
 esac
 

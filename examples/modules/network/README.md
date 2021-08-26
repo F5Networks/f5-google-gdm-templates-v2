@@ -54,6 +54,7 @@ This Google Deployment Manager template creates a virtual network, subnets, and 
 | Name | Description | Required Resource | Type |
 | --- | --- | --- | --- |
 | name | Network resource name. | Network | string
+| provisionPublicIp | When false, nat gateway routers created to support internet access on subnets. | No | boolean |
 | selflink | URI (SelfLink) for network resource. | Network | string |
 | subnets | Array with subnets information. | Subnets | array |
 | subnets.properties.cidrRange | Range of internal addresses owned by the subnet. | Subnet | string |

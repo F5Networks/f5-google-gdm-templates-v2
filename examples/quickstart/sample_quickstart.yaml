@@ -1,0 +1,30 @@
+---
+imports:
+  - path: quickstart.py
+  - path: ../modules/application/application.py
+  - path: ../modules/bigip-standalone/bigip_standalone.py
+  - path: ../modules/dag/dag.py
+  - path: ../modules/network/network.py
+resources:
+  - name: quickstart-py
+    properties:
+      appContainerName: f5devcentral/f5-demo-app:latest
+      application: myapp
+      applicationPort: 80 443
+      applicationVipPort: 80 443
+      bigIpRuntimeInitConfig: '<URL>'
+      bigIpRuntimeInitPackageUrl: '<URL>'
+      cost: mycost
+      environment: myenv
+      group: mygroup
+      imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
+      instanceType: n1-standard-8
+      numNics: 4
+      owner: myowner
+      region: us-west1
+      restrictedSrcAddressApp: ''
+      restrictedSrcAddressAppInternal: ''
+      restrictedSrcAddressMgmt: ''
+      uniqueString: myuniquestr
+      zone: us-west1-a
+    type: quickstart.py

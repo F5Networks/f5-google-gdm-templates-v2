@@ -122,13 +122,6 @@ def create_instance_template(context, instance_template_name):
             }
         }
     }
-    if not context.properties['update']:
-        instance_template['metadata'] = {
-            'dependsOn': [
-                context.properties['networkSelfLink'].split("/").pop(),
-                context.properties['subnetSelfLink'].split("/").pop()
-            ]
-        }
     return instance_template
 
 

@@ -27,6 +27,11 @@ properties:
     description: |
       When "true",  newly created network is assigned the default CIDR of
       10.128.0.0/9 and one subnet per region is created automatically.
+  provisionPublicIp:
+    type: boolean
+    default: true
+    description: |
+      When false, nat gateway routers created to support internet access on subnets.
   subnets:
     type: array
     description: |
