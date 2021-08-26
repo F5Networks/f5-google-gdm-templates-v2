@@ -19,6 +19,7 @@ resources:
   - name: mgmt
     properties:
       name: mgmt
+      provisionPublicIp: true
       subnets:
         - description: Subnetwork used for management
           ipCidrRange: 10.0.0.0/24
@@ -29,6 +30,7 @@ resources:
   - name: external
     properties:
       name: external
+      provisionPublicIp: true
       subnets:
         - description: Subnetwork used for public traffic
           ipCidrRange: 10.0.1.0/24
@@ -39,6 +41,7 @@ resources:
   - name: internal
     properties:
       name: internal
+      provisionPublicIp: false
       subnets:
         - description: Subnetwork used for private traffic
           ipCidrRange: 10.0.2.0/24
@@ -49,6 +52,7 @@ resources:
   - name: application
     properties:
       name: application
+      provisionPublicIp: false
       subnets:
         - description: Subnetwork used for application services
           ipCidrRange: 10.0.3.0/24

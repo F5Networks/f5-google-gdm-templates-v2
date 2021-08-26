@@ -115,10 +115,6 @@ properties:
     uniqueString:
         type: string
         description: Unique String used when creating object names or Tags.
-    update:
-        description: Specify true when updating the deployment
-        type: boolean
-        default: false
 
 outputs:
   properties:

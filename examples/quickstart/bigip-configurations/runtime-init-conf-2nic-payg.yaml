@@ -93,6 +93,11 @@ extension_services:
                 role: admin
             password: '{{{BIGIP_PASSWORD}}}'
             shell: bash
+          app_route:
+            class: Route
+            gw: '10.0.1.1'
+            network: '10.0.2.0/24'
+            mtu: 1500
           default:
             class: Route
             gw: '{{{DEFAULT_GW}}}'
@@ -133,7 +138,7 @@ extension_services:
               remark: Service 1 shared pool
               members:
                 - serverAddresses:
-                    - 10.0.2.4
+                    - 10.0.2.2
                   servicePort: 80
               monitors:
                 - http
@@ -143,7 +148,7 @@ extension_services:
             serviceMain:
               class: Service_HTTP
               virtualAddresses:
-                - 10.0.1.101
+                - 10.0.1.2
               snat: auto
               policyWAF:
                 use: WAFPolicy
@@ -160,7 +165,7 @@ extension_services:
             serviceMain:
               class: Service_HTTPS
               virtualAddresses:
-                - 10.0.1.101
+                - 10.0.1.2
               snat: auto
               policyWAF:
                 use: WAFPolicy

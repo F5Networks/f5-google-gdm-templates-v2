@@ -93,7 +93,7 @@ extension_services:
               remark: Service 1 shared pool
               members:
                 - serverAddresses:
-                    - 10.0.1.4
+                    - 10.0.1.2
                   servicePort: 80
               monitors:
                 - http
@@ -103,7 +103,7 @@ extension_services:
             serviceMain:
               class: Service_HTTP
               virtualAddresses:
-                - 10.0.0.101
+                - 10.0.0.2
               snat: auto
               policyWAF:
                 use: WAFPolicy
@@ -120,7 +120,7 @@ extension_services:
             serviceMain:
               class: Service_HTTPS
               virtualAddresses:
-                - 10.0.0.101
+                - 10.0.0.2
               snat: auto
               policyWAF:
                 use: WAFPolicy

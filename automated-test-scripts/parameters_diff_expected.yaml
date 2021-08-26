@@ -22,3 +22,6 @@
 ../../examples/modules/network/sample_network.yaml:
 - No Key Diff
 - No Value Diff
+../../examples/quickstart/sample_quickstart.yaml:
+- No Key Diff
+- No Value Diff

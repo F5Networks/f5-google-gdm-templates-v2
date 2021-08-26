@@ -16,8 +16,20 @@ curl -k <TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 i=0
 ((c=<NUMBER NICS>-1))
 until [ $i -gt $c ]; do
-    networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network${i}-network" '.[] | select(.name | contains($n)) | .selfLink')
-    subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet${i}-subnet" '.[] | select(.name | contains($n)) | .selfLink')
+    if [[ $i = 1 ]]; then
+        networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
+        subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
+    elif [[ $c = 0 ]]; then
+        networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
+        subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
+    elif [[ $i = 0 ]]; then
+        networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
+        subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
+    else
+        networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network${i}" '.[] | select(.name | contains($n)) | .selfLink')
+        subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet${i}" '.[] | select(.name | contains($n)) | .selfLink')
+    fi
+
     if [ $i = 0 ]; then
         /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].name = \"bigip\"" -i <DEWPOINT JOB ID>.yaml

@@ -1,0 +1,12 @@
+---
+# BIGIP Standalone Module Tests
+google-gdm-bigip-standalone-module-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+    run: "all"
+    parameters-files:
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters2.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters3.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters4.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters5.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters6.yaml"
