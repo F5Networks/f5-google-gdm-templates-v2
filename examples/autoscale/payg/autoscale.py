@@ -16,22 +16,22 @@ def generate_name(prefix, suffix):
 def create_network_deployment(context):
     """Create template deployment."""
     deployment = {
-        'name': 'network',
+        'name': 'f5',
         'type': '../../modules/network/network.py',
         'properties': {
-            'name': 'network0',
+            'name': 'f5',
             'uniqueString': context.properties['uniqueString'],
             'provisionPublicIp': context.properties['provisionPublicIp'],
             'region': context.properties['region'],
             'subnets': [{
                 'description': 'Subnetwork used for management',
-                'name': 'mgmt1',
+                'name': 'mgmt',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.0.0/24'
             },
             {
                 'description': 'Subnetwork used for application services',
-                'name': 'app1',
+                'name': 'app',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.1.0/24'
             }]
@@ -55,6 +55,13 @@ def create_access_deployment(context):
 
 def create_application_deployment(context):
     """Create template deployment."""
+    prefix = context.properties['uniqueString']
+    net_name = generate_name(prefix, 'f5-network')
+    subnet_name = generate_name(prefix, 'app-subnet')
+    depends_on_array = []
+    if not context.properties['update']:
+        depends_on_array.append(net_name)
+        depends_on_array.append(subnet_name)
     deployment = {
       'name': 'application',
       'type': '../../modules/application/application.py',
@@ -68,21 +75,12 @@ def create_application_deployment(context):
         'group': context.properties['group'],
         'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
-        'networkSelfLink': COMPUTE_URL_BASE + \
-            'projects/' + context.env['project'] + \
-                '/global/networks/' + \
-                    context.properties['uniqueString'] + \
-                        '-network0-network',
-        'subnetSelfLink': COMPUTE_URL_BASE + \
-            'projects/' + \
-                context.env['project'] + \
-                    '/regions/' + \
-                        context.properties['region'] + \
-                            '/subnetworks/' + \
-                                context.properties['uniqueString'] + \
-                                    '-app1-subnet',
+        'networkSelfLink': '$(ref.' + net_name + '.selfLink)',
+        'subnetSelfLink': '$(ref.' + subnet_name + '.selfLink)',
         'uniqueString': context.properties['uniqueString'],
-        'update': context.properties['update']
+      },
+      'metadata': {
+        'dependsOn': depends_on_array
       }
     }
     return deployment
@@ -90,6 +88,13 @@ def create_application_deployment(context):
 
 def create_bastion_deployment(context):
     """Create template deployment."""
+    prefix = context.properties['uniqueString']
+    net_name = generate_name(prefix, 'f5-network')
+    subnet_name = generate_name(prefix, 'mgmt-subnet')
+    depends_on_array = []
+    if not context.properties['update']:
+        depends_on_array.append(net_name)
+        depends_on_array.append(subnet_name)
     deployment = {
         'name': 'bastion',
         'type': '../../modules/bastion/bastion.py',
@@ -103,27 +108,33 @@ def create_bastion_deployment(context):
             'osImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts',
             'instanceTemplateVersion': 1,
             'instanceType': 'n1-standard-1',
-            'networkSelfLink': COMPUTE_URL_BASE + \
-                               'projects/' + context.env['project'] + \
-                               '/global/networks/' + \
-                               context.properties['uniqueString'] + \
-                               '-network0-network',
-            'subnetSelfLink': COMPUTE_URL_BASE + \
-                              'projects/' + \
-                              context.env['project'] + \
-                              '/regions/' + \
-                              context.properties['region'] + \
-                              '/subnetworks/' + \
-                              context.properties['uniqueString'] + \
-                              '-app1-subnet',
-            'uniqueString': context.properties['uniqueString'],
-            'update': context.properties['update']
+            'networkSelfLink': '$(ref.' + net_name + '.selfLink)',
+            'subnetSelfLink': '$(ref.' + subnet_name + '.selfLink)',
+            'uniqueString': context.properties['uniqueString']
+        },
+        'metadata': {
+            'dependsOn': depends_on_array
         }
     }
     return deployment
 
 def create_bigip_deployment(context):
     """ Create template deployment """
+    prefix = context.properties['uniqueString']
+    net_name = generate_name(prefix, 'f5-network')
+    subnet_name = generate_name(prefix, 'mgmt-subnet')
+    depends_on_array = []
+    if not context.properties['update']:
+        depends_on_array.append(net_name)
+        depends_on_array.append(subnet_name)
+        net_ref = '$(ref.' + net_name + '.selfLink)'
+        sub_ref = '$(ref.' + subnet_name + '.selfLink)'
+    else:
+        net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                  context.env['project'] + '/global/networks/' + net_name
+        sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
+                      '/regions/' + context.properties['region'] + \
+                              '/subnetworks/' + subnet_name
     deployment = {
         'name': 'bigip',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
@@ -141,12 +152,7 @@ def create_bigip_deployment(context):
           'instanceType': context.properties['instanceType'],
           'maxNumReplicas': context.properties['maxNumReplicas'],
           'minNumReplicas': context.properties['minNumReplicas'],
-          'networkSelfLink': COMPUTE_URL_BASE + \
-              'projects/' + \
-                  context.env['project'] + \
-                      '/global/networks/' + \
-                          context.properties['uniqueString'] + \
-                              '-network0-network',
+          'networkSelfLink': net_ref,
           'owner': context.properties['owner'],
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
@@ -155,23 +161,29 @@ def create_bigip_deployment(context):
               '-admin@' + \
                   context.env['project'] + \
                       '.iam.gserviceaccount.com',
-          'subnetSelfLink': COMPUTE_URL_BASE + \
-              'projects/' + \
-                  context.env['project'] + \
-                      '/regions/' + \
-                          context.properties['region'] + \
-                              '/subnetworks/' + \
-                                  context.properties['uniqueString'] + \
-                                      '-mgmt1-subnet',
+          'subnetSelfLink': sub_ref,
           'uniqueString': context.properties['uniqueString'],
-          'update': context.properties['update'],
           'utilizationTarget': context.properties['utilizationTarget']
+        },
+        'metadata': {
+            'dependsOn': depends_on_array
         }
     }
     return deployment
 
 def create_dag_deployment(context):
     """ Create template deployment """
+    prefix = context.properties['uniqueString']
+    net_name = generate_name(prefix, 'f5-network')
+    subnet_name = generate_name(prefix, 'mgmt-subnet')
+    target_pool_name = generate_name(prefix, 'bigip-tp')
+    instance_group_name = generate_name(prefix, 'bigip-igm')
+    depends_on_array = []
+    if not context.properties['update']:
+        depends_on_array.append(net_name)
+        depends_on_array.append(subnet_name)
+        depends_on_array.append(target_pool_name)
+        depends_on_array.append(instance_group_name)
     deployment = {
       'name': 'dag',
       'type': '../../modules/dag/dag.py',
@@ -183,26 +195,9 @@ def create_dag_deployment(context):
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'guiPortMgmt': 8443,
-        'instanceGroups': [COMPUTE_URL_BASE + \
-            'projects/' + \
-                context.env['project'] + \
-                    '/zones/' + \
-                        context.properties['availabilityZone'] + \
-                            '/instanceGroups/' + \
-                                context.properties['uniqueString'] + \
-                                    '-bigip-igm'],
-        'networkSelfLinkApp': COMPUTE_URL_BASE + \
-            'projects/' + \
-                context.env['project'] + \
-                    '/global/networks/' + \
-                        context.properties['uniqueString'] + \
-                            '-network0-network',
-        'networkSelfLinkMgmt': COMPUTE_URL_BASE + \
-            'projects/' + \
-                context.env['project'] + \
-                    '/global/networks/' + \
-                        context.properties['uniqueString'] + \
-                            '-network0-network',
+        'instanceGroups': '$(ref.' + instance_group_name + '.selfLink)',
+        'networkSelfLinkApp': '$(ref.' + net_name + '.selfLink)',
+        'networkSelfLinkMgmt': '$(ref.' + net_name + '.selfLink)',
         'numberOfForwardingRules': 1,
         'numberOfInternalForwardingRules': 0,
         'numberOfNics': 1,
@@ -211,16 +206,11 @@ def create_dag_deployment(context):
         'restrictedSrcAddressApp': context.properties['restrictedSrcAddressApp'],
         'restrictedSrcAddressAppInternal': context.properties['restrictedSrcAddressAppInternal'],
         'restrictedSrcAddressMgmt': context.properties['restrictedSrcAddressMgmt'],
-        'targetPoolSelfLink': COMPUTE_URL_BASE + \
-            'projects/' + \
-                context.env['project'] + \
-                    '/regions/' + \
-                        context.properties['region'] + \
-                            '/targetPools/' + \
-                                context.properties['uniqueString'] + \
-                                    '-bigip-tp',
-        'uniqueString': context.properties['uniqueString'],
-        'update': context.properties['update']
+        'targetPoolSelfLink': '$(ref.' + target_pool_name + '.selfLink)',
+        'uniqueString': context.properties['uniqueString']
+      },
+      'metadata': {
+        'dependsOn': depends_on_array
       }
     }
     return deployment
