@@ -21,7 +21,7 @@ case "<PROVISION PUBLIC IP>" in
     fi
     # TODO: hardcoded bastion host - in us-west-1 until bastion host creation
     # along with the test can be automated
-    BASTION_IP=$(gcloud compute instances describe bastion-<DEWPOINT JOB ID> --zone <AVAILABILITY ZONE> --format json | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP')
+    BASTION_IP=$(gcloud compute instances describe <UNIQUESTRING>-bastion --zone <AVAILABILITY ZONE> --format json | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP')
     APP_IP=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
     APP_IP_INTERNAL=$(get_app_ip <STACK NAME> <AVAILABILITY ZONE> private)
     ;;

@@ -94,7 +94,7 @@ def generate_config(context):
         }
     if not context.properties['provisionPublicIp']:
         resources.append({
-            'name': generate_name(context.properties['uniqueString'], 'router'),
+            'name': generate_name(context.properties['uniqueString'], name + '-router'),
             'type': 'compute.v1.router',
             'properties':
                 {
