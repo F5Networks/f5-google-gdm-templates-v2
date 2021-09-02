@@ -30,8 +30,32 @@ This Google Deployment Manager template creates an IAM Service Account to be use
 
 | Parameter | Required | Description |
 | --- | --- | --- |
-| solutionType | Yes | Type of solution you want to deploy - standard, secret, storageBucket, secretStorage, failover |
+| solutionType | Yes | Type of solution you want to deploy - standard, secret, storageBucket, secretStorage, failover, custom |
 | uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
+| includedPermissions | Yes | A space-delimited list of permissions to assign to the custom role. Required when solutionType is 'custom'. See example below for more information. |
+
+#### Example template when using custom solutionType
+The following example will create a role with custom permissions.
+
+```yaml
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 0.1.0s
+
+imports:
+  - path: access.py
+resources:
+  - name: access
+    type: access.py
+    properties:
+      solutionType: custom
+      uniqueString: myApp
+      includedPermissions:
+        - compute.instances.create
+          compute.instances.get
+          compute.instances.list
+```
 
 ### Template Outputs
 

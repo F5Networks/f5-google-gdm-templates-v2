@@ -16,12 +16,14 @@ required:
 
 properties:
   solutionType:
-    description: Type of solution you want to deploy - standard, secret, storage, remoteLogging, failover 
+    description: Type of solution you want to deploy - standard, secret, storage, remoteLogging, failover, custom
     default: 'standard'
     type: string
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
+  includedPermissions:
+    description: A space-delimited list of permissions to assign to the custom role. Required when solutionType is 'custom'.
 
 outputs:
   properties:

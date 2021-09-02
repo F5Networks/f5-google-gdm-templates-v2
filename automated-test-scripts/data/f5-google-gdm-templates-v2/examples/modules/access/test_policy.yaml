@@ -4,4 +4,7 @@ google-gdm-access-module-test:
     test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/access/daily_test.yaml"
     run: "all"
     parameters-files:
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/parameters.yaml"
+      # default solution type
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/prepub_parameters.yaml"
+      # custom role permissions
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/prepub_parameters1.yaml"

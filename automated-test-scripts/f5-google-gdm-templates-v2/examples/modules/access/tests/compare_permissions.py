@@ -54,6 +54,12 @@ if sys.argv[1] in ['storage', 'remoteLogging', 'failover']:
         'storage.buckets.delete',
         'storage.buckets.list'
     ]
+if sys.argv[1] in ['custom']:
+    included_permissions = [
+        'compute.instances.create',
+        'compute.instances.get',
+        'compute.instances.list'
+    ]
 
 set_included_permissions = set(included_permissions)
 set_found_permissions = set(found_permissions)
