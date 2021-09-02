@@ -20,10 +20,64 @@ def generate_name(prefix, suffix, exclude_chars=None):
         return prefix + suffix
     return prefix + "-" + suffix
 
+def create_service_account(context, service_account_name):
+    """ Create service account resource """
+    optional_properties = [
+        'accountId'
+    ]
+    properties = {}
+    properties.update({
+        'accountId': ''.join([context.properties['uniqueString'], '-admin']),
+        'displayName': service_account_name
+    })
+    for config in context.properties:
+        properties.update(
+            {
+                p: context.properties[p]
+                for p in optional_properties
+                if p in config
+            }
+        )
+    service_account = {
+        'name': service_account_name,
+        'type': 'iam.v1.serviceAccount',
+        'properties': properties
+    }
+    return service_account
 
-def create_custom_role(context, role_name, solution_type):
-    """ Build custom role """
+def create_custom_role(context, role_name):
+    """ Create custom role resource """
+    optional_properties = [
+        'description'
+    ]
+    properties = {}
+    properties.update({
+        'parent': ''.join(['projects/', context.env['project']]),
+        'roleId': role_name,
+        'role': {
+            'title': role_name,
+            'description': 'A custom role for the deployment',
+            'includedPermissions': create_role_permissions(context, context.properties['solutionType'])
+        }
+    })
+    for config in context.properties:
+        properties.update(
+            {
+                p: context.properties[p]
+                for p in optional_properties
+                if p in config
+            }
+        )
+    custom_role = {
+        'name': role_name,
+        'type': 'gcp-types/iam-v1:projects.roles',
+        'properties': properties
+    }
+    return custom_role
 
+def create_role_permissions(context, solution_type):
+    """ Create permissions list """
+    # Build role permissions based on solutionType
     if solution_type in ['standard', 'secret', 'storage',
                          'remoteLogging', 'failover']:
         included_permissions = [
@@ -70,77 +124,48 @@ def create_custom_role(context, role_name, solution_type):
             'storage.buckets.delete',
             'storage.buckets.list'
         ]
+    if solution_type in ['custom']:
+        included_permissions = context.properties['includedPermissions'].split()
+    return included_permissions
 
-    custom_role = {
-        'name': role_name,
-        'type': 'gcp-types/iam-v1:projects.roles',
-        'properties': {
-            'parent': ''.join(['projects/', context.env['project']]),
-            'roleId': role_name,
-            'role': {
-                'title': role_name,
-                'description': 'A custom role for the deployment',
-                'includedPermissions': included_permissions
-            }
-        }
+def create_binding(context, service_account_name, role_name):
+    """ Bind role to service account """
+    properties = {}
+    properties.update({
+        'resource': context.env['project'],
+        'role': 'projects/' + context.env['project'] + '/roles/' + role_name,
+        'member': 'serviceAccount:$(ref.' + service_account_name + '.email)'
+    })
+    binding = {
+        'name': ''.join([context.properties['uniqueString'], '-bigip-bind-iam-policy']),
+        'type': 'gcp-types/cloudresourcemanager-v1:virtual.projects.iamMemberBinding',
+        'properties': properties
     }
-    return custom_role
-
+    return binding
 
 def generate_config(context):
     """Entry point for the deployment resources."""
-    name = context.properties.get('name') or \
-        context.env['name']
     service_account_name = generate_name(context.properties['uniqueString'],
                                          'bigip-sa')
     role_name = generate_name(context.properties['uniqueString'],
                               'bigipaccessrole',
                               ['-'])
-
-    solution_type = context.properties['solutionType']
-
-    resources = [
-        create_custom_role(context, role_name, solution_type)
+    resources = [create_service_account(context, service_account_name)] + \
+                    [create_custom_role(context, role_name)] + \
+                        [create_binding(context, service_account_name, role_name)]
+    outputs = [
+        {
+            'name': 'serviceAccountEmail',
+            'value': '$(ref.' + service_account_name + '.email)'
+        },
+        {
+            'name': 'customRoleName',
+            'value': '$(ref.' + role_name + '.name)'
+        },
+        {
+            'name': 'customRolePermissions',
+            'value': '$(ref.' + role_name + '.includedPermissions)'
+        }
     ]
 
-    resources.append(
-        {
-            'name': service_account_name,
-            'type': 'iam.v1.serviceAccount',
-            'properties': {
-                'accountId': ''.join([context.properties['uniqueString'], '-admin']),
-                'displayName': service_account_name
-            }
-        }
-    )
-
-    resources.append(
-        {
-            'name': ''.join([context.properties['uniqueString'], '-bigip-bind-iam-policy']),
-            'type': 'gcp-types/cloudresourcemanager-v1:virtual.projects.iamMemberBinding',
-            'properties': {
-                'resource': context.env['project'],
-                'role': 'projects/' + context.env['project'] + '/roles/' + role_name,
-                'member': 'serviceAccount:$(ref.' + service_account_name + '.email)'
-            }
-        }
-    )
-
-    return {
-        'resources': resources,
-        'outputs':
-            [
-                {
-                    'name': 'serviceAccountEmail',
-                    'value': '$(ref.' + service_account_name + '.email)'
-                },
-                {
-                    'name': 'customRoleName',
-                    'value': '$(ref.' + role_name + '.name)'
-                },
-                {
-                    'name': 'customRolePermissions',
-                    'value': '$(ref.' + role_name + '.includedPermissions)'
-                }
-            ]
-    }
+    return {'resources': resources, 'outputs': outputs}
