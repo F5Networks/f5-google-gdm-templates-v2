@@ -2,32 +2,77 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
 # Version 0.1.0s
-
 imports:
   - path: dag.py
 resources:
   - name: dag-py
     properties:
-      applicationPort: '80'
-      applicationVipPort: '80'
-      guiPortMgmt: 443
-      instanceGroups:
-        - <HTTPS_SELF_LINK>
-      instances:
-        - <HTTPS_SELF_LINK>
-      networkSelfLinkApp: <HTTPS_SELF_LINK>
-      networkSelfLinkExternal: <HTTPS_SELF_LINK>
-      networkSelfLinkInternal: <HTTPS_SELF_LINK>
-      networkSelfLinkMgmt: <HTTPS_SELF_LINK>
-      numberOfForwardingRules: 1
-      numberOfInternalForwardingRules: 1
-      region: us-west1
-      restrictedSrcAddressApp: 1.1.1.0/24
-      restrictedSrcAddressInternalApp: 192.168.1.0/24
-      restrictedSrcAddressMgmt: 2.2.2.0/24
-      subnetSelfLinkApp: <HTTPS_SELF_LINK>
-      subnetSelfLinkExternal: <HTTPS_SELF_LINK>
-      subnetSelfLinkInternal: <HTTPS_SELF_LINK>
-      subnetSelfLinkMgmt: <HTTPS_SELF_LINK>
-      uniqueString: myUniqStr
+      firewalls:
+        - allowed:
+            - IPProtocol: TCP
+              ports:
+                - 22
+                - 8443
+                - 443
+          description: Allow ssh and 443 to management
+          name: my-unique-mgmtfw
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/my-project/global/networks/my-network
+          targetTags:
+            - mgmtfw
+        - allowed:
+            - IPProtocol: TCP
+              ports:
+                - 8443
+                - 443
+          description: Allow web traffic to public network
+          name: my-unique-appfw
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/my-project/global/networks/my-network
+          targetTags:
+            - appfw
+      forwardingRules:
+        - name: my-unique-fwrule1
+          region: us-west1
+          IPProtocol: TCP
+          target: >-
+            https://www.googleapis.com/compute/v1/projects/my-project/regions/us-west1/targetPools/my-tp
+          loadBalancingScheme: EXTERNAL
+      backendServices:
+        - backends:
+            - group: >-
+                https://www.googleapis.com/compute/v1/projects/my-project/regions/us-west1/instanceGroups/my-bigip-ig
+          description: Backend service used for internal LB
+          healthChecks:
+            - $(ref.my-unique-tcp-healthcheck.selfLink)
+          loadBalancingScheme: INTERNAL
+          name: myapp-bes
+          network: >-
+            https://www.googleapis.com/compute/v1/projects/my-project/global/networks/my-network
+          protocol: TCP
+          region: us-west1
+          sessionAffinity: CLIENT_IP
+      healthChecks:
+        - checkIntervalSec: 5
+          description: my tcp healthcheck
+          name: my-unique-tcp-healthcheck
+          tcpHealthCheck:
+            port: 44000
+          timeoutSec: 5
+          type: TCP
+        - checkIntervalSec: 5
+          description: my http healthcheck
+          httpHealthCheck:
+            port: 80
+          name: my-unique-http-healthcheck
+          timeoutSec: 5
+          type: HTTP
+        - checkIntervalSec: 5
+          description: my https healthcheck
+          httpsHealthCheck:
+            port: 443
+          name: my-unique-https-healthcheck
+          timeoutSec: 5
+          type: HTTPS
+      uniqueString: my-unique
     type: dag.py

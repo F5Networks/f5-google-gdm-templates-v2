@@ -3,8 +3,8 @@
 #  replayEnabled = true
 #  replayTimeout = 3
 
-mgmtFw=$(gcloud compute firewall-rules list --filter="name~'<UNIQUESTRING>-mgmt-fw'" --format=json | jq .[0])
-appFw=$(gcloud compute firewall-rules list --filter="name~'<UNIQUESTRING>-app-vip-fw'" --format=json | jq .[0])
+mgmtFw=$(gcloud compute firewall-rules list --filter="name~'<UNIQUESTRING>-mgmtfw'" --format=json | jq .[0])
+appFw=$(gcloud compute firewall-rules list --filter="name~'<UNIQUESTRING>-appvipfw'" --format=json | jq .[0])
 
 # Validating that mgmtFw and appFw created as expected
 if [[ ! -z $mgmtFw && ! -z $appFw ]]; then

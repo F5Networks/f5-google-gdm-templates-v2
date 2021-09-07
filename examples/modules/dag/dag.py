@@ -8,177 +8,195 @@
 from collections import OrderedDict
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
+def populate_properties(context, required_properties, optional_properties):
+    properties = {}
+    for config in context:
+        properties.update(
+            {
+                p: context[p]
+                for p in required_properties
+            }
+        )
+        properties.update(
+            {
+                p: context[p]
+                for p in optional_properties
+                if p in config
+            }
+        )
+    return properties
 
-def create_firewall_rule(context, config):
+
+def create_firewall_rule(context):
     """Create firewall rule."""
-    ports = config['ports'].split()
-    ports = list(OrderedDict.fromkeys(ports))
-    source_list = config['source'].split()
-    source_list = list(OrderedDict.fromkeys(source_list))
+    # Build firewall property list
+    required_properties = [
+        'name'
+    ]
+    optional_properties = [
+        'network',
+        'description',
+        'tags',
+        'priority',
+        'sourceRanges',
+        'destinationRanges',
+        'sourceTags',
+        'targetTags',
+        'sourceServiceAccounts',
+        'targetServiceAccounts',
+        'allowed',
+        'denied',
+        'direction',
+        'logConfig',
+        'disabled'
+    ]
+    properties = populate_properties(context, required_properties, optional_properties)
+
     firewall_rule = {
-        'name': generate_name(context.properties['uniqueString'], config['prefix']),
+        'name': context.get('name'),
         'type': 'compute.v1.firewall',
-        'properties': {
-            'network': config['network'],
-            'sourceRanges': source_list,
-            'targetTags': [context.properties['uniqueString'] + '-' + config['prefix']],
-            'allowed': [{
-                "IPProtocol": "TCP",
-                "ports": ports,
-            }]
-        }
+        'properties': properties
     }
     return firewall_rule
 
 
-def create_health_check(context, source):
+def create_health_check(context):
     """Create health check."""
-    applicaton_port = str(context.properties['applicationVipPort'])
-    applicaton_port = applicaton_port.split()[0]
-    if source == "internal":
-        health_check = {
-            'name': context.properties['uniqueString'] + '-' + source + '-hc',
-            'type': 'compute.v1.healthCheck',
-            'properties': {
-                'type': 'TCP',
-                'tcpHealthCheck': {
-                    'port': int(applicaton_port)
-                }
-            }
-        }
-    else:
-        health_check = {
-            'name': context.properties['uniqueString'] + '-' + source + '-hc',
-            'type': 'compute.v1.httpHealthCheck',
-            'properties': {
-                'port': int(applicaton_port)
-            }
-        }
-
+    # Build health check property list
+    required_properties = [
+        'name'
+    ]
+    optional_properties = [
+        'description',
+        'checkIntervalSec',
+        'timeoutSec',
+        'unhealthyThreshold',
+        'healthyThreshold',
+        'tcpHealthCheck',
+        'sslHealthCheck',
+        'httpHealthCheck',
+        'httpsHealthCheck',
+        'http2HealthCheck',
+        'grpcHealthCheck',
+        'logConfig',
+        'type'
+    ]
+    properties = populate_properties(context, required_properties, optional_properties)
+    health_check = {
+        'name': context['name'],
+        'type': 'compute.v1.healthCheck',
+        'properties': properties
+    }
     return health_check
 
 
-def create_target_pool(context):
-    """Create target pool."""
-    target_pool = {
-        'name': context.properties['uniqueString'] + '-tp',
-        'type': 'compute.v1.targetPool',
-        'properties': {
-            'region': context.properties['region'],
-            'sessionAffinity': 'CLIENT_IP',
-            'instances': context.properties['instances'],
-            'healthChecks': ['$(ref.' + context.properties['uniqueString'] + '-external-hc.selfLink)'],
-        }
-    }
-    return target_pool
-
-
-def create_forwarding_rule(context, name):
+def create_forwarding_rule(context):
     """Create forwarding rule."""
+    required_properties = [
+        'name',
+        'region'
+    ]
+    optional_properties = [
+        'description',
+        'IPAddress',
+        'IPProtocol',
+        'portRange',
+        'ports',
+        'target',
+        'loadBalancingScheme',
+        'subnetwork',
+        'network',
+        'backendService',
+        'serviceDirectoryRegistrations',
+        'serviceLabel',
+        'networkTier',
+        'labels',
+        'labelFingerprint',
+        'ipVersion',
+        'fingerprint',
+        'allPorts',
+        'allowGlobalAccess',
+        'metadataFilters',
+        'isMirroringCollector',
+        'pscConnectionStatus'
+    ]
+    properties = populate_properties(context, required_properties, optional_properties)
     forwarding_rule = {
-        'name': name,
+        'name': context['name'],
         'type': 'compute.v1.forwardingRule',
-        'properties': {
-            'region': context.properties['region'],
-            'IPProtocol': 'TCP',
-            'target': context.properties['targetPoolSelfLink'],
-            'loadBalancingScheme': 'EXTERNAL',
-            'labels': {
-                'application': context.properties['application'],
-                'cost': context.properties['cost'],
-                'environment': context.properties['environment'],
-                'group': context.properties['group'],
-                'owner': context.properties['owner']
-            }
-        }
+        'properties': properties
     }
     return forwarding_rule
-
-
-def create_int_forwarding_rule(context, name):
-    """Create internal forwarding rule."""
-    ports = str(context.properties['applicationPort']).split()
-    int_forwarding_rule = {
-        'name': name,
-        'type': 'compute.v1.forwardingRule',
-        'properties': {
-            'description': 'Internal forwarding rule used for BIG-IP LB',
-            'region': context.properties['region'],
-            'IPProtocol': 'TCP',
-            'ports': ports,
-            'backendService': '$(ref.' + context.properties['uniqueString'] + '-bigip-bes.selfLink)',
-            'loadBalancingScheme': 'INTERNAL',
-            'network': context.properties['networkSelfLinkInternal'],
-            'subnetwork': context.properties['subnetSelfLinkInternal'],
-            'labels': {
-                'application': context.properties['application'],
-                'cost': context.properties['cost'],
-                'environment': context.properties['environment'],
-                'group': context.properties['group'],
-                'owner': context.properties['owner']
-            },
-        }
-    }
-    return int_forwarding_rule
 
 
 # move to bigip-autoscale
 def create_backend_service(context):
     """Create backend service."""
+    required_properties = [
+        'name',
+        'region'
+    ]
+    optional_properties = [
+        'description',
+        'backends',
+        'healthChecks',
+        'timeoutSec',
+        'port',
+        'protocol',
+        'fingerprint',
+        'portName',
+        'enableCDN',
+        'sessionAffinity',
+        'affinityCookieTtlSec',
+        'failoverPolicy',
+        'loadBalancingScheme',
+        'connectionDraining',
+        'iap',
+        'cdnPolicy',
+        'customRequestHeaders',
+        'customResponseHeaders',
+        'logConfig',
+        'securitySettings',
+        'localityLbPolicy',
+        'consistentHash',
+        'circuitBreakers',
+        'outlierDetection',
+        'network',
+        'maxStreamDuration'
+    ]
+    properties = populate_properties(context, required_properties, optional_properties)
     backend_service = {
-        'name': context.properties['uniqueString'] + '-bigip-bes',
+        'name': context['name'],
         'type': 'compute.v1.regionBackendService',
-        'properties': {
-            'description': 'Backend service used for internal LB',
-            "backends": [
-                {
-                    "group": context.properties['instanceGroups'][0],
-                }
-            ],
-            'healthChecks': ['$(ref.' + context.properties['uniqueString'] + '-internal-hc.selfLink)'],
-            'sessionAffinity': 'CLIENT_IP',
-            'loadBalancingScheme': 'INTERNAL',
-            'protocol': 'TCP',
-            'region': context.properties['region'],
-            'network': context.properties['networkSelfLinkInternal']
-        },
+        'properties': properties
     }
     return backend_service
 
 
-def create_firewall_rule_outputs(context, config):
+def create_firewall_rule_outputs(firewall_rule):
     """Create firewall rule targetTag outputs."""
     firewall_rule_target_tag_outputs = {
-        'name': 'targetTag:' + str(config['prefix']),
-        'value': str(context.properties['uniqueString']) + str(config['prefix'])
+        'name': firewall_rule['name'],
+        'value': firewall_rule['name']
     }
     return firewall_rule_target_tag_outputs
 
 
-def create_forwarding_rule_outputs(name, number_postfix):
+def create_forwarding_rule_outputs(forwarding_rule):
     """Create forwarding rule outputs."""
     forwarding_rule_outputs = {
-        'name': 'appTrafficAddress' + number_postfix,
-        'value': '$(ref.' + name + '.IPAddress)'
+        'name': forwarding_rule['name'],
+        'value': '$(ref.' + forwarding_rule['name'] + '.IPAddress)'
     }
     return forwarding_rule_outputs
 
 
-def create_internal_forwarding_rule_outputs(name, number_postfix):
-    """Create forwarding rule outputs."""
-    forwarding_rule_outputs = {
-        'name': 'internalTrafficAddress' + number_postfix,
-        'value': '$(ref.' + name + '.IPAddress)'
-    }
-    return forwarding_rule_outputs
-
-
-def create_backend_service_output(context):
+def create_backend_service_output(backend_service):
     """Create backend service outputs."""
     backend_service = {
         'name': 'backendService',
-        'resourceName': context.properties['uniqueString'] + '-bigip-bes',
-        'value': '$(ref.' + context.properties['uniqueString'] + '-bigip-bes.selfLink)',
+        'resourceName': backend_service['name'],
+        'value': '$(ref.' + backend_service['name'] + '.selfLink)',
     }
     return backend_service
 
@@ -191,110 +209,29 @@ def generate_name(prefix, suffix):
 def generate_config(context):
     """Entry point for the deployment resources."""
     name = context.properties.get('name') or \
-        context.env['name']
+           context.env['name']
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
-
-    forwarding_rules = []
-    forwarding_rule_outputs = []
-    external_resources = []
-
-    int_forwarding_rules = []
-    internal_resources = []
-
-    if context.properties['numberOfForwardingRules'] != 0:
-        for i in list(range(int(context.properties['numberOfForwardingRules']))):
-            forwarding_rules = forwarding_rules \
-                + [create_forwarding_rule(
-                    context,
-                    context.properties['uniqueString'] + '-fr' + str(i) + '-fr'
-                )]
-            forwarding_rule_outputs = forwarding_rule_outputs \
-                + [create_forwarding_rule_outputs(
-                    context.properties['uniqueString'] + '-fr' + str(i) + '-fr',
-                    str(i)
-                )]
-
-    if context.properties['numberOfInternalForwardingRules'] != 0:
-        for i in list(range(int(context.properties['numberOfInternalForwardingRules']))):
-            int_forwarding_rules = int_forwarding_rules \
-                + [create_int_forwarding_rule(
-                    context,
-                    context.properties['uniqueString'] + '-intfr' + str(i) + '-fr'
-                )]
-            forwarding_rule_outputs = forwarding_rule_outputs \
-                + [create_internal_forwarding_rule_outputs(
-                    context.properties['uniqueString'] + '-intfr' + str(i) + '-fr',
-                    str(i)
-                )]
-        internal_resources = [create_backend_service(context)]
-        internal_resources = internal_resources \
-            + [create_health_check(context, "internal")]
-
-    # mgmt access
-    mgmt_rule_config = {
-        'ports': str(context.properties['guiPortMgmt']) + ' ' + '22',
-        'source': str(context.properties['restrictedSrcAddressMgmt']),
-        'prefix': 'mgmt-fw',
-        'network': context.properties['networkSelfLinkMgmt']
-    }
-
-    # external VIP access
-    app_ext_vip_rule_config = {
-        'ports': str(context.properties['applicationVipPort']),
-        'source': str(context.properties['restrictedSrcAddressApp']),
-        'prefix': 'app-vip-fw',
-        'network': context.properties['networkSelfLinkExternal'] \
-            if context.properties['numberOfNics'] != 1 \
-                else context.properties['networkSelfLinkMgmt']
-    }
-
-    # app server access
-    app_rule_config = {
-        'ports': str(context.properties['applicationPort']),
-        'source': str(context.properties['restrictedSrcAddressAppInternal']),
-        'prefix': 'app-int-fw',
-        'network': context.properties['networkSelfLinkApp']
-    }
-
-    # internal VIP access
-    app_int_vip_rule_config = {
-        'ports': str(context.properties['applicationPort']),
-        'source': str(context.properties['restrictedSrcAddressAppInternal']),
-        'prefix': 'app-intvip-fw',
-        'network': context.properties['networkSelfLinkInternal'] \
-            if context.properties['numberOfNics'] != 1 \
-                else context.properties['networkSelfLinkMgmt']
-    }
-
-    resources = [
-        create_firewall_rule(context, mgmt_rule_config),
-        create_firewall_rule(context, app_ext_vip_rule_config),
-        create_firewall_rule(context, app_rule_config),
-    ]
-    if context.properties['numberOfNics'] >= 3:
-        resources = resources + [create_firewall_rule(context, app_int_vip_rule_config)]
-
-    # add external lb resources when numberOfForwardingRules not equal to 0
-    resources = resources + external_resources
-    # add internal lb resources when numberOfIntForwardingRules not equal to 0
-    resources = resources + internal_resources
-    # add forwarding rules
-    resources = resources + forwarding_rules
-    resources = resources + int_forwarding_rules
-    # add firewall target tag outputs
-    firewall_rule_target_tag_outputs = [create_firewall_rule_outputs(context, mgmt_rule_config)] + [create_firewall_rule_outputs(context, app_ext_vip_rule_config)] + [create_firewall_rule_outputs(context, app_rule_config)]
+    resources = []
     outputs = [
         {
             'name': 'dagName',
             'value': deployment_name
-        },
-        {
-            'name': 'region',
-            'value': context.properties['region']
         }
     ]
-    outputs = outputs + forwarding_rule_outputs + firewall_rule_target_tag_outputs
+
+    for firewall in context.properties.get('firewalls', []):
+        resources.append(create_firewall_rule(firewall))
+
+    for health_check in context.properties.get('healthChecks', []):
+        resources.append(create_health_check(health_check))
+
+    for forwarding_rule in context.properties.get('forwardingRules', []):
+        resources.append(create_forwarding_rule(forwarding_rule))
+
+    for backend_service in context.properties.get('backendServices', []):
+        resources.append(create_backend_service(backend_service))
+        outputs.append(create_backend_service_output(backend_service))
 
     return {
         'resources':

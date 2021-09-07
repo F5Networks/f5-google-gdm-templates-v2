@@ -171,10 +171,13 @@ def create_dag_deployment(context):
     int_net_name = generate_name(prefix, 'internal2-network')
     if context.properties['numNics'] is 1:
         app_net_name = generate_name(prefix, 'mgmt-network')
+        int_net_name = generate_name(prefix, 'mgmt-network')
     elif context.properties['numNics'] is 2:
         app_net_name = generate_name(prefix, 'external-network')
+        int_net_name = generate_name(prefix, 'external-network')
     else:
-        app_net_name = generate_name(prefix, 'internal' + \
+        app_net_name = generate_name(prefix, 'external-network')
+        int_net_name = generate_name(prefix, 'internal' + \
             str(context.properties['numNics'] - 1) + '-network')
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
@@ -190,27 +193,81 @@ def create_dag_deployment(context):
       'name': 'dag',
       'type': '../modules/dag/dag.py',
       'properties': {
-        'application': context.properties['application'],
-        'applicationPort': '80 443',
-        'applicationVipPort': '80 443',
-        'cost': context.properties['cost'],
-        'environment': context.properties['environment'],
-        'group': context.properties['group'],
-        'guiPortMgmt': mgmt_port,
-        'networkSelfLinkApp': '$(ref.' + app_net_name + '.selfLink)',
-        'networkSelfLinkExternal': '$(ref.' + ext_net_name + '.selfLink)',
-        'networkSelfLinkInternal': '$(ref.' + int_net_name + '.selfLink)',
-        'networkSelfLinkMgmt': '$(ref.' + mgmt_net_name + '.selfLink)',
-        'numberOfForwardingRules': 0,
-        'numberOfInternalForwardingRules': 0,
-        'numberOfNics': context.properties['numNics'],
-        'owner': context.properties['owner'],
-        'region': context.properties['region'],
-        'restrictedSrcAddressApp': context.properties['restrictedSrcAddressApp'],
-        'restrictedSrcAddressAppInternal': context.properties['restrictedSrcAddressAppInternal'],
-        'restrictedSrcAddressMgmt': context.properties['restrictedSrcAddressMgmt'],
-        'uniqueString': context.properties['uniqueString']
-      },
+            'firewalls' : [
+                {
+                    'allowed': [
+                        {
+                            'IPProtocol': 'TCP',
+                            'ports': [ 22, mgmt_port , 443 ]
+                        }
+                    ],
+                    'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
+                    'name': context.properties['uniqueString'] + '-mgmt-fw',
+                    'network': '$(ref.' + mgmt_net_name + '.selfLink)',
+                    'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] ],
+                    'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
+                },
+                {
+                    'allowed': [
+                        {
+                            'IPProtocol': 'TCP',
+                            'ports': [ 80 , 443 ]
+                        }
+                    ],
+                    'description': 'Allow web traffic to internal app network',
+                    'name': context.properties['uniqueString'] + '-app-int-fw',
+                    'network': '$(ref.' + int_net_name + '.selfLink)',
+                    'sourceRanges': [ context.properties['restrictedSrcAddressAppInternal'] ],
+                    'targetTags': [ generate_name(prefix, 'app-int-fw'), generate_name(prefix, 'app-int-vip-fw') ]
+                },
+                {
+                    'allowed': [
+                        {
+                            'IPProtocol': 'TCP',
+                            'ports': [ 80, 443 ]
+                        }
+                    ],
+                    'description': 'Allow web traffic to public network',
+                    'name': context.properties['uniqueString'] + '-app-vip-fw',
+                    'network': '$(ref.' + app_net_name + '.selfLink)',
+                    'sourceRanges': [ context.properties['restrictedSrcAddressApp'] ],
+                    'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
+                }
+            ],
+            'healthChecks': [
+                {
+                    'checkIntervalSec': 5,
+                    'description': 'my tcp healthcheck',
+                    'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                    'tcpHealthCheck': {
+                        'port': 44000
+                    },
+                    'timeoutSec': 5,
+                    'type': 'TCP'
+                },
+                {
+                    'checkIntervalSec': 5,
+                    'description': 'my http healthcheck',
+                    'name': context.properties['uniqueString'] + '-http-healthcheck',
+                    'httpHealthCheck': {
+                        'port': 80
+                    },
+                    'timeoutSec': 5,
+                    'type': 'HTTP'
+                },
+                {
+                    'checkIntervalSec': 5,
+                    'description': 'my https healthcheck',
+                    'name': context.properties['uniqueString'] + '-https-healthcheck',
+                    'httpsHealthCheck': {
+                        'port': 443
+                    },
+                    'timeoutSec': 5,
+                    'type': 'HTTPS'
+                }
+            ],
+            'uniqueString': context.properties['uniqueString']
+        },
       'metadata': {
         'dependsOn': depends_on_array
       }
