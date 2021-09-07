@@ -65,35 +65,74 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-t
 /usr/bin/yq e ".resources[0].type = \"dag.py\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.instances[0] = \"$instances\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+# Adding Firewalls
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[0] = 22" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[1] = 8443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[2] = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].description = \"Allow ssh and 443 to management\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].name = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[0] = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.guiPortMgmt = <MGMT PORT>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.applicationVipPort = \"<APP PORT>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.applicationPort = \"<APP INTERNAL PORT>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].ports[0] = 8443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].ports[1] = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].description = \"Allow web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].name = \"<UNIQUESTRING>-appfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[0] = \"<UNIQUESTRING>-appfw\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.numberOfNics = <NUMBER NICS>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].ports[0] = <APP PORT>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].description = \"Allow app web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].name = \"<UNIQUESTRING>-appvipfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].targetTags[0] = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkMgmt = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkMgmt = \"$mgmtSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkApp = \"$appNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkApp = \"$appSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkExternal = \"$externalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkExternal = \"$externalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkInternal = \"$internalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkInternal = \"$internalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i <DEWPOINT JOB ID>.yaml
+# Adding Forwarding Rule
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fwrule1\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].target = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].loadBalancingScheme = \"EXTERNAL\"" -i <DEWPOINT JOB ID>.yaml
+
+# Adding Backend Service
+/usr/bin/yq e ".resources[0].properties.backendServices[0].backends[0].group = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].description = \"Backend service used for internal LB\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].healthChecks[0] = \"\$(ref.<UNIQUESTRING>-tcp-healthcheck.selfLink)\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].loadBalancingScheme = \"INTERNAL\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].name = \"<UNIQUESTRING>-bes\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].protocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].sessionAffinity = \"CLIENT_IP\"" -i <DEWPOINT JOB ID>.yaml
+
+# Adding Health Checks
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].description = \"my tcp healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].name = \"<UNIQUESTRING>-tcp-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].tcpHealthCheck.port = 44000" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].type = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].description = \"my http healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].name = \"<UNIQUESTRING>-http-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].httpHealthCheck.port = 80" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].type = \"HTTP\"" -i <DEWPOINT JOB ID>.yaml
+
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].description = \"my https healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].name = \"<UNIQUESTRING>-https-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].httpsHealthCheck.port = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].type = \"HTTPS\"" -i <DEWPOINT JOB ID>.yaml
 
 # print out config file
 /usr/bin/yq e <DEWPOINT JOB ID>.yaml

@@ -4,7 +4,7 @@
 #  replayTimeout = 3
 
 forwardingRuleCountCreated=$(gcloud compute forwarding-rules list --filter="name~'<UNIQUESTRING>'" --format=json | jq length)
-forwardingRuleCountRequested=$(( <NUM FORWARDING RULES> + <NUM INTERNAL FORWARDING RULES> ))
+forwardingRuleCountRequested=$(( <NUM FORWARDING RULES> ))
 
 internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network3-network" '.[] | select(.name | contains($n)) | .selfLink')
 internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet3-subnet" '.[] | select(.name | contains($n)) | .selfLink')

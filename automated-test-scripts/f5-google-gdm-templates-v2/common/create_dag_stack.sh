@@ -30,22 +30,13 @@ appSubnetSelfLink=''
 instances=''
 instanceGroupSelfLink=''
 
-if [ <NUMBER NICS> -lt 2 ]; then
-    mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
-    mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
+mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
+mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 
-    appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network1-network" '.[] | select(.name | contains($n)) | .selfLink')
-    appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet1-subnet" '.[] | select(.name | contains($n)) | .selfLink')
-fi
-
+appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network1" '.[] | select(.name | contains($n)) | .selfLink')
+appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet1-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 
 if [ <NUMBER NICS> -ge 2 ]; then
-    mgmtNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network0" '.[] | select(.name | contains($n)) | .selfLink')
-    mgmtSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet0" '.[] | select(.name | contains($n)) | .selfLink')
-
-    appNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<DEWPOINT JOB ID>-network1" '.[] | select(.name | contains($n)) | .selfLink')
-    appSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<DEWPOINT JOB ID>-subnet1" '.[] | select(.name | contains($n)) | .selfLink')
-
     externalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network2-network" '.[] | select(.name | contains($n)) | .selfLink')
     externalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet2-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 fi
@@ -55,27 +46,18 @@ if [ <NUMBER NICS> -ge 3 ]; then
     internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet3-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 fi
 
-if [ <NUMBER NICS> -eq 1 ]; then
-    internalNetworkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
-    internalSubnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
-fi
+# instances used by the external forwarding rule/target pool
+instances=()
+response=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-ig --region <REGION> --format=json | jq -r .[].instance)
+for item in $response
+do
+    instances+=($(echo ${item}))
+done
 
-if [ "<TEMPLATE NAME>" == "dag.py" && <AUTOSCALE> ]; then
-    # instances used by the external forwarding rule/target pool
-    instances=()
-    response=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-ig --region <REGION> --format=json | jq -r .[].instance)
-    for item in $response
-    do
-        instances+=($(echo ${item}))
-    done
+# instances used by the internal forwarding rule/backend service
+instanceGroupSelfLink=$(gcloud compute instance-groups describe <UNIQUESTRING>-bigip-ig --region <REGION> --format=json | jq -r .selfLink)
+targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-tp --region <REGION> --format=json | jq .selfLink | tr -d '"')
 
-    # instances used by the internal forwarding rule/backend service
-    instanceGroupSelfLink=$(gcloud compute instance-groups describe <UNIQUESTRING>-bigip-igm --region <REGION> --format=json | jq -r .selfLink)
-fi
-if [ "<AUTOSCALE>" == "True" ]; then
-    instanceGroupSelfLink=$(gcloud compute instance-groups describe <UNIQUESTRING>-bigip-igm --zone <AVAILABILITY ZONE> --format=json | jq -r .selfLink)
-    targetGroupSelfLink=$(gcloud compute target-pools list --format=json | jq -r --arg n "<UNIQUESTRING>-bigip-tp" '.[] | select(.name | contains($n)) | .selfLink')
-fi
 
 # Run GDM Dag template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
@@ -83,37 +65,79 @@ fi
 /usr/bin/yq e ".resources[0].type = \"dag.py\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.update = True" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.guiPortMgmt = <MGMT PORT>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.applicationVipPort = \"<APP PORT>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.applicationPort = \"<APP INTERNAL PORT>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"${source_cidr}\"" -i <DEWPOINT JOB ID>.yaml
+# Adding Firewalls
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[0] = 22" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[1] = 8443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].allowed[0].ports[2] = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].description = \"Allow ssh and 443 to management\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].name = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[0] = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.numberOfNics = <NUMBER NICS>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].ports[0] = 8443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].ports[1] = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].description = \"Allow web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].name = \"<UNIQUESTRING>-appfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[0] = \"<UNIQUESTRING>-appfw\"" -i <DEWPOINT JOB ID>.yaml
 
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkMgmt = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkMgmt = \"$mgmtSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkApp = \"$appNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkApp = \"$appSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkExternal = \"$externalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkExternal = \"$externalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networkSelfLinkInternal = \"$internalNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnetSelfLinkInternal = \"$internalSubnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfForwardingRules = <NUM FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.numberOfInternalForwardingRules = <NUM INTERNAL FORWARDING RULES>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].ports[0] = <APP PORT>" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].description = \"Allow app web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].name = \"<UNIQUESTRING>-appvipfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].targetTags[0] = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 
-if [ "<AUTOSCALE>" == "True" ]; then
-    /usr/bin/yq e ".resources[0].properties.instanceGroups[0] = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-    /usr/bin/yq e ".resources[0].properties.targetPoolSelfLink = \"$targetGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-fi
+# Adding Forwarding Rule
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fwrule1\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].target = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].loadBalancingScheme = \"EXTERNAL\"" -i <DEWPOINT JOB ID>.yaml
+
+# Adding Backend Service
+/usr/bin/yq e ".resources[0].properties.backendServices[0].backends[0].group = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].description = \"Backend service used for internal LB\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].healthChecks[0] = \"\$(ref.<UNIQUESTRING>-tcp-healthcheck.selfLink)\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].loadBalancingScheme = \"INTERNAL\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].name = \"<UNIQUESTRING>-bes\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].protocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].sessionAffinity = \"CLIENT_IP\"" -i <DEWPOINT JOB ID>.yaml
+
+# Adding Health Checks
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].description = \"my tcp healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].name = \"<UNIQUESTRING>-tcp-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].tcpHealthCheck.port = 44000" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].type = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
+
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].description = \"my http healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].name = \"<UNIQUESTRING>-http-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].httpHealthCheck.port = 80" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].type = \"HTTP\"" -i <DEWPOINT JOB ID>.yaml
+
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].description = \"my https healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].name = \"<UNIQUESTRING>-https-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].httpsHealthCheck.port = 443" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].type = \"HTTPS\"" -i <DEWPOINT JOB ID>.yaml
+
 # print out config file
 /usr/bin/yq e <DEWPOINT JOB ID>.yaml
 
 labels="delete=true"
 
-gcloud="gcloud deployment-manager deployments create <DAG STACK NAME> --labels $labels --config <DEWPOINT JOB ID>.yaml"
+gcloud="gcloud deployment-manager deployments create <STACK NAME> --labels $labels --config <DEWPOINT JOB ID>.yaml"
 $gcloud

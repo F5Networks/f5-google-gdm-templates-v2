@@ -4,7 +4,7 @@
 #  replayTimeout = 60
 
 # get app address
-APP_ADDRESS=$(gcloud compute forwarding-rules describe <UNIQUESTRING>-fr0-fr --region=<REGION> --format json | jq -r .IPAddress)
+APP_ADDRESS=$(gcloud compute forwarding-rules describe <UNIQUESTRING>-fwrule1 --region=<REGION> --format json | jq -r .IPAddress)
 echo "APP_ADDRESS: ${APP_ADDRESS}"
 
 # confirm app is available

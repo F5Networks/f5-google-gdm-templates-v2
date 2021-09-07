@@ -12,106 +12,22 @@ imports:
   - path: dag.py
 
 required:
-    - restrictedSrcAddressMgmt
-    - restrictedSrcAddressApp
-    - restrictedSrcAddressAppInternal
-    - numberOfInternalForwardingRules
-    - numberOfForwardingRules
-    - networkSelfLinkMgmt
-    - networkSelfLinkApp
     - uniqueString
 
 
 properties:
-    application:
-        description: Application label.
-        default: f5app
-        type: string
-    applicationVipPort:
-        description: List application port(s) for external application access separated by a space.
-    applicationPort:
-        description: List application port(s) for internal application access separated by a space. A maximum of 5 ports can be specified.
-    cost:
-        description: Cost Center label.
-        type: string
-        default: f5cost
-    environment:
-        description: Environment label.
-        type: string
-        default: f5env
-    group:
-        description: Group label.
-        type: string
-        default: f5group
-    guiPortMgmt:
-        description: (Optional) Enter the BIG-IP Management Port, the default is '443'.
-        type: integer
-        default: 443
-    networkSelfLinkMgmt:
-        description: Self Link of the mgmt network.
-        type: string
-    subnetSelfLinkMgmt:
-        description: Self Link to the mgmt subnet.
-        type: string
-    networkSelfLinkExternal:
-        description: Self Link of the external network.
-        type: string
-    subnetSelfLinkExternal:
-        description: Self Link to the external subnet.
-        type: string
-    networkSelfLinkInternal:
-        description: Self Link of the internal network.
-        type: string
-    subnetSelfLinkInternal:
-        description: Self Link to the internal subnet.
-        type: string
-    networkSelfLinkApp:
-        description: Self Link of the application network.
-        type: string
-    subnetSelfLinkApp:
-        description: Self Link to the application subnet.
-        type: string
-    instances:
+    firewalls:
+        description: list of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/firewalls
         type: array
-        description: A list of instances self links for the service. This is only required when using external loadbalancer (numberOfForwardingRules greater than 0).
-        items:
-            type: string
-    instanceGroups:
+    forwardingRules:
+        description: list of declaration of settings used for provisioning ForwardingRule which represents the fortend configuration of GCP load balancer. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/forwardingRules
         type: array
-        description: A list of instance group self links for the service.  This is only required when using internal loadbalancer (numberOfInternalForwardingRules greater than 0).
-        items:
-            type: string
-    numberOfInternalForwardingRules:
-        description: Specify the number of forwarding rules to create for internal application traffic, for example, '0' or '1'.
-        type: integer
-        minimum: 0
-        maximum: 1
-    numberOfForwardingRules:
-        description: Enter the number of forwarding rules to create, for example '1'.  All integers from 1 to the max quota for the forwarding rules resource type are allowed.
-        type: integer
-        minimum: 0
-    numberOfNics:
-        description: Enter the number of network interfaces created on each BIG-IP VE instance. When 1 is specified, the management and external firewall rules are combined on the management network.
-        type: integer
-        minimum: 1
-        maximum: 3
-        default: 1
-    owner:
-        description: Owner label.
-        type: string
-        default: f5owner
-    restrictedSrcAddressMgmt:
-        description: This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.).
-        type: string
-    restrictedSrcAddressApp:
-        description: This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space.
-        type: string
-    restrictedSrcAddressAppInternal:
-        description: This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space.
-        type: string
-    targetPoolSelfLink:
-        type: string
-        description: self link to target pool resource.
+    backendServices:
+        description: list of declaration of settings used for provisioning RegionBackendServices which defines how GCP load balancers distribute traffic. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/regionBackendServices
+        type: array
+    healthChecks:
+        description: list of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks
+        type: array
     uniqueString:
         type: string
         description: Unique String used when creating object names or Tags.
@@ -121,18 +37,6 @@ outputs:
     dagName:
       type: string
       description: DAG resource name.
-    region:
-      type: string
-      description: cloud region used for this deployment.
-    appTrafficAddress0:
-      type: string
-      description: ip address used for external forwarding rule.
-    internalTrafficAddress0:
-      type: string
-      description: ip address used for internal forwarding rule.
-    targetPool:
-      type: cloud resource self link
-      description: self link to target pool resource.
     backendService:
       type: cloud resource self link
       description: self link to backend service resource.

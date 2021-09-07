@@ -188,25 +188,107 @@ def create_dag_deployment(context):
       'name': 'dag',
       'type': '../../modules/dag/dag.py',
       'properties': {
-        'application': context.properties['application'],
-        'applicationPort': '80 443',
-        'applicationVipPort': '80 443',
-        'cost': context.properties['cost'],
-        'environment': context.properties['environment'],
-        'group': context.properties['group'],
-        'guiPortMgmt': 8443,
-        'instanceGroups': '$(ref.' + instance_group_name + '.selfLink)',
-        'networkSelfLinkApp': '$(ref.' + net_name + '.selfLink)',
-        'networkSelfLinkMgmt': '$(ref.' + net_name + '.selfLink)',
-        'numberOfForwardingRules': 1,
-        'numberOfInternalForwardingRules': 0,
-        'numberOfNics': 1,
-        'owner': context.properties['owner'],
-        'region': context.properties['region'],
-        'restrictedSrcAddressApp': context.properties['restrictedSrcAddressApp'],
-        'restrictedSrcAddressAppInternal': context.properties['restrictedSrcAddressAppInternal'],
-        'restrictedSrcAddressMgmt': context.properties['restrictedSrcAddressMgmt'],
-        'targetPoolSelfLink': '$(ref.' + target_pool_name + '.selfLink)',
+        'firewalls' : [
+            {
+                'allowed': [
+                    {
+                        'IPProtocol': 'TCP',
+                        'ports': [ 22, 8443, 443 ]
+                    }
+                ],
+                'description': 'Allow ssh and 443 to management',
+                'name': context.properties['uniqueString'] + '-mgmt-fw',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] ],
+                'targetTags': [ context.properties['uniqueString'] + '-mgmt-fw' ]
+            },
+            {
+                'allowed': [
+                    {
+                        'IPProtocol': 'TCP',
+                        'ports': [ 80, 443 ]
+                    }
+                ],
+                'description': 'Allow web traffic to public network',
+                'name': context.properties['uniqueString'] + '-app-int-fw',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'sourceRanges': [ context.properties['restrictedSrcAddressAppInternal'] ],
+                'targetTags': [ context.properties['uniqueString'] + '-app-int-fw' ]
+            },
+            {
+                'allowed': [
+                    {
+                        'IPProtocol': 'TCP',
+                        'ports': [ 80, 443 ]
+                    }
+                ],
+                'description': 'Allow web traffic to public network',
+                'name': context.properties['uniqueString'] + '-app-vip-fw',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'sourceRanges': [ context.properties['restrictedSrcAddressApp'] ],
+                'targetTags': [ context.properties['uniqueString'] + '-app-vip-fw' ]
+            }
+        ],
+        'forwardingRules': [
+            {
+                'name': context.properties['uniqueString'] + '-fwrule1',
+                'region': context.properties['region'],
+                'IPProtocol': 'TCP',
+                'target': '$(ref.' + target_pool_name + '.selfLink)',
+                'loadBalancingScheme': 'EXTERNAL'
+            }
+        ],
+        'backendServices': [
+            {
+                'backends': [
+                    {
+                        'group': '$(ref.' + instance_group_name + '.instanceGroup)'
+                    }
+                ],
+                'description': 'Backend service used for internal LB',
+                'healthChecks': [
+                    '$(ref.' + context.properties['uniqueString'] + '-tcp-healthcheck.selfLink)'
+                ],
+                'loadBalancingScheme': 'INTERNAL',
+                'name': context.properties['uniqueString'] + '-bes',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'protocol': 'TCP',
+                'region': context.properties['region'],
+                'sessionAffinity': 'CLIENT_IP'
+            }
+        ],
+        'healthChecks': [
+            {
+                'checkIntervalSec': 5,
+                'description': 'my tcp healthcheck',
+                'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                'tcpHealthCheck': {
+                    'port': 44000
+                },
+                'timeoutSec': 5,
+                'type': 'TCP'
+            },
+            {
+                'checkIntervalSec': 5,
+                'description': 'my http healthcheck',
+                'name': context.properties['uniqueString'] + '-http-healthcheck',
+                'httpHealthCheck': {
+                    'port': 80
+                },
+                'timeoutSec': 5,
+                'type': 'HTTP'
+            },
+            {
+                'checkIntervalSec': 5,
+                'description': 'my https healthcheck',
+                'name': context.properties['uniqueString'] + '-https-healthcheck',
+                'httpsHealthCheck': {
+                    'port': 443
+                },
+                'timeoutSec': 5,
+                'type': 'HTTPS'
+            }
+        ],
         'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
