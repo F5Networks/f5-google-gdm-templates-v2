@@ -1,7 +1,7 @@
 # Deploying the BIG-IP VE in GCP - Example Autoscale BIG-IP WAF (LTM + ASM) - Managed Instance Group (Frontend via ALB) - PAYG Licensing
 
-[![Releases](https://img.shields.io/github/release/f5networks/f5-google-gdm-templates-v2.svg)](https://github.com/f5networks/f5-google-gdm-templates-v2/releases)
-[![Issues](https://img.shields.io/github/issues/f5networks/f5-google-gdm-templates-v2.svg)](https://github.com/f5networks/f5-google-gdm-templates-v2/issues)
+[![Releases](https://img.shields.io/github/release/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/releases)
+[![Issues](https://img.shields.io/github/issues/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/issues)
 
 
 ## Contents
@@ -74,7 +74,7 @@ This solution leverages traditional Autoscale configuration management practices
   1. Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
   2. Contacting native cloud services for various cloud integrations: 
     - *Onboarding*:
-        - [F5 BIG-IP Runtime Init](https://github.com/f5networks/f5-bigip-runtime-init) - to fetch secrets from native vault services
+        - [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) - to fetch secrets from native vault services
     - *Operation*:
         - [F5 Application Services 3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/) - for features like Service Discovery
         - [F5 Telemetry Streaming](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) - for logging and reporting
@@ -157,11 +157,11 @@ Keep in mind the following:
 
 ### Changing the BIG-IP Deployment
 
-You will most likely want or need to change the BIG-IP configuration. This generally involves referencing or customizing a [F5 BIG-IP Runtime Init](https://github.com/f5networks/f5-bigip-runtime-init) configuration file and passing it through the **bigIpRuntimeInitConfig** template parameter as a URL or inline json. 
+You will most likely want or need to change the BIG-IP configuration. This generally involves referencing or customizing a [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) configuration file and passing it through the **bigIpRuntimeInitConfig** template parameter as a URL or inline json. 
 
 Example from sample_autoscale.yaml
 ```yaml
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/f5networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
     cooldownPeriodSec: 60
 ```
 
@@ -185,7 +185,7 @@ F5 has provided the following example configuration files in the `examples/autos
 - `runtime-init-conf-payg.yaml` - This inline configuration file installs packages and creates WAF-protected services for a PAYG licensed deployment.
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
-See [F5 BIG-IP Runtime Init](https://github.com/f5networks/f5-bigip-runtime-init) for more examples. 
+See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples. 
  
 By default, this solution deploys the `runtime-init-conf-payg.yaml` configuration. 
 
@@ -348,13 +348,13 @@ By default, Rolling Upgrades are configured to upgrade in batches of 20% with ze
   - If using tags for versions, change from `v1.2.0.0`
     ```json
         "bigIpRuntimeInitConfig": {
-          "value": "https://raw.githubusercontent.com/f5networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
+          "value": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
         },
     ```
     to `v1.3.1.0`
     ```json
         "bigIpRuntimeInitConfig": {
-          "value": "https://raw.githubusercontent.com/f5networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
+          "value": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
         },
     ```
 2. Modify the **update** parameter to True. This removes dependencies that are required for the initial deployment only.
