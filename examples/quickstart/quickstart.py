@@ -144,17 +144,23 @@ def create_application_deployment(context):
       'properties': {
         'appContainerName': context.properties['appContainerName'],
         'application': context.properties['application'],
-        'availabilityZone': context.properties['zone'],
-        'createAutoscaleGroup': False,
         'cost': context.properties['cost'],
         'environment': context.properties['environment'],
         'group': context.properties['group'],
-        'hostname': generate_name(context.properties['uniqueString'], \
-            'app1.c.' + context.env['project'] + '.internal'),
-        'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
-        'networkSelfLink': '$(ref.' + net_name + '.selfLink)',
-        'subnetSelfLink': '$(ref.' + subnet_name + '.selfLink)',
+        'instances': [{
+            'description': 'F5 demo application',
+            'networkInterfaces': [{
+                'accessConfigs': [{
+                    'name': 'External NAT',
+                    'type': 'ONE_TO_ONE_NAT'
+                }],
+                'description': 'Interface used for external traffic',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
+            }],
+            'zone': context.properties['zone']
+        }],
         'uniqueString': context.properties['uniqueString'],
       },
       'metadata': {

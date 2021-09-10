@@ -115,11 +115,12 @@ By default, this solution creates a VNet with four subnets, an example Web Appli
 | bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
 | numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
-| restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
 | restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |
 | restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
+| restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
 | tagValues | No | Default key/value resource tags will be added to the resources in this deployment, if you would like the values to be unique adjust them as needed for each key. |
 | uniqueString | Yes | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| zone | Yes | Name of the availability zone where the application will be placed. |
 
 
 ### Template Outputs
@@ -135,6 +136,7 @@ By default, this solution creates a VNet with four subnets, an example Web Appli
 | bigIpManagementPublicUrl | Management Public IP Address | Dag Template | string |
 | bigIpUsername | BIG-IP user name | BIG-IP Template | string |
 | bigIpVmId | Virtual Machine resource ID | BIG-IP Template | string |
+| networkId | Network self link | Network Template | string |
 | vip1PrivateIp | Service (VIP) Private IP Address | Application Template | string |
 | vip1PrivateUrlHttp | Service (VIP) Private HTTP URL | Application Template | string |
 | vip1PrivateUrlHttps | Service (VIP) Private HTTPS URL | Application Template | string |
@@ -142,7 +144,6 @@ By default, this solution creates a VNet with four subnets, an example Web Appli
 | vip1PublicIpDns | Service (VIP) Public DNS | Dag Template | string |
 | vip1PublicUrlHttp | Service (VIP) Public HTTP URL | Dag Template | string |
 | vip1PublicUrlHttps | Service (VIP) Public HTTPS URL | Dag Template | string |
-| networkId | Network self link | Network Template | string |
 | wafPublicIps | External Public IP Addresses | Dag Template | array |
 
 

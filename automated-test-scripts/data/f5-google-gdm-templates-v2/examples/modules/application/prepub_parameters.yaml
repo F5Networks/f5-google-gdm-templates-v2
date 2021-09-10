@@ -1,33 +1,37 @@
+---
 ACCESS STACK NAME: <UNIQUESTRING>-access
-ACCESS TEMPLATE URL: 'file://$PWD/examples/modules/access/access.py'
-SOLUTION TYPE: standard
-STORAGE NAME: <ACCESS STACK NAME>-bucket
-SECRET ID: <ACCESS STACK NAME>-secret
-APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
+ACCESS TEMPLATE URL: file://$PWD/examples/modules/access/access.py
+APP CONTAINER NAME: f5devcentral/f5-demo-app:latest
+APP INTERNAL PORT: 22 80 443
+APP PORT: 80 443
 AUTOSCALE: false
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w1
 DAG STACK NAME: <UNIQUESTRING>-dag
-DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
-APP INTERNAL PORT: 22 80 443
-APP PORT: 80 443
-NUM FORWARDING RULES: 0
-NUM INTERNAL FORWARDING RULES: 0
-MGMT PORT: 443
+DAG TEMPLATE URL: file://$PWD/examples/modules/dag/dag.py
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
+INSTANCE TEMPLATE URL: file://$PWD/examples/modules/application/application_instance_template.py
 INSTANCE TYPE: n1-standard-1
+MGMT PORT: 443
 NETWORK STACK NAME: <UNIQUESTRING>-network
-NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+NETWORK TEMPLATE URL: file://$PWD/examples/modules/network/network.py
+NUM FORWARDING RULES: 0
+NUM INTERNAL FORWARDING RULES: 0
 NUMBER NETWORKS: 2
 NUMBER NICS: 1
 PRIVATE IP GOOGLE ACCESS: ''
+PROVISION PUBLIC IP: true
 REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
+SECRET ID: <ACCESS STACK NAME>-secret
+SOLUTION TYPE: standard
 STACK NAME: <UNIQUESTRING>-application
-PROVISION PUBLIC IP: true
+STORAGE NAME: <ACCESS STACK NAME>-bucket
 TEMPLATE NAME: application.py
-TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
-INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/application/application_instance_template.py'
+TEMPLATE URL: file://$PWD/examples/modules/application/application.py
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
+USE BACKEND SERVICE: false
+USE FORWARDING RULE: false
+USE HEALTH CHECKS: false

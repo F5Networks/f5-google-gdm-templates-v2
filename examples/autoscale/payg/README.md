@@ -97,40 +97,40 @@ This solution leverages traditional Autoscale configuration management practices
 | --- | --- | --- |
 | appContainerName | No | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | Application label. |
-| availabilityZone | Yes | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
-| bigIpRuntimeInitPackageUrl | Yes | Supply a URL for the bigip-runtime-init package |
 | bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpRuntimeInitPackageUrl | Yes | Supply a URL for the bigip-runtime-init package |
 | coolDownPeriodSec | No | The application initialization period; the autoscaler uses the cool down period for scaling decisions. |
 | cost | No | Cost Center label. |
 | environment | No | Environment label. | 
 | group | No | Group label. |
+| imageName | Yes | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --filter="name~f5"`. |
 | instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. |
-| imageName | Yes | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --filter="name~f5"`. |
 | maxNumReplicas | No | Maximum number of replicas that autoscaler can provision |
 | minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
 | owner | No | Owner label. |
 | region | Yes | Google Cloud region used for this deployment. |
-| restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
 | restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |
 | restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
+| restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
 | secretId | No | ID of the secret stored in Secret Manager |
 | uniqueString | Yes | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | Specify true when updating the deployment. |
 | utilizationTarget | No | The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric. |
+| zone | Yes | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
 ### Template Outputs
 
 | Name | Description | Type |
 | --- | --- | --- |
-| deployment_name | Name of parent deployment | string |
 | appUsername | Application user name | Application Template | string |
-| appVmssName | Application Virtual Machine Scale Set name | Application Template | string |
 | appVmssId | Application Virtual Machine Scale Set resource ID | Application Template | string |
+| appVmssName | Application Virtual Machine Scale Set name | Application Template | string |
 | bigIpUsername | BIG-IP user name | BIG-IP Template | string |
-| virtualNetworkId | Virtual Network resource ID | Network Template | string |
 | bigIpVmssId | BIG-IP Virtual Machine Scale Set resource ID | BIG-IP Template | string |
 | bigIpVmssName | BIG-IP Virtual Machine Scale Set name| BIG-IP Template | string |
+| deployment_name | Name of parent deployment | string |
+| virtualNetworkId | Virtual Network resource ID | Network Template | string |
 | wafPublicIps | WAF Service Public IP Addresses | DAG Template | array |
 
 

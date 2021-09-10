@@ -4,35 +4,46 @@
 info:
   title: F5 Sample Application
   author: F5 Networks
-  description: Creates a sample client application.
+  description: |
+    Creates a sample client application.
+    For more information on single instance resource deployment:
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+    For more information on autoscaled resource deployment:
+      - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
   version: 0.1.0
 
 imports:
   - path: application.py
 
 required:
-    - availabilityZone
     - instanceType
-    - networkSelfLink
-    - subnetSelfLink
     - uniqueString
 
 properties:
-  application:
-    description: Application label.
-    default: f5app
-    type: string
   appContainerName:
     description: Enter the name of the docker container you want to run as your application
     default: 'f5devcentral/f5-demo-app:latest'
     type: string
-  availabilityZone:
-    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+  application:
+    description: Application label.
+    default: f5app
     type: string
-  createAutoscaleGroup:
-    description: Choose true to create the application instances in an autoscaling configuration.
-    type: boolean
-    default: true
+  autoscalers:
+    type: array
+    description: |
+      Configuration used to deploy autoscale group.
+      Example:
+        autoscalers:
+          - autoScalingPolicy:
+              minNumReplicas: 1
+              maxNumReplicas: 4
+              cpuUtilization:
+                utilizationTarget: 0.8
+              coolDownPeriodSec: 60
+            name: f5-demo
+            zone: us-west1-a
   cost:
     description: Cost Center label.
     type: string
@@ -45,28 +56,69 @@ properties:
     description: Group label.
     type: string
     default: f5group
+  instanceGroupManagers:
+    type: array
+    description: |
+      Configuration for instance group.
+        Example:
+          instanceGroupManagers:
+            - name: f5-demo
+              targetSize: 1
+              zone: us-west1-a
+  instances:
+    type: array
+    description: |
+      Configuration for Instance.
+    name:
+      description: Instance resource name.
+      type: string
+    networkInterfaces:
+      type: array
+      description: |
+        Interface configuration for Instance.
+          Example:
+            networkInterfaces:
+              - accessConfigs:
+                  - name: External NAT
+                    type: ONE_TO_ONE_NAT
+                description: Interface used for external traffic
+                network: >-
+                  https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myApplicationTrafficNetwork
+                subnetwork: >-
+                  https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationTrafficSubnetwork
+    zone:
+      description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+      type: string
+  instanceTemplates:
+    type: array
+    description: |
+      Configuration for instanceTemplates and is required to support autoscaled deployments.
+        Example:
+          instanceTemplates:
+            - name: f5-demo
+              networkInterfaces:
+                - accessConfigs:
+                    - name: External NAT
+                      type: ONE_TO_ONE_NAT
+                  description: Interface used for external traffic
+                  network: >-
+                    https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myApplicationTrafficNetwork
+                  subnetwork: >-
+                    https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationTrafficSubnetwork
   instanceTemplateVersion:
-    description: Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter.
+    description: Version of the instance template to create. When updating deployment properties of the autoscaled application instances, you must provide a unique value for this parameter.
     type: integer
     default: 1
   instanceType:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
-  uniqueString:
-    description: Unique String used when creating object names or Tags.
-    type: string
-  networkSelfLink:
-    description: Self Link of the network to use to deploy the application.
-    type: string
+    default: n1-standard-1
   owner:
     description: Owner label.
     type: string
     default: f5owner
-  region:
-    type: string
-    description: cloud region used for this deployment.
-  subnetSelfLink:
-    description: Self Link of the subnetwork to use to deploy the application.
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
     type: string
 
 outputs:
@@ -83,6 +135,11 @@ outputs:
 
 documentation:
   - README.md
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+  - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
 
 examples:
   - sample_application.yaml
+  - sample_application_autoscale.yaml

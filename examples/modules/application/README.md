@@ -32,24 +32,25 @@ This Google Deployment Manager template creates a client application using an ex
 | --- | --- | --- |
 | appContainerName | No | Name of the docker container to deploy in the application VM. |
 | application | No | Application label. |
-| availabilityZone | Yes | Name of the availability zone where the application will be placed. |
-| createAutoscaleGroup | No | Choose true to create the application instances in an autoscaling configuration. |
+| autoscalers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers |
 | cost | No | Cost Center label. |
-| environment | No | Environment label. | 
+| environment | No | Environment label. |
 | group | No | Group label. |
+| instanceGroupManagers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers |
+| instances | No | Required when provisioning a single instance. List of declaration of settings used for provisioning instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instances |
+| instanceTemplates | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates |
 | instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | App instance type. e.g. n1-standard-1 |
-| uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
-| networkSelfLink | Yes | Self Link of the network to use to deploy the application. |
 | owner | No | Owner label. |
-| subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the application. |
+| uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
+| zone | Yes | Name of the availability zone where the application will be placed. |
 
 ### Template Outputs
 
 | Name | Description | Required Resource | Type |
 | --- | --- | --- | --- |
-| applicationName | Application resource name. | Application | string |
 | applicationIp | Network IP for Application resource. | Application | string |
+| applicationName | Application resource name. | Application | string |
 | instanceGroupName | Instance group resource name. | Application | string |
 
 ## Resource Creation Flow Chart

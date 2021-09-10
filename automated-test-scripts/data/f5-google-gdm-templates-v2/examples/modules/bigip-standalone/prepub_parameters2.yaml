@@ -43,3 +43,6 @@ STORAGE NAME: <ACCESS STACK NAME>-bucket
 TEMPLATE NAME: bigip_standalone.py
 TEMPLATE URL: file://$PWD/examples/modules/bigip-standalone/bigip_standalone.py
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
+USE BACKEND SERVICE: false
+USE FORWARDING RULE: false
+USE HEALTH CHECKS: false

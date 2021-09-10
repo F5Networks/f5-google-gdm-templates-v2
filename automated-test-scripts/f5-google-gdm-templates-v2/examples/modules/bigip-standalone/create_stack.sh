@@ -41,8 +41,8 @@ until [ $i -gt $c ]; do
         /usr/bin/yq e ".resources[0].properties.name = \"<INSTANCE NAME>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
-        /usr/bin/yq e ".resources[0].properties.tags.items[0] = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
-        /usr/bin/yq e ".resources[0].properties.tags.items[1] = \"<UNIQUESTRING>-app-fw\"" -i <DEWPOINT JOB ID>.yaml
+        /usr/bin/yq e ".resources[0].properties.tags.items[0] = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
+        /usr/bin/yq e ".resources[0].properties.tags.items[1] = \"<UNIQUESTRING>-appfw\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].type = \"<TEMPLATE NAME>\"" -i <DEWPOINT JOB ID>.yaml
 
     fi
