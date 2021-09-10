@@ -1,7 +1,7 @@
 #  expectValue = "Successful Traffic Test"
 #  scriptTimeout = 3
 #  replayEnabled = true
-#  replayTimeout = 30
+#  replayTimeout = 60
 
 TMP_DIR=/tmp/<DEWPOINT JOB ID>
 STATE_FILE=${TMP_DIR}/state.json
@@ -10,10 +10,10 @@ STATE_FILE=${TMP_DIR}/state.json
 source ${TMP_DIR}/test_functions.sh
 if [ "<AUTOSCALE>" == "False" ]; then
     echo "DO STANDALONE"
-    APP_IP=$(get_app_ip <UNIQUESTRING>-app <AVAILABILITY ZONE> public)
+    APP_IP=$(get_app_ip <UNIQUESTRING>-application <AVAILABILITY ZONE> public)
 else
     echo "DO AUTOSCALE"
-    INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-app-igm <AVAILABILITY ZONE>)
+    INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-application-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance | cut -d'/' -f11)
     echo "INSTANCE: $INSTANCE"
     APP_IP=$(get_app_ip $INSTANCE <AVAILABILITY ZONE> public)
 fi

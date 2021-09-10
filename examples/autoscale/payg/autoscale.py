@@ -68,16 +68,33 @@ def create_application_deployment(context):
       'properties': {
         'appContainerName': context.properties['appContainerName'],
         'application': context.properties['application'],
-        'availabilityZone': context.properties['availabilityZone'],
+        'autoscalers': [{
+            'name': 'f5-demo',
+            'zone': context.properties['zone']
+        }],
         'cost': context.properties['cost'],
-        'createAutoscaleGroup': True,
         'environment': context.properties['environment'],
         'group': context.properties['group'],
+        'instanceGroupManagers': [{
+          'name': 'f5-demo',
+          'zone': context.properties['zone']
+        }],
+        'instanceTemplates': [{
+            'name': 'f5-demo',
+            'networkInterfaces': [{
+                'accessConfigs': [{
+                    'name': 'External NAT',
+                    'type': 'ONE_TO_ONE_NAT'
+                }],
+                'description': 'Interface used for external traffic',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
+            }]
+        }],
         'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
-        'networkSelfLink': '$(ref.' + net_name + '.selfLink)',
-        'subnetSelfLink': '$(ref.' + subnet_name + '.selfLink)',
-        'uniqueString': context.properties['uniqueString'],
+        'owner': context.properties['owner'],
+        'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
         'dependsOn': depends_on_array
@@ -100,7 +117,7 @@ def create_bastion_deployment(context):
         'type': '../../modules/bastion/bastion.py',
         'properties': {
             'application': context.properties['application'],
-            'availabilityZone': context.properties['availabilityZone'],
+            'availabilityZone': context.properties['zone'],
             'cost': context.properties['cost'],
             'createAutoscaleGroup': True,
             'environment': context.properties['environment'],
@@ -140,7 +157,7 @@ def create_bigip_deployment(context):
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
           'application': context.properties['application'],
-          'availabilityZone': context.properties['availabilityZone'],
+          'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
           'coolDownPeriodSec': context.properties['coolDownPeriodSec'],

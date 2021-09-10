@@ -17,7 +17,6 @@ imports:
   - path: ../../modules/network/network.py
 
 required:
-    - availabilityZone
     - bigIpRuntimeInitPackageUrl
     - bigIpRuntimeInitConfig
     - imageName
@@ -27,6 +26,7 @@ required:
     - restrictedSrcAddressApp
     - restrictedSrcAddressAppInternal
     - uniqueString
+    - zone
 
 properties:
   appContainerName:
@@ -36,9 +36,6 @@ properties:
   application:
     description: Application label.
     default: f5app
-    type: string
-  availabilityZone:
-    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
     type: string
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
@@ -109,6 +106,9 @@ properties:
     description: The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric.
     type: number
     default: 0.8
+  zone:
+    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+    type: string
 
 outputs:
   properties:

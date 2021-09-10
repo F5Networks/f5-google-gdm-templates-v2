@@ -15,7 +15,6 @@ resources:
     type: autoscale.py
     properties:
       appContainerName: f5devcentral/f5-demo-app:latest
-      availabilityZone: us-west1-a
       bigIpRuntimeInitPackageUrl: <URL>
       bigIpRuntimeInitConfig: <URL>
       coolDownPeriodSec: 60
@@ -30,3 +29,4 @@ resources:
       uniqueString: myuniquestr
       update: false
       utilizationTarget: 0.8
+      zone: us-west1-a
