@@ -44,3 +44,4 @@ TEMPLATE NAME: bigip_autoscale.py
 TEMPLATE URL: 'file://$PWD/examples/modules/bigip-autoscale/bigip_autoscale.py'
 INSTANCE TEMPLATE URL: 'file://$PWD/examples/modules/bigip-autoscale/bigip_instance_template.py'
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
+USE BACKEND SERVICE: false

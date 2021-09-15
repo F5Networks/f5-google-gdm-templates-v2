@@ -11,38 +11,34 @@ imports:
   - path: bigip_autoscale.py
 
 required:
-    - availabilityZone
-    - instanceType
-    - imageName
+    - autoscalers
     - bigIpRuntimeInitPackageUrl
     - bigIpRuntimeInitConfig
+    - healthChecks
+    - imageName
+    - instanceGroupManagers
+    - instanceTemplates
+    - instanceType
     - networkSelfLink
     - subnetSelfLink
     - serviceAccountEmail
+    - targetPools
     - uniqueString
 
 properties:
-  availabilityZone:
-    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
-    type: string
   application:
     description: Application label.
     default: f5app
     type: string
-  applicationVipPort:
-    description: Application port number
-    type: integer
-    default: 80
+  autoscalers:
+    description: List the settings used for provisioning an autoscale group for the BIG-IP. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+    type: array
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
     type: string
   bigIpRuntimeInitConfig:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
-  coolDownPeriodSec:
-    description: The application initialization period; the autoscaler uses the cool down period for scaling decisions.
-    type: integer
-    default: 60
   cost:
     description: Cost Center label.
     type: string
@@ -55,24 +51,24 @@ properties:
     description: Group label.
     type: string
     default: f5group
+  healthChecks:
+    description: list of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks
+    type: array
+  instanceGroupManagers:
+    description: List of settings used to provision an Instance Group Manager. More information about the REST APIs for this resource is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/beta/instanceGroupManagers
   instanceType:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
   imageName:
     description: BIG-IP image name
     type: string
+  instanceTemplates:
+    description: List of settings used to provision an Instance Template. More information about the REST APIs for this resource is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
+    type: array
   instanceTemplateVersion:
     description: Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
     type: integer
     default: 1
-  maxNumReplicas:
-    description: Maximum number of replicas that autoscaler can provision
-    type: integer
-    default: 8
-  minNumReplicas:
-    description: Minimum number of replicas that autoscaler can provision
-    type: integer
-    default: 2
   networkSelfLink:
     description: Self Link of the network to use to deploy the application.
     type: string
@@ -84,10 +80,9 @@ properties:
     description: Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s).
     type: boolean
     default: true
-  utilizationTarget:
-    description: The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric.
-    type: number
-    default: 0.8
+  targetPools:
+    description: List of settings for provisioning target pools. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/targetPools
+    type: array
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string

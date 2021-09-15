@@ -15,18 +15,60 @@ resources:
     type: autoscale.py
     properties:
       appContainerName: f5devcentral/f5-demo-app:latest
+      autoscalers:
+        - description: My autoscale application
+          name: f5-demo
+          autoScalingPolicy:
+            minNumReplicas: 1
+            maxNumReplicas: 4
+            cpuUtilization:
+              utilizationTarget: 0.8
+            coolDownPeriodSec: 60
+          zone: us-west1-a
       bigIpRuntimeInitPackageUrl: <URL>
       bigIpRuntimeInitConfig: <URL>
-      coolDownPeriodSec: 60
+      instanceGroupManagers:
+        - description: My instance group
+          name: f5-demo
+          targetSize: 1
+          zone: us-west1-a
+      instanceTemplates:
+        - description: My autoscale application
+          hostname: test.example.com
+          name: f5-demo
+          networkInterfaces:
+            - description: Interface used for external traffic
+              network: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myNetwork
+              subnetwork: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/mySubnet
+              accessConfigs:
+                - name: External NAT
+                  type: ONE_TO_ONE_NAT
+      healthChecks:
+        - checkIntervalSec: 5
+          description: my tcp healthcheck
+          name: my-unique-tcp-healthcheck
+          tcpHealthCheck:
+            port: 44000
+          timeoutSec: 5
+          type: TCP
+        - checkIntervalSec: 5
+          description: my http healthcheck
+          httpHealthCheck:
+            port: 80
+          name: my-unique-http-healthcheck
+          timeoutSec: 5
+          type: HTTP
       imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
       instanceType: n1-standard-8
-      maxNumReplicas: 8
-      minNumReplicas: 2
+      targetPools:
+        - region: us-west1
+          name: my-target-pool
       region: us-west1
       restrictedSrcAddressMgmt: ''
       restrictedSrcAddressApp: ''
       restrictedSrcAddressAppInternal: ''
       uniqueString: myuniquestr
       update: false
-      utilizationTarget: 0.8
       zone: us-west1-a
