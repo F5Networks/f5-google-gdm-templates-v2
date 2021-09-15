@@ -160,15 +160,16 @@ def create_bigip_deployment(context):
           'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-          'coolDownPeriodSec': context.properties['coolDownPeriodSec'],
+          'autoscalers': context.properties['autoscalers'],
           'cost': context.properties['cost'],
           'environment': context.properties['environment'],
           'group': context.properties['group'],
+          'healthChecks': context.properties['healthChecks'],
           'imageName': context.properties['imageName'],
+          'instanceGroupManagers': context.properties['instanceGroupManagers'],
+          'instanceTemplates': context.properties['instanceTemplates'],
           'instanceTemplateVersion': context.properties['instanceTemplateVersion'],
           'instanceType': context.properties['instanceType'],
-          'maxNumReplicas': context.properties['maxNumReplicas'],
-          'minNumReplicas': context.properties['minNumReplicas'],
           'networkSelfLink': net_ref,
           'owner': context.properties['owner'],
           'project': context.env['project'],
@@ -179,8 +180,8 @@ def create_bigip_deployment(context):
                   context.env['project'] + \
                       '.iam.gserviceaccount.com',
           'subnetSelfLink': sub_ref,
-          'uniqueString': context.properties['uniqueString'],
-          'utilizationTarget': context.properties['utilizationTarget']
+          'targetPools': context.properties['targetPools'],
+          'uniqueString': context.properties['uniqueString']
         },
         'metadata': {
             'dependsOn': depends_on_array

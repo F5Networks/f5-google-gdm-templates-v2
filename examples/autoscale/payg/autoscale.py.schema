@@ -17,14 +17,19 @@ imports:
   - path: ../../modules/network/network.py
 
 required:
+    - autoscalers
     - bigIpRuntimeInitPackageUrl
     - bigIpRuntimeInitConfig
+    - healthChecks
     - imageName
+    - instanceGroupManagers
+    - instanceTemplates
     - instanceType
     - region
     - restrictedSrcAddressMgmt
     - restrictedSrcAddressApp
     - restrictedSrcAddressAppInternal
+    - targetPools
     - uniqueString
     - zone
 
@@ -37,6 +42,9 @@ properties:
     description: Application label.
     default: f5app
     type: string
+  autoscalers:
+    description: List the settings used for provisioning an autoscale group for the BIG-IP. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+    type: array
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
     type: string
@@ -45,10 +53,6 @@ properties:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
     default: https://raw.githubusercontent.com/F5Networks/f5-azure-arm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
-  coolDownPeriodSec:
-    description: The application initialization period; the autoscaler uses the cool down period for scaling decisions.
-    type: integer
-    default: 60
   cost:
     description: Cost Center label.
     type: string
@@ -61,20 +65,20 @@ properties:
     description: Group label.
     type: string
     default: f5group
+  healthChecks:
+    description: list of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks
+    type: array
+  instanceGroupManagers:
+    description: List of settings used to provision an Instance Group Manager. More information about the REST APIs for this resource is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/beta/instanceGroupManagers
+  instanceTemplates:
+    description: List of settings used to provision an Instance Template. More information about the REST APIs for this resource is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
+    type: array
   instanceType:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
   imageName:
     description: BIG-IP image name
     type: string
-  maxNumReplicas:
-    description: Maximum number of replicas that autoscaler can provision
-    type: integer
-    default: 8
-  minNumReplicas:
-    description: Minimum number of replicas that autoscaler can provision
-    type: integer
-    default: 2
   owner:
     description: Owner label.
     type: string
@@ -95,6 +99,9 @@ properties:
   secretId:
     description: ID of the secret stored in Secret Manager
     type: string
+  targetPools:
+    description: List of settings for provisioning target pools. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/targetPools
+    type: array
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
@@ -102,10 +109,6 @@ properties:
     description: Specify true when updating the deployment
     type: boolean
     default: false
-  utilizationTarget:
-    description: The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric.
-    type: number
-    default: 0.8
   zone:
     description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
     type: string

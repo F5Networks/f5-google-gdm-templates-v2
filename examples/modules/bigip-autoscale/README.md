@@ -36,26 +36,24 @@ This Google Deployment Manager template creates an autoscale group of BIGIP inst
 
 | Parameter | Required | Description |
 | --- | --- | --- |
-| availabilityZone | Yes | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 | application | No | Application label. |
-| applicationVipPort | No | Application Port number |
+| autoscalers | Yes | List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers |
 | bigIpRuntimeInitPackageUrl | Yes | URL for BIG-IP Runtime Init package | 
 | bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| coolDownPeriodSec | No | The application initialization period; the autoscaler uses the cool down period for scaling decisions. |
 | cost | No | Cost Center label. |
 | environment | No | Environment label. | 
 | group | No | Group label. |
+| healthChecks | Yes | list of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks |
+| instanceGroupManagers | Yes | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers |
 | instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. | 
+| instanceTemplates | Yes | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates |
 | networkSelfLink | Yes | Self Link of the network to use to deploy the application.  | 
-| maxNumReplicas | No | Maximum number of replicas that autoscaler can provision  |
-| minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
 | owner | No | Owner label. |
 | provisionPublicIp | No | Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s). |
 | serviceAccountEmail | Yes | Enter the Google service account to use for autoscale API calls, for example 'username@projectname.iam.serviceaccount.com'. |
 | subnetSelfLink | Yes | Self Link of the subnetwork to use to deploy the application. | 
-| targetGroupSelfLink | No | Target Pool self-link used for external loadbalancing |
-| utilizationTarget | No | The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric. |
+| targetPools | Yes | List of settings for provisioning target pools. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/targetPools |
 | uniqueString | Yes | Unique String used when creating object names or Tags.|
 
 
