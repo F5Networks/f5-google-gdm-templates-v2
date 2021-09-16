@@ -100,11 +100,20 @@ function get_app_ip() {
         # 2nic, 3nic, etc. name is External NAT - 1nic is Management NAT
         nic_count=$(echo $output | jq -r '.networkInterfaces | length')
         if [[ $nic_count -eq 1 ]]; then
-            echo $output | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP'
+            echo $output | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="Management NAT")|.natIP'
         else
             echo $output | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP'
         fi
     fi
+}
+
+# usage: get_bastion_ip <instance> <zone>
+function get_bastion_ip() {
+    instance="$1"
+    zone="$2"
+
+    output=$(gcloud compute instances describe ${instance} --zone=${zone} --format json)
+    echo $output | jq -r '.networkInterfaces[].accessConfigs[]?|select (.name=="External NAT")|.natIP'
 }
 
 # usage: get_fr_ip <rule> <region>

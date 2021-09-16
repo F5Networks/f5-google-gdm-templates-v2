@@ -115,6 +115,7 @@ By default, this solution creates a VNet with four subnets, an example Web Appli
 | bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
 | numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
+| provisionPublicIp | No | Provision Public IP addresses for the BIG-IP interfaces or to create bastion host |
 | restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |
 | restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
 | restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
@@ -263,37 +264,45 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 
 ### Accessing the BIG-IP
 
-From Parent Template Outputs:
-  - **Console**:  Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs**.
-  - **Google CLI**:
-    ```bash
-    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} | yq .layout | yq .resources[0].outputs[]
-    ```
+- NOTE: 
+  - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. When looking up the bastion instance public IP address, replace ${instance} with *uniqueId*-bastion to find the public IP of the bastion host. Once connected to the bastion host, you may then connect via SSH or X11 to the private IP addresses of the BIG-IP instance *uniqueId*-bigip1. The default username is **quickstart** and the default password is ***uniqueId*-bigip1**
 
-- Obtain the IP address of the BIG-IP Management Port:
-  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpManagementPublicIp***.
-  - **Google CLI**: 
+- Obtain the public IP address of the BIG-IP Management Port:
+  - **Console**: Navigate to **Compute Engine > VM Instances > *uniqueId*-bigip1 > Network Interfaces > nic1 > External IP**.
+  - **gcloud CLI**: 
     ``` bash 
-    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} | yq .layout | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPublicIp")).finalValue'
+    gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.accessConfigs[0].natIP)'
     ```
 
-- Obtain the vmId of the BIG-IP Virtual Machine *(will be used for password later)*:
-  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bigIpVmId**.
-  - **Google CLI**: 
-    ```bash
-    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} | yq .layout | yq '.resources[0].outputs[] | select(.name | contains("bigIpVmId")).finalValue'
+- Obtain the public IP address of the bastion host Management Port:
+  - **Console**: Navigate to **Compute Engine > VM Instances > *uniqueId*-bastion > Network Interfaces > nic0 > External IP**.
+  - **gcloud CLI**: 
+    ``` bash 
+    gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.accessConfigs[0].natIP)'
+    ```
+
+- Obtain the private IP address of the BIG-IP Management Port:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpManagementPublicIp***.
+  - **gcloud CLI**: 
+    ``` bash 
+    gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.networkIP)'
     ```
 
 #### SSH
-  - **SSH key authentication**: 
-      ```bash
-      ssh admin@${IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
-      ```
+  - **SSH key authentication** (**provisionPublicIP** = **true**): 
+    ```bash
+    ssh admin@${IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
+    ```
+  - **SSH key authentication** (**provisionPublicIP** = **false**): 
+    ```bash
+    ssh ubuntu@${PUBLIC_IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
+    ssh admin@${PRIVATE_IP_ADDRESS_FROM_OUTPUT}
+    ```
   - **Password authentication**: 
-      ```bash 
-      ssh quickstart@${IP_ADDRESS_FROM_OUTPUT}
-      ``` 
-      at prompt, enter your **bigIpVmId** (see above to obtain from template "Outputs")
+    ```bash 
+    ssh quickstart@${IP_ADDRESS_FROM_OUTPUT}
+    ``` 
+    At prompt, enter the name of the BIG-IP VM instance (see above)
 
 
 #### WebUI
@@ -473,8 +482,10 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version |
 | --- | --- |
-| 16.0.101000 | 16.0.1.1 Build 0.0.6 |
-| 14.1.400000 | 14.1.4 Build 0.0.11 |
+| 16.1.000000 | 16.1.0.0 Build 0.0.19 |
+| 14.1.400000 | 14.1.4.4 Build 0.0.4* |
+
+**Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
 
 
 ## Supported Instance Types and Hypervisors

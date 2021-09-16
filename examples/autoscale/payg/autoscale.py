@@ -12,7 +12,6 @@ def generate_name(prefix, suffix):
     """Generate unique name."""
     return prefix + "-" + suffix
 
-
 def create_network_deployment(context):
     """Create template deployment."""
     deployment = {
@@ -39,7 +38,6 @@ def create_network_deployment(context):
     }
     return deployment
 
-
 def create_access_deployment(context):
     """Create template deployment."""
     deployment = {
@@ -51,7 +49,6 @@ def create_access_deployment(context):
       }
     }
     return deployment
-
 
 def create_application_deployment(context):
     """Create template deployment."""
@@ -101,7 +98,6 @@ def create_application_deployment(context):
       }
     }
     return deployment
-
 
 def create_bastion_deployment(context):
     """Create template deployment."""

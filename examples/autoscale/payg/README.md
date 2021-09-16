@@ -109,6 +109,7 @@ This solution leverages traditional Autoscale configuration management practices
 | maxNumReplicas | No | Maximum number of replicas that autoscaler can provision |
 | minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
 | owner | No | Owner label. |
+| provisionPublicIp | No | Provision Public IP addresses for the BIG-IP interfaces or to create bastion host |
 | region | Yes | Google Cloud region used for this deployment. |
 | restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |
 | restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
@@ -276,20 +277,40 @@ To test the WAF service, perform the following steps:
 ### Accessing the BIG-IP
 
 - Obtain the IP address of the BIG-IP Management Port:
+  - NOTE: 
+      - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instances via a bastion host. When looking up bastion instances, replace ${instance_group} with *uniqueId*-bastion-igm to find the names of the bastion hosts. Once connected to a bastion host, you may then connect via SSH or X11 to the private IP addresses of the BIG-IP instances in *uniqueId*-bigip-igm.
 
-  - **gcloud CLI**: 
-    - Public IPs: 
-      ```shell
-      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.networkIP)'
+  - **gcloud CLI**:
+    - Instances (Bastion)
       ```
-    - Private IPs: 
+      gcloud compute instance-groups list-instances ${bastion_instance_group} --zone=${zone} --format json | jq -r .[].instance
+      ```
+
+    - Instances (BIG-IP)
+      ```
+      gcloud compute instance-groups list-instances ${bigip_instance_group} --zone=${zone} --format json | jq -r .[].instance
+      ```
+ 
+    - Public IPs (BIG-IP or Bastion instance): 
       ```shell 
       gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.accessConfigs[0].natIP)'
       ```
-- Login in via SSH:
+
+    - Private IPs (BIG-IP): 
+      ```shell
+      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.networkIP)'
+      ```
+
+- Login in via SSH (**provisionPublicIP** = **true**):
   - **SSH key authentication**: 
     ```bash
     ssh admin@${IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
+    ```
+
+  - **SSH key authentication** (**provisionPublicIP** = **false**): 
+    ```bash
+    ssh ubuntu@${PUBLIC_IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
+    ssh admin@${PRIVATE_IP_ADDRESS_FROM_OUTPUT}
     ```
 
 - Login in via WebUI:
@@ -519,8 +540,10 @@ These templates have been tested and validated with the following versions of BI
 
 | Google Cloud BIG-IP Image Version | BIG-IP Version |
 | --- | --- |
-| 16.0.101000 | 16.0.1.1 Build 0.0.6 |
-| 14.1.400000 | 14.1.4 Build 0.0.11 |
+| 16.1.000000 | 16.1.0.0 Build 0.0.19 |
+| 14.1.400000 | 14.1.4.4 Build 0.0.4* |
+
+**Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
 
 
 ## Supported Instance Types and Hypervisors

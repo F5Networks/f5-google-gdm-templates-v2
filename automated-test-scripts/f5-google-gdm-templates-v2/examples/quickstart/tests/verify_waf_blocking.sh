@@ -5,12 +5,11 @@
 
 # get app address
 TMP_DIR=/tmp/<DEWPOINT JOB ID>
-STATE_FILE=${TMP_DIR}/state.json
 
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-APP_ADDRESS=$(cat ${STATE_FILE} | jq -r '.applicationAddress')
+APP_ADDRESS=$(get_app_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> public)
 echo "APP_ADDRESS: ${APP_ADDRESS}"
 
 # confirm app is available
