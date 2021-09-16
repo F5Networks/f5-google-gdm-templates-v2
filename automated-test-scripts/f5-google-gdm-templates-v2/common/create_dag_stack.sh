@@ -87,7 +87,8 @@ fi
 /usr/bin/yq e ".resources[0].properties.firewalls[0].name = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[0] = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[0] = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[1] = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].allowed[0].ports[0] = 8443" -i <DEWPOINT JOB ID>.yaml
@@ -99,7 +100,6 @@ fi
 /usr/bin/yq e ".resources[0].properties.firewalls[1].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[0] = \"<UNIQUESTRING>-app-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[1] = \"<UNIQUESTRING>-app-int-fw\"" -i <DEWPOINT JOB ID>.yaml
-
 /usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].ports[0] = <APP PORT>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].description = \"Allow app web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml

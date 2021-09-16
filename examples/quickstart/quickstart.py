@@ -6,9 +6,11 @@
 """Creates full stack for POC"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
+
 def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
+
 
 def create_network_deployment(context):
     """ Create network module deployment """
@@ -53,6 +55,7 @@ def create_network_deployment(context):
         }
         network_config_array.append(network_config)
     return network_config_array
+
 
 def create_bigip_deployment(context):
     """ Create bigip-standalone module deployment """
@@ -169,6 +172,7 @@ def create_application_deployment(context):
     }]
     return application_config
 
+
 def create_dag_deployment(context):
     """ Create dag module deployment """
     prefix = context.properties['uniqueString']
@@ -279,6 +283,7 @@ def create_dag_deployment(context):
       }
     }]
     return dag_configuration
+
 
 def generate_config(context):
     """ Entry point for the deployment resources. """
