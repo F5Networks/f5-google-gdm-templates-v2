@@ -1,9 +1,11 @@
 ---
-name: Google Examples - Application
+name: Google Examples - Bastion
 onStart:
 - ../../../common/helper_init.sh
 - ../../../common/create_network_stack.sh
 - ../../../common/verify_create_network.sh
+- ../../../common/create_instance_groups.sh
+- ../../../common/create_target_pool.sh
 - ../../../common/create_dag_stack.sh
 - ../../../common/verify_create_dag.sh
 - ./create_stack.sh

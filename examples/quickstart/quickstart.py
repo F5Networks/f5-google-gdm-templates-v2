@@ -11,7 +11,6 @@ def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
 
-
 def create_network_deployment(context):
     """ Create network module deployment """
     network_config = {}
@@ -48,14 +47,14 @@ def create_network_deployment(context):
             'type': '../modules/network/network.py',
             'properties': {
                 'name': net_name,
-                'provisionPublicIp': True,
+                'provisionPublicIp': context.properties['provisionPublicIp'],
+                'region': context.properties['region'],
                 'uniqueString': context.properties['uniqueString'],
                 'subnets': subnet_config
             }
         }
         network_config_array.append(network_config)
     return network_config_array
-
 
 def create_bigip_deployment(context):
     """ Create bigip-standalone module deployment """
@@ -75,16 +74,22 @@ def create_bigip_deployment(context):
             net_name = generate_name(prefix, 'mgmt-network')
             subnet_name = generate_name(prefix, 'mgmt-subnet')
             interface_description = 'Interface used for management traffic'
-            access_config = {
-                'accessConfigs': [{ 'name': 'Management NAT', 'type': 'ONE_TO_ONE_NAT' }]
-            }
+            if context.properties['provisionPublicIp']:
+                access_config = {
+                    'accessConfigs': [{ 'name': 'Management NAT', 'type': 'ONE_TO_ONE_NAT' }]
+                }
+            else:
+                access_config = {'accessConfigs': []}
         elif nics is 1:
             net_name = generate_name(prefix, 'mgmt-network')
             subnet_name = generate_name(prefix, 'mgmt-subnet')
             interface_description = 'Interface used for management traffic'
-            access_config = {
-                'accessConfigs': [{ 'name': 'Management NAT', 'type': 'ONE_TO_ONE_NAT' }]
-            }
+            if context.properties['provisionPublicIp']:
+                access_config = {
+                    'accessConfigs': [{ 'name': 'Management NAT', 'type': 'ONE_TO_ONE_NAT' }]
+                }
+            else:
+                access_config = {'accessConfigs': []}
         else:
             net_name = generate_name(prefix, 'internal' + str(nics) + '-network')
             subnet_name = generate_name(prefix, 'internal' + str(nics) + '-subnet')
@@ -125,7 +130,6 @@ def create_bigip_deployment(context):
         }
     }]
     return bigip_config
-
 
 def create_application_deployment(context):
     """ Create application module deployment """
@@ -172,6 +176,44 @@ def create_application_deployment(context):
     }]
     return application_config
 
+def create_bastion_deployment(context):
+    """ Create template deployment """
+    prefix = context.properties['uniqueString']
+    net_name = generate_name(prefix, 'mgmt-network')
+    subnet_name = generate_name(prefix, 'mgmt-subnet')
+    depends_on_array = []
+    depends_on_array.append(net_name)
+    depends_on_array.append(subnet_name)
+    bastion_config = {
+        'name': 'bastion',
+        'type': '../modules/bastion/bastion.py',
+        'properties': {
+            'application': context.properties['application'],
+            'cost': context.properties['cost'],
+            'environment': context.properties['environment'],
+            'group': context.properties['group'],
+            'owner': context.properties['owner'],
+            'instanceType': 'n1-standard-1',
+            'instances': [{
+                'description': 'My bastion host',
+                'networkInterfaces': [{
+                    'accessConfigs': [{
+                        'name': 'External NAT',
+                        'type': 'ONE_TO_ONE_NAT'
+                    }],
+                    'description': 'Interface used for external traffic',
+                    'network': '$(ref.' + net_name + '.selfLink)',
+                    'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
+                }],
+                'zone': context.properties['zone']
+            }],
+            'uniqueString': context.properties['uniqueString']
+        },
+        'metadata': {
+            'dependsOn': depends_on_array
+        }
+    }
+    return bastion_config
 
 def create_dag_deployment(context):
     """ Create dag module deployment """
@@ -284,7 +326,6 @@ def create_dag_deployment(context):
     }]
     return dag_configuration
 
-
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
@@ -294,6 +335,9 @@ def generate_config(context):
 
     resources = create_network_deployment(context) + create_bigip_deployment(context) \
     + create_application_deployment(context) + create_dag_deployment(context)
+
+    if not context.properties['provisionPublicIp']:
+        resources = resources + [create_bastion_deployment(context)]
 
     outputs = [
         {

@@ -28,12 +28,12 @@ if [[ <PROVISION PUBLIC IP> == True ]]; then
 else
     if [ "<BASTION AUTOSCALE>" == "False" ]; then
         echo "STANDALONE CASE"
-        BASTION_IP=$(get_app_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)
+        BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)
     else
         echo "AUTOSCALE CASE"
         INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-bastion-igm <AVAILABILITY ZONE>)
         echo "INSTANCE: $INSTANCE"
-        BASTION_IP=$(get_app_ip $INSTANCE <AVAILABILITY ZONE> public)
+        BASTION_IP=$(get_bastion_ip $INSTANCE <AVAILABILITY ZONE> public)
     fi
 
     IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE> private)

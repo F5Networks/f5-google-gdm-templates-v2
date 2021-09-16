@@ -7,6 +7,7 @@ examples:
 imports:
   - path: quickstart.py
   - path: ../modules/application/application.py
+  - path: ../modules/bastion/bastion.py
   - path: ../modules/bigip-standalone/bigip_standalone.py
   - path: ../modules/dag/dag.py
   - path: ../modules/network/network.py
@@ -71,6 +72,10 @@ properties:
     default: f5owner
     description: Owner label.
     type: string
+  provisionPublicIp:
+    description: Provision Public IP addresses for the BIG-IP interfaces or to create bastion host
+    type: boolean
+    default: true
   region:
     description: cloud region used for this deployment, for example us-west1.
     type: string
