@@ -113,25 +113,39 @@ def create_bastion_deployment(context):
         depends_on_array.append(net_name)
         depends_on_array.append(subnet_name)
     deployment = {
-        'name': 'bastion',
-        'type': '../../modules/bastion/bastion.py',
-        'properties': {
-            'application': context.properties['application'],
-            'availabilityZone': context.properties['zone'],
-            'cost': context.properties['cost'],
-            'createAutoscaleGroup': True,
-            'environment': context.properties['environment'],
-            'group': context.properties['group'],
-            'osImage': 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts',
-            'instanceTemplateVersion': 1,
-            'instanceType': 'n1-standard-1',
-            'networkSelfLink': '$(ref.' + net_name + '.selfLink)',
-            'subnetSelfLink': '$(ref.' + subnet_name + '.selfLink)',
-            'uniqueString': context.properties['uniqueString']
-        },
-        'metadata': {
-            'dependsOn': depends_on_array
-        }
+      'name': 'bastion',
+      'type': '../../modules/bastion/bastion.py',
+      'properties': {
+        'application': context.properties['application'],
+        'autoscalers': [{
+            'name': 'bastion',
+            'zone': context.properties['zone']
+        }],
+        'cost': context.properties['cost'],
+        'environment': context.properties['environment'],
+        'group': context.properties['group'],
+        'instanceGroupManagers': [{
+          'name': 'bastion',
+          'zone': context.properties['zone']
+        }],
+        'instanceTemplates': [{
+            'name': 'bastion',
+            'networkInterfaces': [{
+                'accessConfigs': [{
+                    'name': 'External NAT',
+                    'type': 'ONE_TO_ONE_NAT'
+                }],
+                'description': 'Interface used for external traffic',
+                'network': '$(ref.' + net_name + '.selfLink)',
+                'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
+            }]
+        }],
+        'owner': context.properties['owner'],
+        'uniqueString': context.properties['uniqueString']
+      },
+      'metadata': {
+        'dependsOn': depends_on_array
+      }
     }
     return deployment
 

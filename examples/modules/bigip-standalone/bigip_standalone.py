@@ -122,8 +122,7 @@ def create_nics(context):
 
 def metadata(context):
     """ Create metadata for instance """
-    number_of_interfaces = len(context.properties.get('networkInterfaces', []))
-    multi_nic = number_of_interfaces > 1
+    multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     metadata_config = {
                 'items': [{
                     'key': 'startup-script',
@@ -163,8 +162,8 @@ def metadata(context):
                                     '   exec 1>&-',
                                     '   exec 1>$npipe',
                                     '   exec 2>&1',
-                                    '   NUMBER_OF_INTERFACES=' + str(number_of_interfaces),
-                                    '   if [ "${NUMBER_OF_INTERFACES}" -ge 2 ]; then',
+                                    '   MULTI_NIC=' + str(multi_nic),
+                                    '   if [[ ${MULTI_NIC} == "True" ]]; then',
                                     '       # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.',
                                     '       tmsh modify sys global-settings mgmt-dhcp disabled',
                                     '       tmsh delete sys management-route all',
