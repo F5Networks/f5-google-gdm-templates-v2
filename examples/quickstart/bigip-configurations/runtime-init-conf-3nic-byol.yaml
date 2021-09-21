@@ -7,11 +7,11 @@ runtime_parameters:
       type: compute
       field: name
   - name: BIGIP_PASSWORD
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: compute
-      field: name
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/id
+    headers:
+      - name: Metadata-Flavor
+        value: Google
   - name: SELF_IP_INTERNAL
     type: metadata
     metadataProvider:

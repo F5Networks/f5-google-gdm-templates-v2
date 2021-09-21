@@ -16,7 +16,9 @@ else
     MGMT_PORT='8443'
 fi
 
-PASSWORD='<UNIQUESTRING>-bigip1'
+instance_id=$(gcloud compute instances list --filter="name~'<UNIQUESTRING>-<INSTANCE NAME>'" --format=json | jq -r .[].id )
+
+PASSWORD=$instance_id
 
 if [[ <PROVISION PUBLIC IP> == True ]]; then
     IP=$(get_mgmt_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> public)
