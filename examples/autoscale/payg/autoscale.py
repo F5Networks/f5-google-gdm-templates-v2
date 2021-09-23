@@ -170,16 +170,42 @@ def create_bigip_deployment(context):
           'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-          'autoscalers': context.properties['autoscalers'],
+          'autoscalers': [{
+              'name': 'bigip',
+              'zone': context.properties['zone'],
+              'autoScalingPolicy': {
+                'minNumReplicas': context.properties['bigIpScalingMinSize'],
+                'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
+                'cpuUtilization': {
+                  'utilizationTarget': context.properties['bigIpScaleOutCpuThreshold']
+                },
+                'coolDownPeriodSec': context.properties['bigIpCoolDownPeriodSec']
+              }
+          }],
           'cost': context.properties['cost'],
           'environment': context.properties['environment'],
           'group': context.properties['group'],
-          'healthChecks': context.properties['healthChecks'],
-          'imageName': context.properties['imageName'],
-          'instanceGroupManagers': context.properties['instanceGroupManagers'],
-          'instanceTemplates': context.properties['instanceTemplates'],
-          'instanceTemplateVersion': context.properties['instanceTemplateVersion'],
-          'instanceType': context.properties['instanceType'],
+          'healthChecks': [
+              {
+                  'checkIntervalSec': 5,
+                  'description': 'BIG-IP external VIP healthcheck',
+                  'httpHealthCheck': {
+                      'port': 80
+                  },
+                  'timeoutSec': 5,
+                  'type': 'HTTP'
+              }
+          ],
+          'imageName': context.properties['bigIpImageName'],
+          'instanceGroupManagers': [{
+              'name': 'bigip',
+              'zone': context.properties['zone']
+          }],
+          'instanceTemplates': [{
+              'name': 'bigip'
+          }],
+          'instanceTemplateVersion': context.properties['bigIpInstanceTemplateVersion'],
+          'instanceType': context.properties['bigIpInstanceType'],
           'networkSelfLink': net_ref,
           'owner': context.properties['owner'],
           'project': context.env['project'],
@@ -190,7 +216,10 @@ def create_bigip_deployment(context):
                   context.env['project'] + \
                       '.iam.gserviceaccount.com',
           'subnetSelfLink': sub_ref,
-          'targetPools': context.properties['targetPools'],
+          'targetPools': [{
+              'name': 'bigip',
+              'region': context.properties['region']
+          }],
           'uniqueString': context.properties['uniqueString']
         },
         'metadata': {
@@ -240,7 +269,7 @@ def create_dag_deployment(context):
                 'description': 'Allow web traffic to public network',
                 'name': context.properties['uniqueString'] + '-app-int-fw',
                 'network': '$(ref.' + net_name + '.selfLink)',
-                'sourceRanges': [ context.properties['restrictedSrcAddressAppInternal'] ],
+                'sourceRanges': [ '10.0.0.0/24' ],
                 'targetTags': [ context.properties['uniqueString'] + '-app-int-fw' ]
             },
             {
