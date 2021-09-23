@@ -1,4 +1,4 @@
-# Deploying the BIG-IP VE in GCP - Example Autoscale BIG-IP WAF (LTM + ASM) - Managed Instance Group (Frontend via ALB) - PAYG Licensing
+# Deploying the BIG-IP VE in GCP - Example Autoscale BIG-IP WAF (LTM + ASM) - Managed Instance Group (Frontend via GLB) - PAYG Licensing
 
 [![Releases](https://img.shields.io/github/release/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/releases)
 [![Issues](https://img.shields.io/github/issues/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/issues)
@@ -7,7 +7,7 @@
 ## Contents
 
   - [Contents](#contents)
-  - [Introduction](#introduction)
+  - [Introduction](#introduction) 
   - [Diagram](#diagram)
   - [Prerequisites](#prerequisites)
   - [Important Configuration Notes](#important-configuration-notes)
@@ -35,7 +35,7 @@
 
 ## Introduction
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the examples/modules directories in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
+This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the **[examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules)** directory in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
 
 The modules below create the following resources:
 
@@ -57,11 +57,11 @@ This solution leverages traditional Autoscale configuration management practices
 
   - This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
       ```bash
-      gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --template ${TEMPLATE_FILE} --properties ${PROPERTIES}
+      gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
       ```
   - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
   - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
-    - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-pve-payg-25mbps)
+    - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-payg-25mbps)
 
 
 ## Important Configuration Notes
@@ -93,46 +93,39 @@ This solution leverages traditional Autoscale configuration management practices
 
 ### Template Input Parameters
 
+Note: These are specified in the configuration file. See sample_autoscale.yaml
+
 | Parameter | Required | Description |
 | --- | --- | --- |
 | appContainerName | No | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | Application label. |
-| bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpRuntimeInitPackageUrl | Yes | Supply a URL for the bigip-runtime-init package |
-| coolDownPeriodSec | No | The application initialization period; the autoscaler uses the cool down period for scaling decisions. |
+| bigIpCoolDownPeriodSec | No | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
+| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
+| bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
+| bigIpScaleOutCpuThreshold | No | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
+| bigIpScalingMaxSize | No | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
+| bigIpScalingMinSize | No | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
 | cost | No | Cost Center label. |
-| environment | No | Environment label. | 
-| group | No | Group label. |
-| imageName | Yes | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --filter="name~f5"`. |
-| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
-| instanceType | Yes | Instance type assigned to the application, for example 'n1-standard-1'. |
-| maxNumReplicas | No | Maximum number of replicas that autoscaler can provision |
-| minNumReplicas | No | Minimum number of replicas that autoscaler can provision |
+| environment | No | Environment label. |
+| group | No | Group Tag. |
 | owner | No | Owner label. |
-| provisionPublicIp | No | Provision Public IP addresses for the BIG-IP interfaces or to create bastion host |
-| region | Yes | Google Cloud region used for this deployment. |
-| restrictedSrcAddressApp | Yes | This field restricts web application access to a specific network or address; the port is defined using applicationPort parameter. Enter an IP address or address range in CIDR notation separated by a space. |
-| restrictedSrcAddressAppInternal | Yes | This field restricts web application access to a specific private network or address. Enter an IP address or address range in CIDR notation separated by a space. |
-| restrictedSrcAddressMgmt | Yes | This field restricts management access to specific networks or addresses. Enter an IP address or address range in CIDR notation separated by a space.  **IMPORTANT** This solution requires your Management's subnet at a minimum in order for the peers to cluster.  For example, '10.0.11.0/24 55.55.55.55/32' where 10.0.11.0/24 is your local management subnet and 55.55.55.55/32 is a specific address (ex. orchestration host/desktop/etc.). |
-| secretId | No | ID of the secret stored in Secret Manager |
-| uniqueString | Yes | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| update | No | Specify true when updating the deployment. |
-| utilizationTarget | No | The target value of the metric that autoscaler should maintain. This must be a positive value. A utilization metric scales number of virtual machines handling requests to increase or decrease proportionally to the metric. |
-| zone | Yes | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| provisionPublicIp | No | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
+| region | No | Google Cloud region used for this deployment, for example 'us-west1'. |
+| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. |
+| restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
+| uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
+| zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
 
 ### Template Outputs
 
 | Name | Description | Type |
-| --- | --- | --- |
-| appUsername | Application user name | Application Template | string |
-| appVmssId | Application Virtual Machine Scale Set resource ID | Application Template | string |
-| appVmssName | Application Virtual Machine Scale Set name | Application Template | string |
-| bigIpUsername | BIG-IP user name | BIG-IP Template | string |
-| bigIpVmssId | BIG-IP Virtual Machine Scale Set resource ID | BIG-IP Template | string |
-| bigIpVmssName | BIG-IP Virtual Machine Scale Set name| BIG-IP Template | string |
+| ---- | ----------- | ---- |
 | deployment_name | Name of parent deployment | string |
-| virtualNetworkId | Virtual Network resource ID | Network Template | string |
-| wafPublicIps | WAF Service Public IP Addresses | DAG Template | array |
 
 
 ## Deploying this Solution
@@ -146,40 +139,28 @@ To deploy this solution, you must use the [gcloud CLI](#deploying-via-the-gcloud
 
 To deploy the BIG-IP VE from the parent template YAML file, use the following command syntax:
 
-```gcloud deployment-manager deployments create <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"```
+```bash
+gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}```
+```
 
 Keep in mind the following:
 
-- Follow the sample_autoscale.yaml file for guidance on what to include in the yaml file, include required imports and parameters
-- *your-deployment-name*<br>This name must be unique.<br>
-- *your-file-name.yaml*<br>If your file is not in the same directory as the Google SDK, include the full file path in the command.
-
-
+- Follow the sample_autoscale.yaml file for guidance on what to include in the yaml *CONFIG_FILE*, include required imports and parameters
+- *DEPLOYMENT_NAME*<br>This name must be unique.<br>
+- *CONFIG_FILE*<br>If your file is not in the same directory as the Google SDK, include the full file path in the command.
 
 ### Changing the BIG-IP Deployment
 
-You will most likely want or need to change the BIG-IP configuration. This generally involves referencing or customizing a [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) configuration file and passing it through the **bigIpRuntimeInitConfig** template parameter as a URL or inline json. 
+You will most likely want or need to change the BIG-IP configuration. This generally involves referencing or customizing a [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) configuration file and passing it through the **bigIpRuntimeInitConfig** parameter as a URL. 
 
 Example from sample_autoscale.yaml
 ```yaml
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
-    cooldownPeriodSec: 60
+    ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format. 
 
-The F5 BIG-IP Runtime Init configuration file can also be formatted in json and/or passed directly inline:
-
-Example:
-```yaml
-    bigIpRuntimeInitConfig: "{\"controls\":{\"logLevel\":\"silly\"},\"pre_onboard_enabled\":[],\"runtime_parameters\":[{\"name\":\"ADMIN_PASS\",\"type\":\"static\",\"value\":\"ComplexPassword10+\"},{\"name\":\"ROOT_PASS\",\"type\":\"static\",\"value\":\"RootComplexPass20$\"},{\"name\":\"HOST_NAME\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"compute\",\"field\":\"name\"}},{\"name\":\"SELF_IP_INTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":2}},{\"name\":\"SELF_IP_EXTERNAL\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0}},{\"name\":\"GATEWAY\",\"type\":\"metadata\",\"metadataProvider\":{\"environment\":\"gcp\",\"type\":\"network\",\"field\":\"ip\",\"index\":0,\"ipcalc\":\"first\"}}],\"bigip_ready_enabled\":[{\"name\":\"provision_modules\",\"type\":\"inline\",\"commands\":[\"tmsh modify sys provision asm level nominal\"]},{\"name\":\"provision_rest\",\"type\":\"inline\",\"commands\":[\"/usr/bin/setdb provision.extramb 500\",\"/usr/bin/setdb restjavad.useextramb true\"]},{\"name\":\"save_sys_config\",\"type\":\"inline\",\"commands\":[\"tmsh save sys config\"]}],\"post_onboard_enabled\":[],\"extension_packages\":{\"install_operations\":[{\"extensionType\":\"do\",\"extensionVersion\":\"1.22.0\"},{\"extensionType\":\"as3\",\"extensionVersion\":\"3.29.0\",\"verifyTls\":false,\"extensionUrl\":\"https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.29.0/f5-appsvcs-3.29.0-3.noarch.rpm\",\"extensionHash\":\"bcbba79b42b700b8d2b46937b65e6d09b035515a7a7e40aaeebb360fcfe7aa66\"},{\"extensionType\":\"fast\",\"extensionVersion\":\"1.10.0\"}]},\"extension_services\":{\"service_operations\":[{\"extensionType\":\"do\",\"type\":\"url\",\"value\":\"https://raw.githubusercontent.com/F5Networks/f5-bigip-runtime-init/main/examples/declarations/do_w_admin.json\",\"verifyTls\":false},{\"extensionType\":\"as3\",\"type\":\"url\",\"value\":\"https://cdn.f5.com/product/cloudsolutions/templates/f5-google-gdm-templates-v2/examples/modules/bigip/autoscale_as3.json\"}]},\"post_hook\":[{\"name\":\"example_webhook\",\"type\":\"webhook\",\"url\":\"https://postman-echo.com/post\",\"properties\":{\"optionalKey1\":\"optional_value1\",\"optionalKey2\":\"optional_value2\"}}]}"
-    cooldownPeriodSec: 60    
-```
-
-NOTE: If providing the json inline as a template parameter, you must escape all double quotes so it can be passed as a single parameter string.
-
-*TIP: If you don't have an easy way to host your own config files, passing the config as inline json via the template input parameter might be the quickest / most accessible option to test out different BIG-IP configs using this repository.*
- 
 F5 has provided the following example configuration files in the `examples/autoscale/bigip-configurations` folder:
 
 - `runtime-init-conf-bigiq.yaml` - This configuration file installs packages and creates WAF-protected services for a BIG-IQ licensed deployment based on the Automation Toolchain declaration URLs listed above.
@@ -192,22 +173,27 @@ By default, this solution deploys the `runtime-init-conf-payg.yaml` configuratio
 
 This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implying the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))* However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
 
-The example AS3 declaration in this config uses [Service Discovery](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/service-discovery.html#using-service-discovery-with-as3) to populate the pool with the private IP addresses of application servers in a instance group. By default, the fields for the service discovery configuration (**resourceGroup**, **subscriptionId** and ***uniqueString***) are rendered similarly from Google Cloud metadata. If the application instance group is located in a different resource group or subscription, you can modify these values. 
+The example AS3 declaration in this config uses [Service Discovery](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/service-discovery.html#using-service-discovery-with-as3) to populate the pool with the private IP addresses of application servers in a instance group. By default, the fields for the service discovery configuration are rendered similarly from Google Cloud metadata. If the application instance group requires different values or configuration, you would need to customize them in the runtime-init config being downloaded. 
 
 To change the Pool configuration:
 
-  1. edit/modify the AS3 Declaration (AS3) declaration in a corresponding runtime-init config file with the new `Pool` values. 
+  1. edit/modify the AS3 Declaration (AS3) declaration in a corresponding runtime-init config file with the new `Pool`values. 
 
 Example:
 ```yaml
+           shared_pool:
               class: Pool
               remark: Service 1 shared pool
               members:
                 - addressDiscovery: gce
                   addressRealm: private
-                  region: us-west1
+                  tagKey: <YOUR_TAG_KEY>
+                  tagValue: <YOUR_TAG_VALUE>
+                  region: '{{{REGION}}}'
                   servicePort: 80
                   updateInterval: 60
+              monitors:
+                - http
 ```
 
   - *NOTE:* 
@@ -226,9 +212,33 @@ Example:
                 servicePort: 80
 ```
 
-  2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.) or render/format to send as inline json.
-  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL or inline json of the updated configuration 
+  2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.).
+  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration 
   4. Deploy or Re-Deploy
+
+
+As instances in an autoscaled deployment are ephemeral, remote logging is critical. By default, this solution deploys a Telemetry Streaming configuration that has a placeholder for the remote logging destination. 
+
+To update the Remote Logging configuration:
+
+  1. edit/modify the Telemetry Streaming (TS) declaration in a corresponding runtime-init config file [runtime-init-conf-payg.yaml](../bigip-configurations/runtime-init-conf-payg.yaml) with the new destination values. 
+
+Example: Replace 
+```yaml
+          My_Splunk_Consumer:
+            class: Telemetry_Consumer
+            type: Splunk
+            host: 192.168.2.4
+            protocol: https
+            port: 8088
+            passphrase:
+              cipherText: '{{{SPLUNK_API_KEY}}}'
+            compressionType: gzip
+```
+with your remote logging destination. See Telemetry Streaming [documentation](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/setting-up-consumer.html) for more details.
+ 
+  2. publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, git, Google Cloud Storage, etc.)
+  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the URL of the customized configuration file.
 
 
 ## Validation
@@ -252,7 +262,9 @@ To test the WAF service, perform the following steps:
 - Obtain the IP address of the WAF service:
   - **gcloud CLI**: 
       ```bash
-      gcloud compute forwarding-rules describe ${forwarding_rule} --region=${region} --format='value(IPAddress)'
+      UNIQUE_STRING="myuniquestr"
+      REGION="us-west1"
+      gcloud compute forwarding-rules describe ${UNIQUE_STRING}-fwrule1 --region=${REGION} --format='value(IPAddress)'
       ```
 - Verify the application is responding:
   - Paste the IP address in a browser: ```https://${IP_ADDRESS_FROM_OUTPUT}```
@@ -276,41 +288,57 @@ To test the WAF service, perform the following steps:
 
 ### Accessing the BIG-IP
 
+
+- NOTE:
+
+  - Replace _${UNIQUE_STRING}_ and _${ZONE}_ with the values you provided for your _uniqueString_ and _zone_ parameters.
+  - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. Once connected to a bastion host, you may then connect via SSH to the private IP addresses of the BIG-IP instances in *uniqueString*-bigip-igm.
+
+
 - Obtain the IP address of the BIG-IP Management Port:
-  - NOTE: 
-      - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instances via a bastion host. When looking up bastion instances, replace ${instance_group} with *uniqueId*-bastion-igm to find the names of the bastion hosts. Once connected to a bastion host, you may then connect via SSH or X11 to the private IP addresses of the BIG-IP instances in *uniqueId*-bigip-igm.
 
   - **gcloud CLI**:
-    - Instances (Bastion)
+      - Instances (BIG-IP)
       ```
-      gcloud compute instance-groups list-instances ${bastion_instance_group} --zone=${zone} --format json | jq -r .[].instance
+      UNIQUE_STRING="myuniquestr"
+      ZONE="us-west1-a"
+      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bigip-igm --zone=${ZONE} --format json | jq -r .[].instance
       ```
 
-    - Instances (BIG-IP)
+    - Instances (Bastion)
       ```
-      gcloud compute instance-groups list-instances ${bigip_instance_group} --zone=${zone} --format json | jq -r .[].instance
+      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bastion-igm --zone=${ZONE} --format json | jq -r .[].instance
       ```
  
     - Public IPs (BIG-IP or Bastion instance): 
       ```shell 
-      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.accessConfigs[0].natIP)'
+      INSTANCE="An instance name or URL from output above"
+      gcloud compute instances describe ${INSTANCE} --zone=${ZONE} --format='value(networkInterfaces.accessConfigs[0].natIP)'
       ```
 
     - Private IPs (BIG-IP): 
       ```shell
-      gcloud compute instances describe ${instance} --zone=${zone} --format='value(networkInterfaces.networkIP)'
+      gcloud compute instances describe ${INSTANCE} --zone=${ZONE} --format='value(networkInterfaces.networkIP)'
       ```
 
-- Login in via SSH (**provisionPublicIP** = **true**):
+- Login in via SSH:
   - **SSH key authentication**: 
     ```bash
     ssh admin@${IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
     ```
 
-  - **SSH key authentication** (**provisionPublicIP** = **false**): 
+  - OR if you are going through a bastion host (when **provisionPublicIP** = **false**):
+
+    From your desktop client/shell, create an SSH tunnel:
     ```bash
-    ssh ubuntu@${PUBLIC_IP_ADDRESS_FROM_OUTPUT} -i ${YOUR_PRIVATE_SSH_KEY}
-    ssh admin@${PRIVATE_IP_ADDRESS_FROM_OUTPUT}
+    ssh -i [PROJECT_USER_PRIVATE_KEY] -o ProxyCommand='ssh -i [PROJECT_USER_PRIVATE_KEY] -W %h:%p [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP]' admin@[BIG-IP-MGMT-PRIVATE-IP]
+    ```
+
+    Replace the variables in brackets before submitting the command.
+
+    For example:
+    ```bash
+    ssh -i ~/.ssh/mykey.pem -o ProxyCommand='ssh -i ~/.ssh/mykey.pem -W %h:%p myprojectuser@34.82.102.190' admin@10.0.0.2
     ```
 
 - Login in via WebUI:
@@ -332,11 +360,27 @@ To test the WAF service, perform the following steps:
       - password: `<YOUR_STRONG_PASSWORD>`
       
 
+  - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
+
+    From your desktop client/shell, create an SSH tunnel:
+    ```bash
+    ssh -i [PROJECT_USER_PRIVATE_KEY] [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP] -L 8443:[BIG-IP-MGMT-PRIVATE-IP]:[BIGIP-GUI-PORT]
+    ```
+    For example:
+    ```bash
+    ssh -i ~/.ssh/mykey.pem myprojectuser@34.82.102.190 -L 8443:10.0.0.2:8443
+    ```
+
+    You should now be able to open a browser to the BIG-IP UI from your desktop:
+
+    https://localhost:8443
+
+
 ### Further Exploring
 
 #### WebUI
- - Navigate to **Virtual Services > Partition**. Select Partition = `Tenant_1`
- - Navigate to **Local Traffic > Virtual Servers**. You should see two Virtual Services (one for HTTP and one for HTTPS). The should show up as Green. Click on them to look at the configuration *(declared in the AS3 declaration)*
+ - Navigate to **Local Traffic > Virtual Servers**. In upper right corner, select Partition = `Tenant_1`
+ - You should now see two Virtual Services (one for HTTP and one for HTTPS). They should show up as Green. Click on them to look at the configuration *(declared in the AS3 declaration)*
 
 #### SSH
 
@@ -365,34 +409,31 @@ By default, Rolling Upgrades are configured to upgrade in batches of 20% with ze
 
 #### Updating the Configuration
 
-1. Modify the **bigIpRuntimeInitConfig** parameter value to trigger a model update. If using inline json, make a configuration change in parameter payload. If using a URL, reference a new URL. Example:
+1. Modify the **bigIpRuntimeInitConfig** parameter value to reference a new URL to trigger a model update. Example:
   - If using tags for versions, change from `v1.2.0.0`
-    ```json
-        "bigIpRuntimeInitConfig": {
-          "value": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
-        },
+    ```yaml
+        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
     ```
     to `v1.3.1.0`
-    ```json
-        "bigIpRuntimeInitConfig": {
-          "value": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
-        },
+    ```yaml
+        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
+
     ```
 2. Modify the **update** parameter to True. This removes dependencies that are required for the initial deployment only.
-3. Modify the **instanceTemplateVersion** parameter to 2 (or a subsequent version number if you have redeployed multiple times). Specifying a unique value causes the deployment to create a new instance template for the VM instances.
+3. Modify the **bigIpInstanceTemplateVersion** parameter to 2 (or a subsequent version number if you have redeployed multiple times). Specifying a unique value causes the deployment to create a new instance template for the VM instances.
 4. Re-deploy the template with new **bigIpRuntimeInitConfig** parameter updated in your configuration file.
     ```bash
-    gcloud deployment-manager deployments update <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
+    gcloud deployment-manager deployments update ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
     ```  
 
 #### Upgrading the BIG-IP VE Image
 As new BIG-IP versions are released, existing Managed Instance Groups can be upgraded to use those new images with same procedure. 
 
-1. Modify the **bigIpImage** input parameter value to new BIG-IP version in your configuration file.
+1. Modify the **bigIpImageName** input parameter value to new BIG-IP version in your configuration file.
 
-2. Re-deploy the template with new **bigIpImage** parameter.
+2. Re-deploy the template with new **bigIpImageName** parameter.
     ```bash 
-    gcloud deployment-manager deployments update <your-deployment-name> --config <your-file-name.yaml> --description "<deployment-description>"
+    gcloud deployment-manager deployments update ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
     ```  
 
 #### Lifecycle Troubleshooting
@@ -418,7 +459,7 @@ If a new configuration update fails (for example, invalid config, typo, etc.) an
 6. [Delete](https://cloud.google.com/sdk/gcloud/reference/compute/instances/delete) failed instances.
     - **gcloud CLI**: 
       ```bash 
-      gcloud compute instances delete ${INSTANCE_NAME} --zone=${ZONE_NAME}
+      gcloud compute instances delete ${INSTANCE_NAME} --zone=${ZONE}
       ```
 
 
@@ -438,18 +479,18 @@ If a new configuration update fails (for example, invalid config, typo, etc.) an
 
 ### Deleting the deployment using the gcloud CLI
 
-Before deleting this solution, if you had previously updated the deployment, you must first redeploy while specifying "False" for the update input parameter in your configuration file:
+Before deleting this solution, if you had previously updated the deployment, you must first redeploy while specifying "false" for the update input parameter in your configuration file:
 
 ```bash
-    gcloud deployment-manager deployments update <your-deployment-name> --config <your-updated-file-name.yaml>
+    gcloud deployment-manager deployments update ${DEPLOYMENT_NAME} --config ${UPDATED_CONFIG_FILE}
 ```
 
-Do not change the instanceTemplateVersion input parameter value when redeploying before delete.
+Do not change the bigIpInstanceTemplateVersion input parameter value when redeploying before delete.
 
 After redeploying with update:false, you can delete the deployment without dependency errors:
 
 ```bash
-  gcloud deployment-manager deployments delete <your-deployment-name> -q
+  gcloud deployment-manager deployments delete ${DEPLOYMENT_NAME} -q
 ```
 
 

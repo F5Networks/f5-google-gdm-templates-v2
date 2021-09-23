@@ -12,13 +12,12 @@ cp -r $PWD/examples /tmp
 cp /tmp/examples/quickstart/sample_quickstart.yaml ${tmpl_path}<DEWPOINT JOB ID>.yaml
 # Update Config File using sample_quickstart.yaml 
 /usr/bin/yq e ".resources[0].name = \"quickstart-py\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp = \"<RESTRICTED SRC ADDRESS APP>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressAppInternal = \"<RESTRICTED SRC ADDRESS APP INTERNAL>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt = \"<RESTRICTED SRC ADDRESS>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"<RESTRICTED SRC ADDRESS APP>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.imageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpInstanceType = \"<INSTANCE TYPE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numNics = <NUMBER NICS>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml

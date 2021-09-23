@@ -16,11 +16,11 @@ def create_network_deployment(context):
     network_config = {}
     network_config_array = []
     for nics in range(context.properties['numNics']):
-        if nics is 0:
+        if nics == 0:
             net_name = 'mgmt'
             subnet_name = 'mgmt'
             subnet_description = 'Subnetwork used for management traffic'
-        elif context.properties['numNics'] is not 1 and nics is 1:
+        elif context.properties['numNics'] != 1 and nics == 1:
             net_name = 'external'
             subnet_name = 'external'
             subnet_description = 'Subnetwork used for external traffic'
@@ -34,7 +34,7 @@ def create_network_deployment(context):
             'region': context.properties['region'],
             'ipCidrRange': '10.0.' + str(nics) + '.0/24'
         }]
-        if nics + 1 is context.properties['numNics']:
+        if nics + 1 == context.properties['numNics']:
             app_subnet_config = {
                 'description': 'Subnetwork used for POC application.',
                 'name': 'app',
@@ -63,14 +63,14 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     for nics in range(context.properties['numNics']):
         access_config = {}
-        if context.properties['numNics'] is not 1 and nics is 0:
+        if context.properties['numNics'] != 1 and nics == 0:
             net_name = generate_name(prefix, 'external-network')
             subnet_name = generate_name(prefix, 'external-subnet')
             interface_description = 'Interface used for external traffic'
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
             }
-        elif nics is 0:
+        elif nics == 0:
             net_name = generate_name(prefix, 'mgmt-network')
             subnet_name = generate_name(prefix, 'mgmt-subnet')
             interface_description = 'Interface used for management traffic'
@@ -80,7 +80,7 @@ def create_bigip_deployment(context):
                 }
             else:
                 access_config = {'accessConfigs': []}
-        elif nics is 1:
+        elif nics == 1:
             net_name = generate_name(prefix, 'mgmt-network')
             subnet_name = generate_name(prefix, 'mgmt-subnet')
             interface_description = 'Interface used for management traffic'
@@ -109,8 +109,8 @@ def create_bigip_deployment(context):
         'properties': {
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-            'imageName': context.properties['imageName'],
-            'instanceType': context.properties['instanceType'],
+            'imageName': context.properties['bigIpImageName'],
+            'instanceType': context.properties['bigIpInstanceType'],
             'name': 'bigip1',
             'networkInterfaces': interface_config_array,
             'region': context.properties['region'],
@@ -135,9 +135,9 @@ def create_application_deployment(context):
     """ Create application module deployment """
     prefix = context.properties['uniqueString']
     subnet_name = generate_name(prefix, 'app-subnet')
-    if context.properties['numNics'] is 1:
+    if context.properties['numNics'] == 1:
         net_name = generate_name(prefix, 'mgmt-network')
-    elif context.properties['numNics'] is 2:
+    elif context.properties['numNics'] == 2:
         net_name = generate_name(prefix, 'external-network')
     else:
         net_name = generate_name(prefix, 'internal' + \
@@ -221,16 +221,17 @@ def create_dag_deployment(context):
     mgmt_net_name = generate_name(prefix, 'mgmt-network')
     ext_net_name = generate_name(prefix, 'external-network')
     int_net_name = generate_name(prefix, 'internal2-network')
-    if context.properties['numNics'] is 1:
+    if context.properties['numNics'] == 1:
         app_net_name = generate_name(prefix, 'mgmt-network')
         int_net_name = generate_name(prefix, 'mgmt-network')
-    elif context.properties['numNics'] is 2:
+    elif context.properties['numNics'] == 2:
         app_net_name = generate_name(prefix, 'external-network')
         int_net_name = generate_name(prefix, 'external-network')
     else:
         app_net_name = generate_name(prefix, 'external-network')
         int_net_name = generate_name(prefix, 'internal' + \
             str(context.properties['numNics'] - 1) + '-network')
+    int_net_cidr = '10.0.' + str(context.properties['numNics'] - 1) + '.0/24'
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
     mgmt_port = 8443
@@ -269,8 +270,11 @@ def create_dag_deployment(context):
                     'description': 'Allow web traffic to internal app network',
                     'name': context.properties['uniqueString'] + '-app-int-fw',
                     'network': '$(ref.' + int_net_name + '.selfLink)',
-                    'sourceRanges': [ context.properties['restrictedSrcAddressAppInternal'] ],
-                    'targetTags': [ generate_name(prefix, 'app-int-fw'), generate_name(prefix, 'app-int-vip-fw') ]
+                    'sourceRanges': [ int_net_cidr ],
+                    'targetTags': [
+                        generate_name(prefix, 'app-int-fw'),
+                        generate_name(prefix, 'app-int-vip-fw')
+                    ]
                 },
                 {
                     'allowed': [

@@ -44,7 +44,6 @@ def create_instance_template(context, instance_template):
         'disks',
         'displayDevice',
         'guestAccelerators',
-        'hostname',
         'labels',
         'machineType',
         'minCpuPlatform',
@@ -271,9 +270,7 @@ def create_autoscaler(context, autoscaler):
 def create_health_check(context, health_check, source):
     """Create health check."""
     # Build health check property list
-    required_properties = [
-        'name'
-    ]
+    required_properties = []
     optional_properties = [
         'description',
         'checkIntervalSec',
@@ -293,8 +290,6 @@ def create_health_check(context, health_check, source):
     # Setup Variables
     prefix = context.properties['uniqueString']
     health_check_name = generate_name(prefix, str(source + '-hc'))
-    # applicaton_port = str(context.properties['applicationVipPort'])
-    # applicaton_port = applicaton_port.split()[0]
     properties = {}
 
     # Setup Defaults - property updated to given value when property exists in config
@@ -387,9 +382,6 @@ def generate_config(context):
            context.env['name']
     bigip_autoscale_deployment_name = generate_name(prefix, name)
     
-    # instance_template_name = generate_name(prefix, 'template-v' + \
-    #         str(context.properties['instanceTemplateVersion']))
-
     resources = []
     for autoscaler in context.properties.get('autoscalers', []):
         resources.append(create_autoscaler(context, autoscaler))
