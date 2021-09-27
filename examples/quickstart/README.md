@@ -52,7 +52,7 @@ The modules below create the following cloud resources:
 
 By default, this solution creates a 3 VPC Networks, an example Web Application instance and a PAYG BIG-IP instance with three network interfaces (one for management and two for dataplane/application traffic - called external and internal). Application traffic from the Internet traverses an external network interface configured with both public and private IP addresses. Traffic to the application traverses an internal network interface configured with a private IP address.
 
-**_DISCLAIMER/WARNING_**: To reduce prerequisites and complexity to a bare minimum for evaluation purposes only, this quickstart provides immediate access to the management interface via a Public IP. At the very _minimum_, configure the **restrictedSrcAddressMgmt** parameter to limit access to your client IP or trusted network. In production deployments, management access should never be directly exposed to the Internet and instead should be accessed via typical management best practices like bastion hosts/jumpboxes, VPNs, etc.
+**_DISCLAIMER/WARNING_**: To reduce prerequisites and complexity to a bare minimum for evaluation purposes only, this quickstart provides immediate access to the management interface via a Public IP. At the very _minimum_, configure the **restrictedSrcAddressMgmt** parameter to limit access to your client IP or trusted network. In production deployments, management access should never be directly exposed to the Internet and instead should be accessed via typical management best practices like bastion hosts/jump boxes, VPNs, etc.
 
 ## Diagram
 
@@ -60,7 +60,7 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Prerequisites
 
-- You must have installed the [Google Cloud SDK](https://cloud.google.com/sdk/downloads)
+- You must have installed the [Google Cloud SDK](https://cloud.google.com/sdk/downloads).
 - This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
   ```bash
   gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
@@ -71,23 +71,24 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Important Configuration Notes
 
-- By default, this solution creates a username **quickstart** with a **temporary** password set to value of the BIG-IP's **Instance ID**. **IMPORTANT**: You should change this temporary password immediately following deployment. Alternately, you may remove the quickstart user class from the runtime-init configuration prior to deployment to prevent this user account from being created. See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
+- By default, this solution creates a username **quickstart** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
+***IMPORTANT**: You should change this temporary password immediately following deployment. Alternately, you may remove the quickstart user class from the runtime-init configuration prior to deployment to prevent this user account from being created. See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.*
 
 - This solution requires Internet access for:
 
-  1. Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
-  2. Contacting native cloud services for various cloud integrations:
+  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
+  - Contacting native cloud services for various cloud integrations:
 
-  - _Onboarding_:
-    - [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) - to fetch secrets from native vault services
-  - _Operation_:
-    - [F5 Application Services 3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/) - for features like Service Discovery
-    - [F5 Telemetry Streaming](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) - for logging and reporting
-    - [Cloud Failover Extension (CFE)](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/) - for updating ip and routes mappings
-  - Additional cloud services like private endpoints can be used to address calls to native services traversing the Internet.
-  - See [Security](#security) section for more details.
+    - _Onboarding_:
+      - [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) - to fetch secrets from native vault services
+    - _Operation_:
+      - [F5 Application Services 3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/) - for features like Service Discovery
+      - [F5 Telemetry Streaming](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) - for logging and reporting
+      - [Cloud Failover Extension (CFE)](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/) - for updating ip and routes mappings
+    - Additional cloud services like private endpoints can be used to address calls to native services traversing the Internet.
+    - See [Security](#security) section for more details.
 
-- This solution template provides an **initial** deployment only for an "infrastructure" use case (meaning that it does not support managing the entire deployment exclusively via the template's "Redeploy" function). This solution leverages metadata to send the instance **startup script**, which is only used to provide an initial BIG-IP configuration and not as the primary configuration API for a long-running platform. Although "Redeploy" can be used to update some cloud resources, as the BIG-IP configuration needs to align with the cloud resources, like IPs to NICs, updating one without the other can result in inconsistent states, while updating other resources, like the **image** or **instanceType**, can trigger an entire instance re-deloyment. For instance, to upgrade software versions, traditional in-place upgrades should be leveraged. See [AskF5 Knowledge Base](https://support.f5.com/csp/article/K84554955) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more information.
+- This solution template provides an **initial** deployment only for an "infrastructure" use case (meaning that it does not support managing the entire deployment exclusively via the template's "Redeploy" function). This solution leverages metadata to send the instance **startup script**, which is only used to provide an initial BIG-IP configuration and not as the primary configuration API for a long-running platform. Although "Redeploy" can be used to update some cloud resources, as the BIG-IP configuration needs to align with the cloud resources, like IPs to NICs, updating one without the other can result in inconsistent states, while updating other resources, like the **image** or **instanceType**, can trigger an entire instance re-deployment. For example, to upgrade software versions, traditional in-place upgrades should be leveraged. See [AskF5 Knowledge Base](https://support.f5.com/csp/article/K84554955) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more information.
 
 - If you have cloned this repository to modify the templates or BIG-IP config files and published to your own location, you can use the **imports** section of the configuration template file to specify the new location of the customized templates and the **bigIpRuntimeInitConfig** input parameter to specify the new location of the BIG-IP Runtime-Init config. See main [/examples/README.md](#cloud-configuration) for more template customization details. See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
 
@@ -120,8 +121,8 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | group | No | Group Tag. |
 | numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
 | owner | No | Owner Tag. |
-| provisionPublicIp | No | Provision Public IP addresse(s) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
-| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. |
+| provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
+| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
 | restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
@@ -228,7 +229,7 @@ For illustration purposes, this solution pre-provisions IP addresses and the run
 
 See [diagram](diagram-multiple-vips.png) for example of adding virtual services.
 
-_NOTE: For cloud resources, templates can be customized to pre-provision and update additional resources (for example: various combinations of NICs, forwarding rules, alias addresses, IAM roles, egitc.). Please see [Getting Help](#getting-help) for more information. For BIG-IP configurations, you can leverage any REST or Automation Tool Chain clients like [Ansible](https://ansible.github.io/workshops/exercises/ansible_f5/3.0-as3-intro/),[Terraform](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_as3),etc._
+_NOTE: For cloud resources, templates can be customized to pre-provision and update additional resources (for example: various combinations of NICs, forwarding rules, alias addresses, IAM roles, etc.). Please see [Getting Help](#getting-help) for more information. For BIG-IP configurations, you can leverage any REST or Automation Tool Chain clients like [Ansible](https://ansible.github.io/workshops/exercises/ansible_f5/3.0-as3-intro/),[Terraform](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_as3),etc._
 
 ## Validation
 
@@ -318,35 +319,34 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 - Obtain the IP address of the BIG-IP Management Port:
 
   - See 'Obtain the public IP address of the BIG-IP Management Port' section above:
-  - By default, the the Management URL will be https://${MANAGEMENT-IP}/
-  - For 1NIC deployments, the the Management URL will be https://${MANAGEMENT-IP}:8443/
+  - By default, the Management URL will be `https://${MANAGEMENT-IP}/`
+  - For 1NIC deployments, the Management URL will be `https://${MANAGEMENT-IP}:8443/`
 
-    ```
+          
 
-    ```
+          
 
-- Open a browser to the Management URL:
-  - NOTE: By default, the BIG-IP's WebUI starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue").
-  - Provide
-    - username: quickstart
-    - password: **Instance ID**
-
-
-- OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
+  - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
 
     From your desktop client/shell, create an SSH tunnel:
     ```bash
-    `ssh -i [PROJECT_USER_PRIVATE_KEY] [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP] -L 8443:[BIG-IP-MGMT-PRIVATE-IP]:[BIGIP-GUI-PORT]`
+    ssh -i [PROJECT_USER_PRIVATE_KEY] [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP] -L 8443:[BIG-IP-MGMT-PRIVATE-IP]:[BIGIP-GUI-PORT]
     ```
     For example:
     ```bash
-    `ssh -i ~/.ssh/mykey.pem myprojectuser@34.82.102.190 -L 8443:10.0.0.2:443`
+    ssh -i ~/.ssh/mykey.pem myprojectuser@34.82.102.190 -L 8443:10.0.0.2:443
     ```
 
     You should now be able to open a browser to the BIG-IP UI from your desktop:
 
     https://localhost:8443
 
+
+- Open a browser to the Management URL:
+  - NOTE: By default, the BIG-IP's WebUI starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue").
+  - Provide
+    - username: quickstart
+    - password: **Instance ID**
 
 ### Further Exploring
 
