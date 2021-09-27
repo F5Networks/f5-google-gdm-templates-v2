@@ -67,12 +67,12 @@ This solution leverages traditional Autoscale configuration management practices
 ## Important Configuration Notes
 
 - By default, this solution does not create a custom BIG-IP WebUI user as instances are not intended to be managed directly. However, an SSH key is installed to provide CLI access for demonstration and debugging purposes. 
-  - **Disclaimer:** ***Accessing or logging into the instances themselves is for demonstration and debugging purposes only. All configuration changes should be applied by updating the model via the template instead.***
+  - ***IMPORTANT:** Accessing or logging into the instances themselves is for demonstration and debugging purposes only. All configuration changes should be applied by updating the model via the template instead.*
   - See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
 
 - This solution requires Internet access for: 
-  1. Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
-  2. Contacting native cloud services for various cloud integrations: 
+  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via GitHub.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
+  - Contacting native cloud services for various cloud integrations: 
     - *Onboarding*:
         - [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) - to fetch secrets from native vault services
     - *Operation*:
@@ -114,7 +114,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | owner | No | Owner label. |
 | provisionPublicIp | No | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
 | region | No | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. |
+| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
 | restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
@@ -159,7 +159,7 @@ Example from sample_autoscale.yaml
     bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
 ```
 
-**IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format. 
+***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*
 
 F5 has provided the following example configuration files in the `examples/autoscale/bigip-configurations` folder:
 
@@ -171,13 +171,13 @@ See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init
  
 By default, this solution deploys the `runtime-init-conf-payg.yaml` configuration. 
 
-This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implying the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))* However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
 
 The example AS3 declaration in this config uses [Service Discovery](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/service-discovery.html#using-service-discovery-with-as3) to populate the pool with the private IP addresses of application servers in a instance group. By default, the fields for the service discovery configuration are rendered similarly from Google Cloud metadata. If the application instance group requires different values or configuration, you would need to customize them in the runtime-init config being downloaded. 
 
 To change the Pool configuration:
 
-  1. edit/modify the AS3 Declaration (AS3) declaration in a corresponding runtime-init config file with the new `Pool`values. 
+  1. Edit/modify the AS3 Declaration (AS3) declaration in a corresponding runtime-init config file with the new `Pool` values. 
 
 Example:
 ```yaml
@@ -200,7 +200,7 @@ Example:
     - The managed identity assigned to the BIG-IP VE instance(s) must have read permissions on the managed instance group resource.
     - The Service Discovery configuration listed above targets a specific managed instance group ID to reduce the number of requests made to the Google Cloud API endpoints. When choosing capacity for the BIG-IP VE and application instance group, it is possible to exceed the API request limits. Consult the Google Compute Engine API rate limits [documentation](https://cloud.google.com/compute/docs/api-rate-limits) for more information.
 
-  - Or even with another pool configuration entirely. For example, using the [FQDN](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/discovery.html#using-an-fqdn-pool-to-identify-pool-members) Service Discovery instead to point to a DNS name.
+  - You can also use another pool configuration entirely. For example, using the [FQDN](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/discovery.html#using-an-fqdn-pool-to-identify-pool-members) Service Discovery instead to point to a DNS name.
 
 ```yaml
               class: Pool
@@ -213,15 +213,15 @@ Example:
 ```
 
   2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.).
-  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration 
-  4. Deploy or Re-Deploy
+  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration.
+  4. Deploy or Re-Deploy.
 
 
 As instances in an autoscaled deployment are ephemeral, remote logging is critical. By default, this solution deploys a Telemetry Streaming configuration that has a placeholder for the remote logging destination. 
 
 To update the Remote Logging configuration:
 
-  1. edit/modify the Telemetry Streaming (TS) declaration in a corresponding runtime-init config file [runtime-init-conf-payg.yaml](../bigip-configurations/runtime-init-conf-payg.yaml) with the new destination values. 
+  1. Edit/modify the Telemetry Streaming (TS) declaration in a corresponding runtime-init config file [runtime-init-conf-payg.yaml](../bigip-configurations/runtime-init-conf-payg.yaml) with the new destination values. 
 
 Example: Replace 
 ```yaml
@@ -237,7 +237,7 @@ Example: Replace
 ```
 with your remote logging destination. See Telemetry Streaming [documentation](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/setting-up-consumer.html) for more details.
  
-  2. publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, git, Google Cloud Storage, etc.)
+  2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, git, Google Cloud Storage, etc.).
   3. Update the **bigIpRuntimeInitConfig** input parameter to reference the URL of the customized configuration file.
 
 
@@ -248,7 +248,7 @@ This section describes how to validate the template deployment, test the WAF ser
 
 ### Validating the Deployment
 
-To view the status of the example and module template deployments, navigate to **Deployment Manager > *Deployments* > *Deployment Name***. You should see a series of deployments, including one each for the example template as well as the access, application, network, dag, and bigip templates. The deployment status for the parent template deployment should indicate that the template has been successfully deployed.
+To view the status of the example and module template deployments, navigate to **Deployment Manager > Deployments > Deployment Name**. You should see a series of deployments, including one each for the example template as well as the access, application, network, dag, and bigip templates. The deployment status for the parent template deployment should indicate that the template has been successfully deployed.
 
 Expected Deploy time for entire stack =~ 8-10 minutes.
 
@@ -257,8 +257,7 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 ### Testing the WAF Service
 
 To test the WAF service, perform the following steps:
-- Check the instance group health state; instance health is based on Google Cloud's ability to connect to your application via the instance group's load balancer
-  - The health state for each instance should be "Healthy". If the state is "Unhealthy", proceed to the [Troubleshooting Steps](#troubleshooting-steps) section.
+- Check the instance group health state; instance health is based on Google Cloud's ability to connect to your application via the instance group's load balancer. The health state for each instance should be "Healthy". If the state is "Unhealthy", proceed to the [Troubleshooting Steps](#troubleshooting-steps) section.
 - Obtain the IP address of the WAF service:
   - **gcloud CLI**: 
       ```bash
@@ -268,7 +267,7 @@ To test the WAF service, perform the following steps:
       ```
 - Verify the application is responding:
   - Paste the IP address in a browser: ```https://${IP_ADDRESS_FROM_OUTPUT}```
-      - NOTE: By default, the Virtual Service starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue", etc.).
+      - ***NOTE**: By default, the Virtual Service starts with a self-signed cert. Follow your browser's instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue", etc.).*
   - Use curl: 
       ```shell
        curl -sko /dev/null -w '%{response_code}\n' https://${IP_ADDRESS_FROM_OUTPUT}
@@ -277,7 +276,7 @@ To test the WAF service, perform the following steps:
     ```shell
     curl -sk -X DELETE https://${IP_ADDRESS_FROM_OUTPUT}
     ```
-  - The response should include a message that the request was blocked, and a reference support ID
+  The response should include a message that the request was blocked, and a reference support ID
     Example:
     ```shell
     $ curl -sko /dev/null -w '%{response_code}\n' https://55.55.55.55
@@ -343,7 +342,7 @@ To test the WAF service, perform the following steps:
 
 - Login in via WebUI:
   - As mentioned above, no password is configured by default. If you would like or need to login to the GUI for debugging or inspection, you can create a custom username/password by logging in to admin account via SSH (per above) and use tmsh to create one:
-    At the TMSH prompt ```admin@(ip-10-0-0-100)(cfg-sync Standalone)(Active)(/Common)(tmos)#```:
+    At the TMSH prompt ```admin@(bigip1))(cfg-sync Standalone)(Active)(/Common)(tmos)#```:
       ```shell
       create auth user <YOUR_WEBUI_USERNAME> password <YOUR_STRONG_PASSWORD> partition-access add { all-partitions { role admin } }
 
@@ -352,40 +351,44 @@ To test the WAF service, perform the following steps:
 
   - Open a browser to the Management IP
     - ```https://${IP_ADDRESS_FROM_OUTPUT}:8443```
-    - NOTE: 
-      - By default, for Single NIC deployments, the management port is 8443.
-      - By default, the BIG-IP's WebUI starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue" ).
-    - To Login: 
-      - username: `<YOUR_WEBUI_USERNAME>`
-      - password: `<YOUR_STRONG_PASSWORD>`
+
+        
+
+    - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
+
+        From your desktop client/shell, create an SSH tunnel:
+        ```bash
+        ssh -i [PROJECT_USER_PRIVATE_KEY] [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP] -L 8443:[BIG-IP-MGMT-PRIVATE-IP]:[BIGIP-GUI-PORT]
+        ```
+        For example:
+        ```bash
+        ssh -i ~/.ssh/mykey.pem myprojectuser@34.82.102.190 -L 8443:10.0.0.2:8443
+        ```
+
+        You should now be able to open a browser to the BIG-IP UI from your desktop:
+
+        https://localhost:8443
+
+
+  - NOTE: 
+    - By default, for Single NIC deployments, the management port is 8443.
+    - By default, the BIG-IP's WebUI starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue" ).
+
+  - To Login: 
+    - username: `<YOUR_WEBUI_USERNAME>`
+    - password: `<YOUR_STRONG_PASSWORD>`
       
-
-  - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
-
-    From your desktop client/shell, create an SSH tunnel:
-    ```bash
-    ssh -i [PROJECT_USER_PRIVATE_KEY] [PROJECT_USER]@[BASTION-HOST-PUBLIC-IP] -L 8443:[BIG-IP-MGMT-PRIVATE-IP]:[BIGIP-GUI-PORT]
-    ```
-    For example:
-    ```bash
-    ssh -i ~/.ssh/mykey.pem myprojectuser@34.82.102.190 -L 8443:10.0.0.2:8443
-    ```
-
-    You should now be able to open a browser to the BIG-IP UI from your desktop:
-
-    https://localhost:8443
-
-
 ### Further Exploring
 
-#### WebUI
- - Navigate to **Local Traffic > Virtual Servers**. In upper right corner, select Partition = `Tenant_1`
+#### Using the WebUI
+ - Navigate to **Local Traffic > Virtual Servers**. In the upper right corner, select **Partition = `Tenant_1`**.
  - You should now see two Virtual Services (one for HTTP and one for HTTPS). They should show up as Green. Click on them to look at the configuration *(declared in the AS3 declaration)*
 
-#### SSH
+#### Using SSH
 
-  - From tmsh shell, type 'bash' to enter the bash shell
-    - Examine BIG-IP configuration via [F5 Automation Toolchain](https://www.f5.com/pdf/products/automation-toolchain-overview.pdf) declarations:
+  - From tmsh shell, type 'bash' to enter the bash shell.
+    
+  - Examine BIG-IP configuration via [F5 Automation Toolchain](https://www.f5.com/pdf/products/automation-toolchain-overview.pdf) declarations:
     ```bash
     curl -u admin: http://localhost:8100/mgmt/shared/declarative-onboarding | jq .
     curl -u admin: http://localhost:8100/mgmt/shared/appsvcs/declare | jq .
@@ -401,7 +404,7 @@ To test the WAF service, perform the following steps:
 
 ### BIG-IP Lifecycle Management
 
-As mentioned in the [Introduction](#introduction), if you need to change the configuration on the BIG-IPs in the deployment, instead of updating the existing instances directly, you update the instance model by passing a new config file (which references the updated Automation Toolchain declarations) via template's bigIpRuntimeInitConfig input parameter. The model will be responsible for maintaining the configuration across the deployment, updating existing instances and deploying new instances with the latest configuration.
+As mentioned in the [Introduction](#introduction), if you need to change the configuration on the BIG-IPs in the deployment, instead of updating the existing instances directly, you update the instance model by passing a new config file (which references the updated Automation Toolchain declarations) via the template's bigIpRuntimeInitConfig input parameter. The model will be responsible for maintaining the configuration across the deployment, updating existing instances and deploying new instances with the latest configuration.
 
 This happens by leveraging Google Cloud's Managed Instance Group's [automatic rolling out](https://cloud.google.com/compute/docs/instance-groups/rolling-out-updates-to-managed-instance-groups) feature.
 
@@ -440,22 +443,22 @@ As new BIG-IP versions are released, existing Managed Instance Groups can be upg
 
 If a new configuration update fails (for example, invalid config, typo, etc.) and Rolling Upgrade fails to complete.
 
-1. [Stop](https://cloud.google.com/sdk/gcloud/reference/deployment-manager/deployments/stop) any hung Deployments
+1. [Stop](https://cloud.google.com/sdk/gcloud/reference/deployment-manager/deployments/stop) any hung Deployments.
     - **gcloud CLI**: 
         ```bash 
         gcloud deployment-manager deployments stop ${DEPLOYMENT_NAME}
         ```
-2. [Stop](https://cloud.google.com/deployment-manager/docs/deployments/updating-deployments#stop_an_update) any updates in progress
+2. [Stop](https://cloud.google.com/deployment-manager/docs/deployments/updating-deployments#stop_an_update) any updates in progress.
     - **gcloud CLI**: 
       ```bash 
       gcloud deployment-manager deployments stop ${DEPLOYMENT_NAME}
       ```
 3. Modify parameters to update the model.
     - Modify the parameter that resulted in failure (for example, a previous or working **bigIpRuntimeInitConfig** value or image).
-    - Modify Scaling Size to deploy new instances .
+    - Modify Scaling Size to deploy new instances.
       - Increase **minNumReplicas** parameter value by 1 or more.
-4. Re-deploy the template with new parameter values ( the failed parameter and **minNumReplicas**).
-5. Confirm newly instantiated instance(s) are "Healthy".
+4. Re-deploy the template with new parameter values (the failed parameter and **minNumReplicas**).
+5. Confirm newly instantiated instance(s) are healthy.
 6. [Delete](https://cloud.google.com/sdk/gcloud/reference/compute/instances/delete) failed instances.
     - **gcloud CLI**: 
       ```bash 
@@ -503,18 +506,18 @@ There are generally two classes of issues:
 
 To verify that all templates deployed successfully, follow the instructions under **Validating the Deployment** above to locate the failed deployment(s).
 
-Click on the name of a failed deployment and then click Events. Click the link in the red banner at the top of the deployment overview for details about the failure cause. 
+Click on the name of a failed deployment and then click **Events**. Click the link in the red banner at the top of the deployment overview for details about the failure cause. 
 
-Additionally, if the template passed validation but individual template resources have failed to deploy, you can see more information by expanding Deployment Details, then clicking on the Operation details column for the failed resource. **When creating a GitHub issue for a template, please include as much information as possible from the failed Google Cloud deployment/resource events.**
+If the template passed validation but individual template resources have failed to deploy, expand **Deployment Details**, then click on the Operation details column for the failed resource. ***Note:** When creating a GitHub issue for a template, please include as much information as possible from the failed Google Cloud deployment/resource events.*
 
 Common deployment failure causes include:
-- Required fields were left empty or contained incorrect values (input type mismatch, prohibited characters, malformed YAML, etc.) causing template validation failure
-- Insufficient permissions to create the deployment or resources created by a deployment
-- Resource limitations (exceeded limit of IP addresses or compute resources, etc.)
-- Google Cloud service issues (these will usually surface as 503 internal server errors in the deployment status error message)
+- Required fields were left empty or contained incorrect values (input type mismatch, prohibited characters, malformed YAML, etc.) causing template validation failure.
+- Insufficient permissions to create the deployment or resources created by a deployment.
+- Resource limitations (exceeded limit of IP addresses or compute resources, etc.).
+- Google Cloud service issues (these will usually surface as 503 internal server errors in the deployment status error message).
 
-If all deployments completed "successfully" but maybe the BIG-IP or Service is not reachable, then log in to the BIG-IP instance via SSH to confirm BIG-IP deployment was successful (for example, if startup scripts completed as expected on the BIG-IP). To verify BIG-IP deployment, perform the following steps:
-- Obtain the IP address of the BIG-IP instance. See instructions [above](#accessing-the-bigip-ip)
+If all deployments completed "successfully" but the BIG-IP or Service is not reachable, then log in to the BIG-IP instance via SSH to confirm the BIG-IP deployment was successful (for example, if startup scripts completed as expected on the BIG-IP). To verify BIG-IP deployment, perform the following steps:
+- Obtain the IP address of the BIG-IP instance. See instructions [above](#accessing-the-bigip-ip).
 - Check startup-script to make sure was installed/interpolated correctly:
   - ```cat /config/cloud/runtime-init.conf```
 - Check the logs (in order of invocation):
@@ -527,16 +530,16 @@ If all deployments completed "successfully" but maybe the BIG-IP or Service is n
     - */var/log/cloud/bigipRuntimeInit.log*: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
   - Automation Tool Chain Logs:
     - */var/log/restnoded/restnoded.log*: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
-- *GENERAL LOG TIP*: Search most critical error level errors first (for example, egrep -i err /var/log/<Logname>).
+- *GENERAL LOG TIP*: Search most critical error level errors first (for example, `egrep -i err /var/log/<Logname>`).
 
 
 ## Security
 
 This GDM template downloads helper code to configure the BIG-IP system:
 
-- f5-bigip-runtime-init.gz.run: The self-extracting installer for the F5 BIG-IP Runtime Init RPM can be verified against a SHA256 checksum provided as a release asset on the F5 BIG-IP Runtime Init public GitHub repository, for example: https://github.com/F5Networks/f5-bigip-runtime-init/releases/download/1.2.1/f5-bigip-runtime-init-1.2.1-1.gz.run.sha256.
-- F5 BIG-IP Runtime Init: The self-extracting installer script extracts, verifies, and installs the F5 BIG-IP Runtime Init RPM package. Package files are signed by F5 and automatically verified using GPG.
-- F5 Automation Toolchain components: F5 BIG-IP Runtime Init downloads, installs, and configures the F5 Automation Toolchain components. Although it is optional, F5 recommends adding the extensionHash field to each extension install operation in the configuration file. The presence of this field triggers verification of the downloaded component package checksum against the provided value. The checksum values are published as release assets on each extension's public GitHub repository, for example: https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.18.0/f5-appsvcs-3.18.0-4.noarch.rpm.sha256
+- **f5-bigip-runtime-init.gz.run**: The self-extracting installer for the F5 BIG-IP Runtime Init RPM can be verified against a SHA256 checksum provided as a release asset on the F5 BIG-IP Runtime Init public GitHub repository. For example: https://github.com/F5Networks/f5-bigip-runtime-init/releases/download/1.2.1/f5-bigip-runtime-init-1.2.1-1.gz.run.sha256.
+- **F5 BIG-IP Runtime Init**: The self-extracting installer script extracts, verifies, and installs the F5 BIG-IP Runtime Init RPM package. Package files are signed by F5 and automatically verified using GPG.
+- **F5 Automation Toolchain components**: F5 BIG-IP Runtime Init downloads, installs, and configures the F5 Automation Toolchain components. Although it is optional, F5 recommends adding the extensionHash field to each extension install operation in the configuration file. The presence of this field triggers verification of the downloaded component package checksum against the provided value. The checksum values are published as release assets on each extension's public GitHub repository. For example: https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.18.0/f5-appsvcs-3.18.0-4.noarch.rpm.sha256
 
 The following configuration file will verify the Declarative Onboarding and Application Services extensions before configuring AS3 from a local file:
 
@@ -559,11 +562,11 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [checksums-for-f5-supported-cft-and-arm-templates-on-github](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014).
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014) about Checksums for F5 Supported Cloud templates on GitHub.
 
 List of endpoints BIG-IP may contact during onboarding:
 - BIG-IP image default:
-    - vector2.brightcloud.com (by BIG-IP image for [IPI subscription validation](https://support.f5.com/csp/article/K03011490) )
+    - vector2.brightcloud.com (by BIG-IP image for [IPI subscription validation](https://support.f5.com/csp/article/K03011490))
 - Solution / Onboarding:
     - github.com (for downloading helper packages mentioned above)
     - f5-cft.s3.amazonaws.com (downloading GPG Key and other helper configuration files)
@@ -584,14 +587,14 @@ These templates have been tested and validated with the following versions of BI
 | 16.1.000000 | 16.1.0.0 Build 0.0.19 |
 | 14.1.400000 | 14.1.4.4 Build 0.0.4* |
 
-**Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
+***Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.*
 
 
 ## Supported Instance Types and Hypervisors
 
 - For a list of supported Google instance types for this solution, see the [Google instances for BIG-IP VE](https://clouddocs.f5.com/cloud/public/v1/google/Google_singleNIC.html).
 
-- For a list of versions of the BIG-IP Virtual Edition (VE) and F5 licenses that are supported on specific hypervisors and Google Cloud, see [supported-hypervisor-matrix](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ve-supported-hypervisor-matrix.html).
+- For a list of versions of the BIG-IP Virtual Edition (VE) and F5 licenses that are supported on specific hypervisors and Google Cloud, see [BIG-IP VE Supported Platforms](https://support.f5.com/kb/en-us/products/big-ip_ltm/manuals/product/ve-supported-hypervisor-matrix.html).
 
 
 ## Documentation

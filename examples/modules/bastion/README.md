@@ -16,7 +16,7 @@
 
 ## Introduction
 
-This Google Deployment Manager template creates a bastion host used for accessing BIGIP within private network which is required to support F5 solutions.
+This Google Deployment Manager template creates a bastion host used for accessing BIG-IP within private network which is required to support F5 solutions.
 
 ## Prerequisites
 
@@ -24,25 +24,25 @@ This Google Deployment Manager template creates a bastion host used for accessin
 
 ## Important Configuration Notes
 
- - A sample template, 'sample_bastion.yaml', has been included in this project. Use this example to see how to add bastion.py as a template into your templated solution.
+ - A sample template, `sample_bastion.yaml`, is included in this project. Use this example to see how to add bastion.py as a template into your templated solution.
 
 ### Template Input Parameters
 
 | Parameter | Required | Description |
 | --- | --- | --- |
 | application | No | Application label. |
-| autoscalers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers |
+| autoscalers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers). |
 | cost | No | Cost Center label. |
 | environment | No | Environment label. |
 | group | No | Group label. |
-| instanceGroupManagers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers |
-| instances | No | Required when provisioning a single instance. List of declaration of settings used for provisioning instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instances |
-| instanceTemplates | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates |
+| instanceGroupManagers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers). |
+| instances | No | Required when provisioning a single instance. List of declaration of settings used for provisioning instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instances). |
+| instanceTemplates | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates). |
 | instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
-| instanceType | Yes | App instance type. e.g. n1-standard-1 |
-| osImage | No | Self link for OS Image  |
+| instanceType | Yes | App instance type. For example: `n1-standard-1` |
+| osImage | No | Self link for OS Image.  |
 | owner | No | Owner label. |
-| uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
+| uniqueString | Yes | Unique String used when creating object names or Tags. For example: `my-deployment` |
 | zone | Yes | Name of the availability zone where the application will be placed. |
 
 ### Template Outputs

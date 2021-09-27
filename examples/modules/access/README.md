@@ -24,14 +24,14 @@ This Google Deployment Manager template creates an IAM Service Account to be use
 
 ## Important Configuration Notes
 
- - A sample template, 'sample_access.yaml', has been included in this project. Use this example to see how to add access.py as a template into your templated solution.
+ - A sample template, `sample_access.yaml`, is included in this project. Use this example to see how to add access.py as a template into your templated solution.
 
 ### Template Input Parameters
 
 | Parameter | Required | Description |
 | --- | --- | --- |
-| solutionType | Yes | Type of solution you want to deploy - standard, secret, storageBucket, secretStorage, failover, custom |
-| uniqueString | Yes | Unique String used when creating object names or Tags. e.g. my-deployment |
+| solutionType | Yes | Type of solution you want to deploy. Options include: standard, secret, storageBucket, secretStorage, failover, custom |
+| uniqueString | Yes | Unique String used when creating object names or Tags. For example: my-deployment |
 | includedPermissions | Yes | A space-delimited list of permissions to assign to the custom role. Required when solutionType is 'custom'. See example below for more information. |
 
 #### Example template when using custom solutionType
