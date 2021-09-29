@@ -13,23 +13,21 @@ def generate_name(prefix, suffix):
 
 
 def populate_properties(context, required_properties, optional_properties):
-    """Generates properties for resource."""
     properties = {}
-    for config in context:
-        properties.update(
-            {
-                p: context[p]
-                for p in required_properties
-            }
-        )
-        properties.update(
-            {
-                p: context[p]
-                for p in optional_properties
-                if p in config
+    properties.update(
+        {
+            p: context[p]
+            for p in required_properties
+        }
+    )
 
-            }
-        )
+    properties.update(
+        {
+            p: context[p]
+            for p in optional_properties
+            if p in context.keys()
+        }
+    )
     return properties
 
 

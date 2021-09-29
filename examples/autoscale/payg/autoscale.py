@@ -173,7 +173,7 @@ def create_bigip_deployment(context):
           'autoscalers': [{
               'name': 'bigip',
               'zone': context.properties['zone'],
-              'autoScalingPolicy': {
+              'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
                 'cpuUtilization': {

@@ -11,7 +11,7 @@ resources:
       autoscalers:
         - description: My autoscale for bastion hosts
           name: f5-demo
-          autoScalingPolicy:
+          autoscalingPolicy:
             minNumReplicas: 1
             maxNumReplicas: 4
             cpuUtilization:
