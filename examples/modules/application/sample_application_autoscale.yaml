@@ -12,7 +12,7 @@ resources:
       autoscalers:
         - description: My autoscale application
           name: f5-demo
-          autoScalingPolicy:
+          autoscalingPolicy:
             minNumReplicas: 1
             maxNumReplicas: 4
             cpuUtilization:
