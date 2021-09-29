@@ -1,0 +1,30 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 1.0.0.0s
+imports:
+  - path: bastion.py
+resources:
+  - name: bastion
+    properties:
+      application: myapp
+      cost: mycost
+      environment: myenv
+      group: mygroup
+      instanceType: n1-standard-1
+      instances:
+        - description: My bastion host
+          networkInterfaces:
+            - accessConfigs:
+                - name: External NAT
+                  type: ONE_TO_ONE_NAT
+              description: Interface used for external traffic
+              network: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myNetwork
+              subnetwork: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/mySubnet
+          zone: us-west1-a
+      name: mybastion-deployment
+      owner: myowner
+      uniqueString: myuniquestr
+    type: application.py

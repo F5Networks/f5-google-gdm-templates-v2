@@ -1,0 +1,8 @@
+---
+# Autoscale Example Test
+google-autoscale-payg-example-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
+    run: "all"
+    parameters-files:
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters1.yaml"

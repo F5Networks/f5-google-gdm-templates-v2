@@ -1,0 +1,28 @@
+---
+name: Google Examples - Autoscale PAYG
+onStart:
+- ../../../common/helper_init.sh
+- ../../../common/create_storage.sh
+- ../../../common/verify_create_storage.sh
+- ./create_stack.sh
+- ../../../common/verify_create.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_login.sh
+- ../common/verify_waf_blocking.sh
+- ./update_stack.sh
+- ../../../common/verify_create.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_waf_transparent.sh
+- ../common/scale_down.sh
+- ../common/verify_scale_down.sh
+- ./update_stack_for_delete.sh
+- ../../../common/verify_create.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+onFail:
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh

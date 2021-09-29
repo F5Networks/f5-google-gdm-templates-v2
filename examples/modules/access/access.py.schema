@@ -1,0 +1,44 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 Sample Access
+  author: F5 Networks
+  description: Creates a sample access module.
+  version: 1.0.0.0
+
+imports:
+  - path: access.py
+
+required:
+    - solutionType
+    - uniqueString
+
+properties:
+  solutionType:
+    description: Type of solution you want to deploy - standard, secret, storage, remoteLogging, failover, custom
+    default: 'standard'
+    type: string
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
+    type: string
+  includedPermissions:
+    description: A space-delimited list of permissions to assign to the custom role. Required when solutionType is 'custom'.
+
+outputs:
+  properties:
+    serviceAccountEmail:
+      type: string
+      description: Email of the Service Account.
+    customRoleName:
+      type: string
+      description: Name of custom role.
+    customRolePermissions:
+      type: string
+      description: Permissions granted to custom role.
+
+documentation:
+  - README.md
+
+examples:
+  - sample_access.yaml
