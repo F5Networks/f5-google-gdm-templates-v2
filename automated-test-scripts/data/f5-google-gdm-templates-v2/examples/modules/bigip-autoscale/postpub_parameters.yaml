@@ -41,7 +41,7 @@ SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
 STACK NAME: <UNIQUESTRING>-bigip-autoscale
 TEMPLATE NAME: bigip_autoscale.py
-TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/bigip-autoscale/bigip_autoscale.py'
+TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/bigip-autoscale/bigip_autoscale.py
 INSTANCE TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/bigip-autoscale/bigip_instance_template.py
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
 USE BACKEND SERVICE: false
