@@ -476,11 +476,14 @@ dewdrop_test_run:
     - python /dewdrop/dewdrop-docker.py
 
 publish_to_github:
+  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/node:8
   stage: release
   only:
     - /(^publish-(v\d*[1-9]*\.)(\d).(\d).(\d))/
   script:
-    - apk add --no-cache jq
+    # install jq
+    - apt-get update
+    - apt-get install -y jq
     # Execute Release script to push source to github repo.
     - ./cloud-tools/release-tool/publish_github.sh "$ALLOWED_DIRS" "$ALLOWED_FILES"
   variables:
