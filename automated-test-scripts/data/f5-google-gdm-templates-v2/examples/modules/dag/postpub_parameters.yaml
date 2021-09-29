@@ -1,11 +1,11 @@
 NETWORK STACK NAME: <UNIQUESTRING>-network
-NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+NETWORK TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/network/network.py
 NUMBER NETWORKS: 4
 NUMBER NICS: 3
 REGION: us-west1
 STACK NAME: <UNIQUESTRING>-dag
 TEMPLATE NAME: dag.py
-TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
+TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/dag/dag.py
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
 APP INTERNAL PORT: 80
 APP PORT: 80

@@ -5,7 +5,7 @@ info:
   title: F5 Autoscale WAF PAYG template
   author: F5 Networks
   description: Creates an Autoscale WAF PAYG deployment.
-  version: 0.1.0
+  version: 1.0.0.0
 
 imports:
   - path: autoscale.py
@@ -31,7 +31,7 @@ properties:
     type: string
   bigIpCoolDownPeriodSec:
     default: 60
-    description: Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.  
+    description: Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.
     type: integer
   bigIpScaleOutCpuThreshold:
     default: 0.8

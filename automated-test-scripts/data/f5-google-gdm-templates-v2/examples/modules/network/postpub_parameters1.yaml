@@ -1,14 +1,14 @@
 ---
 # Required
-NUMBER NETWORKS: 1
-REGION: us-west1
+NUMBER NETWORKS: 2
+REGION: us-east1
 STACK NAME: <UNIQUESTRING>-network-networks<NUMBER NETWORKS>
 TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/network/network.py
 UNIQUESTRING: dd-<DEWPOINT JOB ID>
 # Optional
-DESCRIPTION: ""
-ENABLE FLOW LOGS: ""
-PRIVATE IP GOOGLE ACCESS: ""
+DESCRIPTION: "Just a simple description"
+ENABLE FLOW LOGS: true
+PRIVATE IP GOOGLE ACCESS: false
 SECONDARY IP CIDR RANGE 1: ""
 SECONDARY RANGE NAME 1: ""
 PROVISION PUBLIC IP: true

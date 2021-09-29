@@ -5,6 +5,7 @@ PROJECT_DIR := .
 LINK_CHECK_DIR := cloud-tools/link_checker
 CRAWLER_DIR := cloud-tools/crawler
 PARSER_DIR := cloud-tools/parameter-parser
+SYNC_AT_DIR := cloud-tools/sync-at-components-metadata
 DIFF_VAR :=`diff automated-test-scripts/parameters_diff_expected.yaml ${PARSER_DIR}/parameters_diff.yaml`
 DIFF_VAR_OUTPUTS :=`diff automated-test-scripts/outputs_diff_expected.yaml ${PARSER_DIR}/outputs_diff.yaml`
 
@@ -56,3 +57,7 @@ run_compare_outputs: run_outputs_parser
 run_expected_outputs_diff:
 	# Need to run run_compare_parser before running expected diff or DIFF_VAR variable will not be correct
 	if [ -n ${DIFF_VAR_OUTPUTS} ]; then echo "Diff files for outputs match!"; else echo "========================================"; echo "Diff files do not match: ${DIFF_VAR_OUTPUTS}"; exit 1; fi
+
+run_sync_at_metadata:
+	echo "Syncing AT component metadata"
+	cd ${SYNC_AT_DIR} && ./sync_at_components_metadata.sh --config-directories ../../examples/autoscale/bigip-configurations,../../examples/quickstart/bigip-configurations --template-directory ../../examples --runtime-init-package-url https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run --cloud gcp

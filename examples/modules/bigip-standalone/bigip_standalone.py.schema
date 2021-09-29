@@ -9,7 +9,7 @@ info:
 
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/instances
-  version: 0.1.0
+  version: 1.0.0.0
 imports:
   - path: bigip_standalone.py
 

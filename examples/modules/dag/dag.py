@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 0.1.0
+# Version 1.0.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -10,20 +10,20 @@ COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
 def populate_properties(context, required_properties, optional_properties):
     properties = {}
-    for config in context:
-        properties.update(
-            {
-                p: context[p]
-                for p in required_properties
-            }
-        )
-        properties.update(
-            {
-                p: context[p]
-                for p in optional_properties
-                if p in config
-            }
-        )
+    properties.update(
+        {
+            p: context[p]
+            for p in required_properties
+        }
+    )
+
+    properties.update(
+        {
+            p: context[p]
+            for p in optional_properties
+            if p in context.keys()
+        }
+    )
     return properties
 
 

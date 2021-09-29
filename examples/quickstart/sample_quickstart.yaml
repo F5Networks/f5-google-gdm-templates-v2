@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 0.1.0s
+# Version 1.0.0.0s
 #
 # NOTE: When filling out the parameter values for this deployment:
 # Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.

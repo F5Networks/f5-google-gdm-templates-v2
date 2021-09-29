@@ -1,7 +1,7 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 0.1.0s
+# Version 1.0.0.0s
 imports:
   - path: bastion.py
 resources:
@@ -11,7 +11,7 @@ resources:
       autoscalers:
         - description: My autoscale for bastion hosts
           name: f5-demo
-          autoScalingPolicy:
+          autoscalingPolicy:
             minNumReplicas: 1
             maxNumReplicas: 4
             cpuUtilization:
