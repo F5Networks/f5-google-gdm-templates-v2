@@ -79,5 +79,5 @@ gdm-quickstart-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
   random-num-of-tests: 1
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters1.yaml"
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters1.yaml
