@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 0.1.0
+# Version 1.0.0.0
 
 # pylint: disable=W,C,R
 
@@ -173,7 +173,7 @@ def create_bigip_deployment(context):
           'autoscalers': [{
               'name': 'bigip',
               'zone': context.properties['zone'],
-              'autoScalingPolicy': {
+              'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
                 'cpuUtilization': {

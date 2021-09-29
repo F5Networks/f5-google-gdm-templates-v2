@@ -1,4 +1,8 @@
 ---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 1.0.0.0s
+#
 # Example of the network template usage.
 #
 # In this example, 4 networks are created with a single subnet in each network.
