@@ -1,0 +1,13 @@
+---
+# Required
+NUMBER NETWORKS: 5
+REGION: europe-west3
+STACK NAME: <UNIQUESTRING>-network-networks<NUMBER NETWORKS>
+TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+UNIQUESTRING: dd-<DEWPOINT JOB ID>
+# Optional 
+DESCRIPTION: "Just a simple description"
+ENABLE FLOW LOGS: "true"
+PRIVATE IP GOOGLE ACCESS: "true"
+SECONDARY IP CIDR RANGE 1: "192.168.3.0/24"
+SECONDARY RANGE NAME 1: "<DEWPOINT JOB ID>"

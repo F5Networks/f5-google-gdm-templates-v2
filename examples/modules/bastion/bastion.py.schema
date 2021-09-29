@@ -1,0 +1,145 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 Sample Application
+  author: F5 Networks
+  description: |
+    Creates a sample client application.
+    For more information on single instance resource deployment:
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+    For more information on autoscaled resource deployment:
+      - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
+      - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
+  version: 1.0.0.0
+
+imports:
+  - path: bastion.py
+
+required:
+    - instanceType
+    - uniqueString
+
+properties:
+  application:
+    description: Application label.
+    default: f5app
+    type: string
+  autoscalers:
+    type: array
+    description: |
+      Configuration used to deploy autoscale group.
+      Example:
+        autoscalers:
+          - autoScalingPolicy:
+              minNumReplicas: 1
+              maxNumReplicas: 4
+              cpuUtilization:
+                utilizationTarget: 0.8
+              coolDownPeriodSec: 60
+            name: f5-bastion
+            zone: us-west1-a
+  cost:
+    description: Cost Center label.
+    type: string
+    default: f5cost
+  environment:
+    description: Environment label.
+    type: string
+    default: f5env
+  group:
+    description: Group label.
+    type: string
+    default: f5group
+  instanceGroupManagers:
+    type: array
+    description: |
+      Configuration for instance group.
+        Example:
+          instanceGroupManagers:
+            - name: f5-bastion
+              targetSize: 1
+              zone: us-west1-a
+  instances:
+    type: array
+    description: |
+      Configuration for Instance.
+    name:
+      description: Instance resource name.
+      type: string
+    networkInterfaces:
+      type: array
+      description: |
+        Interface configuration for Instance.
+          Example:
+            networkInterfaces:
+              - accessConfigs:
+                  - name: External NAT
+                    type: ONE_TO_ONE_NAT
+                description: Interface used for external traffic
+                network: >-
+                  https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myApplicationTrafficNetwork
+                subnetwork: >-
+                  https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationTrafficSubnetwork
+    zone:
+      description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
+      type: string
+  instanceTemplates:
+    type: array
+    description: |
+      Configuration for instanceTemplates and is required to support autoscaled deployments.
+        Example:
+          instanceTemplates:
+            - name: f5-bastion
+              networkInterfaces:
+                - accessConfigs:
+                    - name: External NAT
+                      type: ONE_TO_ONE_NAT
+                  description: Interface used for external traffic
+                  network: >-
+                    https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myApplicationTrafficNetwork
+                  subnetwork: >-
+                    https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationTrafficSubnetwork
+  instanceTemplateVersion:
+    description: Version of the instance template to create. When updating deployment properties of the autoscaled application instances, you must provide a unique value for this parameter.
+    type: integer
+    default: 1
+  instanceType:
+    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    type: string
+    default: n1-standard-1
+  osImage:
+    description: Self link for OS Image
+    type: string
+    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
+  owner:
+    description: Owner label.
+    type: string
+    default: f5owner
+  uniqueString:
+    description: Unique String used when creating object names or Tags.
+    type: string
+
+outputs:
+  properties:
+    bastionName:
+      type: string
+      description: Bastion resource name.
+    bastionIp:
+      type: string
+      description: Public IP of the bastion host
+    bastionInstanceGroupName:
+      type: string
+      description: Instance group resource name for bastion hosts.
+
+documentation:
+  - README.md
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+  - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
+  - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
+
+examples:
+  - sample_bastion.yaml
+  - sample_bastion_autoscale.yaml

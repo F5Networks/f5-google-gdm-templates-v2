@@ -1,0 +1,49 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 Dag/Ingress
+  author: F5 Networks
+  description: Creates cloud resources to get traffic to BIG-IP solutions.
+  version: 1.0.0.0
+
+
+imports:
+  - path: dag.py
+
+required:
+    - uniqueString
+
+
+properties:
+    firewalls:
+        description: list of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/firewalls
+        type: array
+    forwardingRules:
+        description: list of declaration of settings used for provisioning ForwardingRule which represents the fortend configuration of GCP load balancer. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/forwardingRules
+        type: array
+    backendServices:
+        description: list of declaration of settings used for provisioning RegionBackendServices which defines how GCP load balancers distribute traffic. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/regionBackendServices
+        type: array
+    healthChecks:
+        description: list of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks
+        type: array
+    uniqueString:
+        type: string
+        description: Unique String used when creating object names or Tags.
+
+outputs:
+  properties:
+    dagName:
+      type: string
+      description: DAG resource name.
+    backendService:
+      type: cloud resource self link
+      description: self link to backend service resource.
+
+documentation:
+  - README.md
+
+examples:
+  - sample_dag.yaml
+

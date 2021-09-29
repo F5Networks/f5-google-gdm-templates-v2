@@ -1,0 +1,47 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 1.0.0.0s
+imports:
+  - path: application.py
+resources:
+  - name: f5-demo
+    properties:
+      appContainerName: f5devcentral/f5-demo-app:latest
+      application: myapp
+      autoscalers:
+        - description: My autoscale application
+          name: f5-demo
+          autoScalingPolicy:
+            minNumReplicas: 1
+            maxNumReplicas: 4
+            cpuUtilization:
+              utilizationTarget: 0.8
+            coolDownPeriodSec: 60
+          zone: us-west1-a
+      cost: mycost
+      environment: myenv
+      group: mygroup
+      instanceGroupManagers:
+        - description: My instance group
+          name: f5-demo
+          targetSize: 1
+          zone: us-west1-a
+      instanceType: n1-standard-1
+      instanceTemplates:
+        - description: My autoscale application
+          name: f5-demo
+          networkInterfaces:
+            - accessConfigs:
+                - name: External NAT
+                  type: ONE_TO_ONE_NAT
+              description: Interface used for external traffic
+              network: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/global/networks/myNetwork
+              subnetwork: >-
+                https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/mySubnet
+      instanceTemplateVersion: 1
+      name: myapp-deployment
+      owner: myowner
+      uniqueString: myuniquestr
+    type: application.py
