@@ -19,6 +19,9 @@
 ../../examples/modules/dag/dag.py.schema:
 - No Key Diff
 - No Value Diff
+../../examples/modules/function/function.py.schema:
+- No Key Diff
+- No Value Diff
 ../../examples/modules/network/network.py.schema:
 - No Key Diff
 - No Value Diff

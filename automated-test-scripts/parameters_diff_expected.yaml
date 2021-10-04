@@ -25,6 +25,9 @@
 ../../examples/modules/dag/sample_dag.yaml:
 - No Key Diff
 - No Value Diff
+../../examples/modules/function/sample_function.yaml:
+- No Key Diff
+- No Value Diff
 ../../examples/modules/network/sample_network.yaml:
 - No Key Diff
 - No Value Diff
