@@ -11,6 +11,7 @@ onStart:
 - ./tests/verify_bigip_autoscale_instances.sh
 - ./tests/verify_targetpool.sh
 - ./tests/verify_instance_onboarded.sh
+- ./tests/verify_runtimeinit_install_params.sh
 - ../../../common/delete_dag_stack.sh
 - ../../../common/verify_delete_dag.sh
 - ../../../common/delete_stack.sh
