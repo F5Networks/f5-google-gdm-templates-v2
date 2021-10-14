@@ -5,7 +5,7 @@
 
 ## Contents
 
-- [Deploying BIGIP Standalone Template](#deploying-bigip-standalone-template)
+- [Deploying BIG-IP Standalone Template](#deploying-bigip-standalone-template)
   - [Contents](#contents)
   - [Introduction](#introduction)
   - [Prerequisites](#prerequisites)

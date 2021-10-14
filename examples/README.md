@@ -130,7 +130,7 @@ A high-level overview of customizing the templates may look like:
 3. Deploy via the [Google CLI](https://cloud.google.com/sdk/docs/install). 
   
 ```bash
-gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}`
+gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
 ```
 
 4. Optionally, re-publish the repository or BIG-IP configurations to a location reachable by the BIG-IPs. See [BIG-IP Configuration](#big-ip-configuration) above.

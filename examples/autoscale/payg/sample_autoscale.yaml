@@ -65,9 +65,11 @@ resources:
       region: us-west1
       ### (REQUIRED) This parameter restricts network access to the web application.
       # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
+      # The network address should be in array format.
       restrictedSrcAddressApp:
       ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
       # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
+      # The network address should be in array format.
       # NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
       restrictedSrcAddressMgmt:
         - 10.0.0.0/8
