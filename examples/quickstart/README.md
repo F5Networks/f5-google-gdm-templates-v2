@@ -144,7 +144,7 @@ To deploy this solution, you must use the [gcloud CLI](#deploying-via-the-gcloud
 To deploy the BIG-IP VE from the parent template YAML file, use the following command syntax:
 
 ```bash
-gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}`
+gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
 ```
 
 Keep in mind the following:
