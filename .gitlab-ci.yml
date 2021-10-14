@@ -117,8 +117,8 @@ gdm_network_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/**/*
       - examples/modules/network/network.py
   except:
     refs:
@@ -148,8 +148,8 @@ gdm_application_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/**/*
       - examples/modules/application/application.py
   except:
     refs:
@@ -179,8 +179,8 @@ gdm_bastion_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/**/*
       - examples/modules/bastion/bastion.py
   except:
     refs:
@@ -210,8 +210,8 @@ gdm_bigip_autoscale_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/**/*
       - examples/modules/bigip-autoscale/bigip_autoscale.py
   except:
     refs:
@@ -241,8 +241,8 @@ gdm_bigip_standalone_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/**/*
       - examples/modules/bigip-standalone/bigip_standalone.py
   except:
     refs:
@@ -272,8 +272,8 @@ gdm_dag_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/**/*
       - examples/modules/dag/dag.py
   except:
     refs:
@@ -303,8 +303,8 @@ gdm_function_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/**/*
       - examples/modules/function/function.py
   except:
     refs:
@@ -334,8 +334,8 @@ gdm_autoscale_payg_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/**/*
       - examples/autoscale/payg/autoscale.py
   except:
     refs:
@@ -365,8 +365,8 @@ gdm_quickstart_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/**/*
       - examples/quickstart/quickstart.py
       - examples/quickstart/bigip-configurations/*
   except:

@@ -178,7 +178,7 @@ def metadata(context):
                                     '       tmsh save /sys config',
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp\'',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v1.0.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/bin/touch /config/startup_finished',
