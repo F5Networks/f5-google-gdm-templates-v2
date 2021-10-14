@@ -31,7 +31,7 @@ google-gdm-application-module-test:
 google-gdm-bastion-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/prepub_parameters1.yaml"
@@ -59,7 +59,7 @@ google-gdm-bigip-autoscale-module-test:
 google-gdm-bigip-standalone-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters2.yaml"
@@ -72,7 +72,7 @@ google-gdm-bigip-standalone-module-test:
 google-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters1.yaml"
@@ -81,7 +81,7 @@ google-autoscale-payg-example-test:
 google-quickstart-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 3
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters2.yaml"
