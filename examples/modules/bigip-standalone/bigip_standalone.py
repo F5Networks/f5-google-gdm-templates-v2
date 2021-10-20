@@ -10,6 +10,23 @@ def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
 
+def populate_properties(context, required_properties, optional_properties):
+    properties = {}
+    properties.update(
+        {
+            p: context[p]
+            for p in required_properties
+        }
+    )
+
+    properties.update(
+        {
+            p: context[p]
+            for p in optional_properties
+            if p in context.keys()
+        }
+    )
+    return properties
 
 def create_instance(context):
     """ Create standalone instance """
@@ -213,6 +230,37 @@ def metadata(context):
     }
     return metadata_config
 
+def create_target_instance(context, target_instance, instance_name):
+    """Create target instance."""
+    # Build instance property lists
+    required_properties = []
+    optional_properties = [
+        'description'
+    ]
+
+    # Setup Variables
+    prefix = context.properties['uniqueString']
+    name = target_instance.get('name') or context.env['name'] if 'name' in target_instance or 'name' in context.env else 'bigip'
+    target_instance_name = generate_name(prefix, name + '-ti')
+    properties = {}
+
+    # Setup Defaults - property updated to given value when property exists in config
+    properties.update({
+        'description': 'targetInstance',
+        'instance': '$(ref.' + instance_name + '.selfLink)',
+        'name': target_instance_name,
+        'natPolicy': 'NO_NAT',
+        'zone': context.properties['zone']
+    })
+
+    properties.update(populate_properties(target_instance, required_properties, optional_properties))
+    target_instance_config = {
+        'name': target_instance_name,
+        'type': 'compute.v1.targetInstance',
+        'properties': properties
+    }
+    return target_instance_config
+
 def create_instance_outputs(context):
     """ Create standalone instance outputs"""
     name = context.properties.get('name') or \
@@ -224,9 +272,30 @@ def create_instance_outputs(context):
     }
     return instance
 
+def create_target_instance_outputs(context, target_instance):
+    """Create target instance outputs."""
+    prefix = context.properties['uniqueString']
+    name = target_instance.get('name') or context.env['name'] if 'name' in target_instance or 'name' in context.env else 'bigip'
+    target_instance_name = generate_name(prefix, name + '-ti')
+    target_instance = {
+        'name': 'targetInstanceSelfLink',
+        'resourceName': target_instance_name,
+        'value': '$(ref.' + target_instance_name + '.selfLink)'
+    }
+    return target_instance
+
 def generate_config(context):
     """ Create single bigip instance"""
+    name = context.properties.get('name') or \
+        context.env['name']
+    instance_name = generate_name(context.properties['uniqueString'], name)
     # build resources
-    resources = [create_instance(context),]
+    resources = [create_instance(context)]
+    for targetInstance in context.properties.get('targetInstances', []):
+        resources.append(create_target_instance(context, targetInstance, instance_name))
+    # build outputs
     outputs = [create_instance_outputs(context)]
+    for targetInstance in context.properties.get('targetInstances', []):
+        outputs = outputs + [create_target_instance_outputs(context, targetInstance)]
+
     return {'resources': resources, 'outputs': outputs}

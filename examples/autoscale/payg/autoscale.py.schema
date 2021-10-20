@@ -109,9 +109,42 @@ properties:
 
 outputs:
   properties:
+    appInstanceGroupName:
+      type: string
+      description: Application instance group name.
+    appInstanceGroupSelfLink:
+      type: string
+      description: Application instance group self link.
+    bastionInstanceGroupName:
+      type: string
+      description: Bastion instance group name.
+    bastionInstanceGroupSelfLink:
+      type: string
+      description: Bastion instance group self link.
+    bigIpInstanceGroupName:
+      type: string
+      description: BIG-IP instance group name.
+    bigIpInstanceGroupSelfLink:
+      type: string
+      description: BIG-IP instance group self link.
     deploymentName:
       type: string
       description: Autoscale WAF deployment name.
+    networkName:
+      type: string
+      description: Network name.
+    networkSelfLink:
+      type: string
+      description: Network self link.
+    wafExternalHttpUrl:
+      type: string
+      description: WAF external HTTP URL.
+    wafExternalHttpsUrl:
+      type: string
+      description: WAF external HTTPS URL.
+    wafPublicIp:
+      type: string
+      description: WAF public IP.
 
 documentation:
   - README.md

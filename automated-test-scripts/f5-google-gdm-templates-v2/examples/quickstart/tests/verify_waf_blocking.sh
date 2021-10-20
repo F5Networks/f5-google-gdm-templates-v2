@@ -9,7 +9,7 @@ TMP_DIR=/tmp/<DEWPOINT JOB ID>
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-APP_ADDRESS=$(get_app_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> public)
+APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
 echo "APP_ADDRESS: ${APP_ADDRESS}"
 
 # confirm app is available

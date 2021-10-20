@@ -72,6 +72,9 @@ properties:
             - myMgmtFwTag
               myAppFwTag
       type: array
+  targetIntances:
+    description: List of settings for provisioning target instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances
+    type: array
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
@@ -83,6 +86,9 @@ outputs:
     instanceName:
       type: string
       description:  Bigip deployment name.
+    targetInstanceSelfLink:
+      type: string
+      description:  Bigip target instance self link.
 
 documentation:
   - README.md

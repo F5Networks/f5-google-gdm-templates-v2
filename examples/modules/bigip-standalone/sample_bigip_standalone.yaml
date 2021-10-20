@@ -69,6 +69,8 @@ resources:
         items:
           - mgmtfw
           - appfw
+      targetInstances:
+        - name: my-target-instance
       uniqueString: myapp
       zone: us-west1-a
     type: bigip_standalone.py
