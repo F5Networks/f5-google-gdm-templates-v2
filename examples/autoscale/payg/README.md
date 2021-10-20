@@ -125,7 +125,18 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 
 | Name | Description | Type |
 | ---- | ----------- | ---- |
-| deployment_name | Name of parent deployment | string |
+| appInstanceGroupName | Application instance group name. | string |
+| appInstanceGroupSelfLink | Application instance group self link. | string |
+| bastionInstanceGroupName | Bastion instance group name. | string |
+| bastionInstanceGroupSelfLink | Bastion instance group self link. | string |
+| bigIpInstanceGroupName | BIG-IP instance group name. | string |
+| bigIpInstanceGroupSelfLink | BIG-IP instance group self link. | string |
+| deploymentName | Autoscale WAF deployment name. | string |
+| networkName | Network name. | string |
+| networkSelfLink | Network self link. | string |
+| wafExternalHttpsUrl | WAF external HTTP URL. | string |
+| wafInternalHttpsUrl | WAF external HTTPS URL. | string |
+| wafPublicIp | WAF public IP. | string |
 
 
 ## Deploying this Solution
@@ -259,11 +270,10 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 To test the WAF service, perform the following steps:
 - Check the instance group health state; instance health is based on Google Cloud's ability to connect to your application via the instance group's load balancer. The health state for each instance should be "Healthy". If the state is "Unhealthy", proceed to the [Troubleshooting Steps](#troubleshooting-steps) section.
 - Obtain the IP address of the WAF service:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > wafPublicIp**.
   - **gcloud CLI**: 
       ```bash
-      UNIQUE_STRING="myuniquestr"
-      REGION="us-west1"
-      gcloud compute forwarding-rules describe ${UNIQUE_STRING}-fwrule1 --region=${REGION} --format='value(IPAddress)'
+      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("wafPublicIp")).finalValue'
       ```
 - Verify the application is responding:
   - Paste the IP address in a browser: ```https://${IP_ADDRESS_FROM_OUTPUT}```
@@ -287,27 +297,42 @@ To test the WAF service, perform the following steps:
 
 ### Accessing the BIG-IP
 
-
 - NOTE:
-
-  - Replace _${UNIQUE_STRING}_ and _${ZONE}_ with the values you provided for your _uniqueString_ and _zone_ parameters.
+  - The following CLI commands require the gcloud CLI and yq: https://github.com/mikefarah/yq#install
   - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. Once connected to a bastion host, you may then connect via SSH to the private IP addresses of the BIG-IP instances in *uniqueString*-bigip-igm.
 
+From Parent Template Outputs:
+  - **Console**:  Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs**.
+  - **Google CLI**:
+    ```bash
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq .resources[0].outputs
+    ```
 
 - Obtain the IP address of the BIG-IP Management Port:
-
   - **gcloud CLI**:
-      - Instances (BIG-IP)
-      ```
-      UNIQUE_STRING="myuniquestr"
-      ZONE="us-west1-a"
-      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bigip-igm --zone=${ZONE} --format json | jq -r .[].instance
-      ```
 
+      - Instance Group (BIG-IP)
+        - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpInstanceGroupName***.
+        - **Google CLI**: 
+          ``` bash 
+          BIG_IP_INSTANCE_GROUP_NAME=$(gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceGroupName")).finalValue')
+          ```
+      - Instances (BIG-IP)
+        ```
+        ZONE="us-west1-a"
+        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        ```
+
+    - Instance Group (Bastion)
+        - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bastionInstanceGroupName***.
+        - **Google CLI**: 
+          ``` bash 
+          BASTION_INSTANCE_GROUP_NAME=$(gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bastionInstanceGroupName")).finalValue')
+          ```
     - Instances (Bastion)
-      ```
-      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bastion-igm --zone=${ZONE} --format json | jq -r .[].instance
-      ```
+        ```
+        gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        ```
  
     - Public IPs (BIG-IP or Bastion instance): 
       ```shell 

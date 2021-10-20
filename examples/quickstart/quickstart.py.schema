@@ -89,8 +89,86 @@ properties:
 
 outputs:
   properties:
+    appInstanceName:
+      description: Application server instance name.
+      type: string
+    appPrivateIp:
+      description: Application server private IP address.
+      type: string
+    appPublicIp:
+      description: Application server public IP address.
+      type: string
+    appUsername:
+      description: Application server user name.
+      type: string
+    bastionInstanceId:
+      description: Bastion instance ID.
+      type: string
+    bastionPublicIp:
+      description: Bastion public IP address.
+      type: string
+    bastionPublicSsh:
+      description: Bastion SSH command.
+      type: string
+    bigIpInstanceId:
+      description: BIG-IP instance ID.
+      type: string
+    bigIpInstanceName:
+      description: BIG-IP instance name.
+      type: string
+    bigIpManagementPrivateIp:
+      description: BIG-IP management private IP address.
+      type: string
+    bigIpManagementPrivateUrl:
+      description: BIG-IP management private IP URL.
+      type: string
+    bigIpManagementPublicIp:
+      description: BIG-IP management public IP address.
+      type: string
+    bigIpManagementPublicSsh:
+      description: BIG-IP management SSH command.
+      type: string
+    bigIpManagementPublicUrl:
+      description: BIG-IP management public IP URL.
+      type: string
     deploymentName:
       description: Quickstart deployment name.
+      type: string
+    networkName0:
+      description: Management network name.
+      type: string
+    networkSelfLink0:
+      description: Management network self link.
+      type: string
+    networkName1:
+      description: External network name.
+      type: string
+    networkSelfLink1:
+      description: External network self link.
+      type: string
+    networkName2:
+      description: Internal network name.
+      type: string
+    networkSelfLink2:
+      description: Internal network self link.
+      type: string
+    vip1PrivateIp:
+      description: Virtual Server private IP address.
+      type: string
+    vip1PrivateUrlHttp:
+      description: Virtual Server private HTTP URL.
+      type: string
+    vip1PrivateUrlHttps:
+      description: Virtual Server private HTTPS URL.
+      type: string
+    vip1PublicIp:
+      description: Virtual Server public IP address.
+      type: string
+    vip1PublicUrlHttp:
+      description: Virtual Server public HTTP URL.
+      type: string
+    vip1PublicUrlHttps:
+      description: Virtual Server public HTTPS URL.
       type: string
 
 documentation:

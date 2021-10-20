@@ -131,7 +131,33 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 
 | Name | Description | Type |
 | ---- | ----------- | ---- |
-| deployment_name | Name of quickstart deployment | string |
+| appInstanceName | Application server instance name. | string |
+| appPrivateIp | Application server private IP address. | string |
+| appPublicIp | Application server public IP address. | string |
+| appUsername | Application server user name. | string |
+| bastionInstanceId | Bastion instance ID. | string |
+| bastionPublicIp | Bastion public IP address. | string |
+| bastionPublicSsh | Bastion SSH command. | string |
+| bigIpInstanceId | BIG-IP instance ID. | string |
+| bigIpInstanceName | BIG-IP instance name. | string |
+| bigIpManagementPrivateIp | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateUrl | BIG-IP management private IP URL. | string |
+| bigIpManagementPublicIp | BIG-IP management public IP address. | string |
+| bigIpManagementPublicSsh | BIG-IP management SSH command. | string |
+| bigIpManagementPublicUrl | BIG-IP management public IP URL. | string |
+| deploymentName | Quickstart deployment name. | string |
+| networkName0 | Management network name. | string |
+| networkName1 | External network name. | string |
+| networkName2 | Internal network name. | string |
+| networkSelfLink0 | Management network self link. | string |
+| networkSelfLink1 | External network self link. | string |
+| networkSelfLink2 | Internal network self link. | string |
+| vip1PrivateIp | Virtual Server private IP address. | string |
+| vip1PrivateUrlHttp | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttps | Virtual Server private HTTPS URL. | string |
+| vip1PublicIp | Virtual Server public IP address. | string |
+| vip1PublicUrlHttp | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttps | Virtual Server public HTTPS URL. | string |
 
 ## Deploying this Solution
 
@@ -246,45 +272,44 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 ### Accessing the BIG-IP
 
 - NOTE:
-
-  - Replace _${UNIQUE_STRING}_ and _${ZONE}_ with the values you provided for your _uniqueString_ and _zone_ parameters.
+  - The following CLI commands require the gcloud CLI and yq: https://github.com/mikefarah/yq#install
   - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. Once connected to the bastion host, you may then connect via SSH to the private Management IP address of the BIG-IP instance. The default username is **quickstart** and the default password is the BIG-IP's **Instance ID**.
 
-- Obtain the Instance ID of the BIG-IP instance.
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > "Instance Id".
-  - **gcloud CLI**:
-
+From Parent Template Outputs:
+  - **Console**:  Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs**.
+  - **Google CLI**:
     ```bash
-    UNIQUE_STRING="myuniquestr"
-    ZONE="us-west1-a"
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format='value(id)'
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq .resources[0].outputs
     ```
 
-- Obtain the Public IP address of the BIG-IP Management Port:
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic1 (select nic0 if 1NIC) > External IP**.
-  - **gcloud CLI**:
-
-    ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
+- Obtain the IP address of the BIG-IP Management Port:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpManagementPublicIp***.
+  - **Google CLI**: 
+    ``` bash 
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPublicIp")).finalValue'
     ```
 
 OR if you are going through a bastion host (when **provisionPublicIP** = **false**):
 
 - Obtain the Public IP address of the bastion host:
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bastion > Network Interfaces > nic0 > External IP**.
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bastionPublicIp**.
   - **gcloud CLI**:
     ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bastion" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bastionPublicIp")).finalValue'
     ```
 
 - Obtain the Private IP address of the BIG-IP Management Port = nic1 (select nic0 if 1NIC) :
   - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic1 (select nic0 if 1NIC) > Primary internal IP **.
   - **gcloud CLI**:
     ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Private Ips'](networkInterfaces.name, networkInterfaces.networkIP)" --flatten="networkInterfaces[]"
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPrivateIp")).finalValue'
+    ```
+
+- Obtain the vmId of the BIG-IP Virtual Machine *(will be used for password later)*:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bigIpInstanceId**.
+  - **Google CLI**: 
+    ```bash
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceId")).finalValue'
     ```
 
 #### SSH
@@ -321,10 +346,6 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
   - See 'Obtain the public IP address of the BIG-IP Management Port' section above:
   - By default, the Management URL will be `https://${MANAGEMENT-IP}/`
   - For 1NIC deployments, the Management URL will be `https://${MANAGEMENT-IP}:8443/`
-
-          
-
-          
 
   - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
 
@@ -373,18 +394,12 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 
 To test the WAF service, perform the following steps:
 
-- Obtain the IP address of the WAF service. By default, this service as well as the Self-IP is provisioned on the Primary IP of 1st NIC. 
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic0 > External IP (or Primary internal IP if provisionPublicIP is false) **.
-  - **gcloud CLI**:
-
-    ```bash
-    # If public IP
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
-    #If using Primary
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Private Ips'](networkInterfaces.name, networkInterfaces.networkIP)" --flatten="networkInterfaces[]"
-
-    ```
+- Obtain the IP address of the WAF service:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > vip1PublicIp**.
+  - **Google CLI**: 
+      ```bash
+      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("vip1PublicIp")).finalValue'
+      ```
 
 - Verify the application is responding:
   - Paste the IP address in a browser: `https://${IP_ADDRESS_FROM_OUTPUT}`

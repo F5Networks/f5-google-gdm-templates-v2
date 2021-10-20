@@ -59,7 +59,7 @@ google-gdm-bigip-autoscale-module-test:
 google-gdm-bigip-standalone-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 3
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters2.yaml"
@@ -81,7 +81,7 @@ google-autoscale-payg-example-test:
 google-quickstart-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 3
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters2.yaml"

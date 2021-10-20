@@ -49,6 +49,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | networkInterfaces.subnetwork | Yes | Defines subnetwork attached to interface.|
 | region | Yes | Enter the region where you want to deploy the application. For example: `us-west1`.|
 | tags.items | No | An array of tags used to match traffic against network interfaces.|
+| targetInstances | Yes | List of settings for provisioning target instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances). |
 | uniqueString | Yes | Unique String used when creating object names or Tags.|
 | zone | Yes | Enter the zone where you want to deploy the application. For example: `us-west1-a`.|
 
@@ -58,3 +59,4 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | Name | Description | Required Resource | Type |
 | --- | --- | --- | --- |
 | instanceName | BIG-IP instance resource name |  All resources |  String |
+| targetInstanceSelfLink | BIG-IP target instance self link |  All resources |  String |
