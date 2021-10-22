@@ -33,6 +33,6 @@ resources:
           runtime: python37
           maxInstances: 10
           environmentVariables:
-            runtimeInitConfigUrl: >-
+            bigIpRuntimeInitConfig: >-
               https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
             bigipInstanceGroup: myBigipInstanceGroup

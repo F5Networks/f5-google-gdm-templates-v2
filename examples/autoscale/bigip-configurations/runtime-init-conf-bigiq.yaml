@@ -19,11 +19,11 @@ runtime_parameters:
       - name: Metadata-Flavor
         value: Google
   - name: INSTANCE_ID
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: compute
-      field: id
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/id
+    headers:
+      - name: Metadata-Flavor
+        value: Google
   - name: SPLUNK_API_KEY
     type: secret
     secretProvider:
@@ -38,6 +38,7 @@ runtime_parameters:
       environment: gcp
       version: latest
       secretId: my-secret-id-02
+      
 bigip_ready_enabled: []
 extension_packages:
   install_operations:
@@ -46,7 +47,7 @@ extension_packages:
       extensionHash: bfe88c7cf3fdb24adc4070590c27488e203351fc808d57ae6bbb79b615d66d27
     - extensionType: as3
       extensionVersion: 3.30.0
-      extensionHash: 19d6af6d6fe7bad5b235a5806e49b6a90d4c081452f0a179f5ab31c3cc8e1868
+      extensionHash: 47cc7bb6962caf356716e7596448336302d1d977715b6147a74a142dc43b391b
     - extensionType: ts
       extensionVersion: 1.22.0
       extensionHash: bff1b0695b7408e05a5e22492c8fce4805fc84c10408f82b60b14a0a206406a7

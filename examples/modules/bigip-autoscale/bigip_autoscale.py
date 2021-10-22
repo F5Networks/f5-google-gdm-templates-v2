@@ -83,7 +83,7 @@ def create_instance_template(context, instance_template):
         'machineType': context.properties['instanceType'],
         'serviceAccounts': [{
             'email': context.properties['serviceAccountEmail'],
-            'scopes': ['https://www.googleapis.com/auth/compute', 'https://www.googleapis.com/auth/devstorage.read_write']
+            'scopes': ['https://www.googleapis.com/auth/compute', 'https://www.googleapis.com/auth/devstorage.read_write', "https://www.googleapis.com/auth/cloud-platform"]
         }],
         'disks': [{
             'deviceName': 'boot',
