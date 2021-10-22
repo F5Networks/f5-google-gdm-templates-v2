@@ -33,6 +33,7 @@ This Google Deployment Manager template creates cloud resources intended for pro
 | jobs | No | List of declaration of settings used for provisioning scheduled jobs. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/scheduler/docs/reference/rest/v1/projects.locations.jobs)  | 
 | topics | No | List of declaration of settings used for provisioning PubSub topics. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics)  | 
 | uniqueString | Yes | Unique String used when creating object names or Tags. |
+| updateFunction | No | Used to check if the CloudFuction already exists and needs to be updated. |
 
 ### Template Outputs
 

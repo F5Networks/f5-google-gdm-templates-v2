@@ -1,0 +1,44 @@
+---
+name: Google Examples - Autoscale BIGIQ
+onStart:
+- ../../../common/helper_init.sh
+- ../../../common/create_storage.sh
+- ../../../common/verify_create_storage.sh
+- ../../../common/create_s3_bucket.sh
+- ../../../common/create_aws_network.sh
+- ../../../common/verify_aws_create.sh
+- ../../../common/create_bigiq_aws.sh
+- ../../../common/verify_create_aws_bigiq.sh
+- ../../../common/verify_onboard_aws_bigiq.sh
+- ../../../common/verify_aws_bigiq_ready_env.sh
+- ./create_stack.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_login.sh
+- ../common/verify_waf_blocking.sh
+- ./update_stack.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_waf_transparent.sh
+- ../common/scale_down.sh
+- ../common/verify_scale_down.sh
+- ./update_stack_for_delete.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../common/delete_s3_bucket.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_aws_bigiq_stack.sh
+- ../../../common/verify_delete_aws_bigiq.sh
+- ../../../common/delete_aws_network_stack.sh
+- ../../../common/delete_stack_autoscale.sh
+- ../../../common/verify_delete_autoscale.sh
+onFail:
+# - ../../../../sleep/5_minutes.sh
+- ../../../common/delete_s3_bucket.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_aws_bigiq_stack.sh
+- ../../../common/verify_delete_aws_bigiq.sh
+- ../../../common/delete_aws_network_stack.sh
+- ../../../common/delete_stack_autoscale.sh
+- ../../../common/verify_delete_autoscale.sh

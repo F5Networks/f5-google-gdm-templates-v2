@@ -6,6 +6,7 @@
 # set vars
 TMP_DIR="/tmp/<DEWPOINT JOB ID>"
 tmpl_file='/tmp/function.py'
+runtime_file='<RUNTIME INIT>'
 
 # grab template and schema
 curl -k <TEMPLATE URL> -o $tmpl_file
@@ -35,11 +36,12 @@ curl -k <TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 /usr/bin/yq e ".resources[0].properties.functions[0].name = \"func-<DEWPOINT JOB ID>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].serviceAccountEmail = \"f5-7656-pdsoleng-dev@appspot.gserviceaccount.com\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].sourceArchiveUrl = \"gs://f5-gcp-bigiq-revoke-us/develop/v1.0.0/cloud_functions_bigiq_revoke.zip\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.functions[0].entryPoint = \"hello_pubsub\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.functions[0].entryPoint = \"revoke_bigiq_pubsub\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].eventTrigger.eventType = \"google.pubsub.topic.publish\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].eventTrigger.resource = \"projects/f5-7656-pdsoleng-dev/topics/topic-<DEWPOINT JOB ID>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].runtime = \"python37\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].maxInstances = 10" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.functions[0].environmentVariables.bigIpRuntimeInitConfig = \"https://storage.googleapis.com/<STACK NAME>-bucket/${runtime_file}\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.functions[0].labels.delete = \"true\"" -i <DEWPOINT JOB ID>.yaml
 
 # print out config file
