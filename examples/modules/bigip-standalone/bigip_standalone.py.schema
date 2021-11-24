@@ -9,6 +9,7 @@ info:
 
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/instances
+      - https://cloud.google.com/storage/docs/json_api/v1/buckets
   version: 1.0.0.0
 imports:
   - path: bigip_standalone.py
@@ -58,6 +59,15 @@ properties:
               aliasIpRanges:
                 - ipCidrRange: 10.0.31.181
                   subnetworkRangeName: myAlias Subnet
+  storageBuckets:
+    type: array
+    description: |
+      Creates storage buckets
+        Example:
+          storageBuckets:
+            - name: cfe-bucket
+              labels:
+                f5_cloud_failover_label: bigip-high-availability-solution
   region:
     description: |
       Enter the region where you want to deploy the application, for example 'us-west1'.

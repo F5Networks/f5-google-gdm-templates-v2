@@ -11,6 +11,7 @@ def generate_name(prefix, suffix):
     return prefix + "-" + suffix
 
 def populate_properties(context, required_properties, optional_properties):
+    """ Generate properties. """
     properties = {}
     properties.update(
         {
@@ -27,6 +28,50 @@ def populate_properties(context, required_properties, optional_properties):
         }
     )
     return properties
+
+
+def create_storage_bucket(context, storage_bucket):
+    """ Create storage bucket. """
+    # Build instance property lists
+    required_properties = ['name']
+    optional_properties = [
+        'acl',
+        'billing',
+        'cors',
+        'defaultEventBasedHold',
+        'defaultObjectAcl',
+        'encryption',
+        'iamConfiguration',
+        'labels',
+        'lifecycle',
+        'location',
+        'logging',
+        'retentionPolicy',
+        'rpo',
+        'storageClass',
+        'versioning',
+        'website'
+    ]
+    name = storage_bucket.get('name') or \
+        context.env['name'] if 'name' in storage_bucket or 'name' in context.env else 'cfe-storage'
+    prefix = context.properties['uniqueString']
+    storage_name = generate_name(prefix, name)
+    properties = {}
+    properties.update({
+            'project': context.env['project'],
+            'name': storage_name,
+            'labels': {
+                'f5_cloud_failover_label': generate_name(prefix,'bigip-high-availability-solution')
+            }
+    })
+    properties.update(populate_properties(storage_bucket, required_properties, optional_properties))
+    storage = {
+        'name': storage_name,
+        'type': 'storage.v1.bucket',
+        'properties': properties
+    }
+    return storage
+
 
 def create_instance(context):
     """ Create standalone instance """
@@ -142,6 +187,10 @@ def metadata(context):
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     metadata_config = {
                 'items': [{
+                    'key': 'unique-string',
+                    'value': str(context.properties['uniqueString'])
+                },
+                {
                     'key': 'startup-script',
                     'value': ('\n'.join(['#!/bin/bash',
                                     'if [ -f /config/startup_finished ]; then',
@@ -182,10 +231,11 @@ def metadata(context):
                                     '   MULTI_NIC=' + str(multi_nic),
                                     '   if [[ ${MULTI_NIC} == "True" ]]; then',
                                     '       # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.',
+                                    '       source /usr/lib/bigstart/bigip-ready-functions',
+                                    '       wait_bigip_ready',
                                     '       tmsh modify sys global-settings mgmt-dhcp disabled',
                                     '       tmsh delete sys management-route all',
                                     '       tmsh delete sys management-ip all',
-                                    '       source /usr/lib/bigstart/bigip-ready-functions',
                                     '       wait_bigip_ready',
                                     '       # Wait until a little more until dhcp/chmand is finished re-configuring MGMT IP w/ "chmand[4267]: 012a0003:3: Mgmt Operation:0 Dest:0.0.0.0"',
                                     '       sleep 15',
@@ -291,11 +341,14 @@ def generate_config(context):
     instance_name = generate_name(context.properties['uniqueString'], name)
     # build resources
     resources = [create_instance(context)]
-    for targetInstance in context.properties.get('targetInstances', []):
-        resources.append(create_target_instance(context, targetInstance, instance_name))
+    storage_list = context.properties.get('storageBuckets', [])
+    for storage_bucket in storage_list:
+        resources.append(create_storage_bucket(context, storage_bucket))
+    for target_instance in context.properties.get('targetInstances', []):
+        resources.append(create_target_instance(context, target_instance, instance_name))
     # build outputs
     outputs = [create_instance_outputs(context)]
-    for targetInstance in context.properties.get('targetInstances', []):
-        outputs = outputs + [create_target_instance_outputs(context, targetInstance)]
+    for target_instance in context.properties.get('targetInstances', []):
+        outputs = outputs + [create_target_instance_outputs(context, target_instance)]
 
     return {'resources': resources, 'outputs': outputs}

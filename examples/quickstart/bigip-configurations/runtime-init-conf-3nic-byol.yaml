@@ -42,17 +42,17 @@ bigip_ready_enabled: []
 extension_packages:
   install_operations:
     - extensionType: do
-      extensionVersion: 1.23.0
-      extensionHash: bfe88c7cf3fdb24adc4070590c27488e203351fc808d57ae6bbb79b615d66d27
+      extensionVersion: 1.25.0
+      extensionHash: 2c990f6185b16acf0234ebba02afc24863f538c955f51c7a3ebe01d5db58b859
     - extensionType: as3
-      extensionVersion: 3.30.0
-      extensionHash: 47cc7bb6962caf356716e7596448336302d1d977715b6147a74a142dc43b391b
+      extensionVersion: 3.32.0
+      extensionHash: 995ef3fbe6606789bd80eafbb5146fbc068554cf3df4c488bee65f4bb4083f14
     - extensionType: ts
-      extensionVersion: 1.22.0
-      extensionHash: bff1b0695b7408e05a5e22492c8fce4805fc84c10408f82b60b14a0a206406a7
+      extensionVersion: 1.24.0
+      extensionHash: f20c4dd3b06986a29d1f79823dab0efd3d46d4d9406dbc90bb861e24912dd222
     - extensionType: fast
-      extensionVersion: 1.11.0
-      extensionHash: 1816159f73f684d0b81f60341d7eda4907b2bbf72ca80cae2dcae2d1b059d3ce
+      extensionVersion: 1.13.0
+      extensionHash: aeecdc04bbf6cb1012cb8d32ab191210b737c9f8b23a037fcacd2420f32dfe18
 extension_services:
   service_operations:
     - extensionType: do
@@ -207,7 +207,15 @@ post_onboard_enabled:
   - name: create_google_routes
     type: inline
     commands:
-    - "EXT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway); tmsh create net route ext_gw_int network $EXT_GW/32 interface external"
-    - "INT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/gateway); tmsh create net route int_gw_int network $INT_GW/32 interface internal"
-    - "MGMT_SELF_IP=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip); MGMT_MASK=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/subnetmask); MGMT_NETWORK=$(ipcalc -n $MGMT_SELF_IP $MGMT_MASK | sed -n 's/^NETWORK=\\(.*\\)/\\1/p'); MGMT_PREFIX=$(ipcalc -p $MGMT_SELF_IP $MGMT_MASK | sed -n 's/^PREFIX=\\(.*\\)/\\1/p'); tmsh create sys management-route dhclient_route1 network $MGMT_SELF_IP/32 type interface; tmsh create sys management-route dhclient_route2 gateway $MGMT_SELF_IP network $MGMT_NETWORK/$MGMT_PREFIX"
-    - tmsh save sys config
+      - "EXT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway);\
+        \ tmsh create net route ext_gw_int network $EXT_GW/32 interface external"
+      - "INT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/gateway);\
+        \ tmsh create net route int_gw_int network $INT_GW/32 interface internal"
+      - "MGMT_SELF_IP=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip);\
+        \ MGMT_MASK=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/subnetmask);\
+        \ MGMT_NETWORK=$(ipcalc -n $MGMT_SELF_IP $MGMT_MASK | sed -n 's/^NETWORK=\\\
+        (.*\\)/\\1/p'); MGMT_PREFIX=$(ipcalc -p $MGMT_SELF_IP $MGMT_MASK | sed -n\
+        \ 's/^PREFIX=\\(.*\\)/\\1/p'); tmsh create sys management-route dhclient_route1\
+        \ network $MGMT_SELF_IP/32 type interface; tmsh create sys management-route\
+        \ dhclient_route2 gateway $MGMT_SELF_IP network $MGMT_NETWORK/$MGMT_PREFIX"
+      - tmsh save sys config

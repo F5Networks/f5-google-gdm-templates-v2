@@ -1,0 +1,250 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  author: F5 Networks
+  description: Creates a pair of bigip's HA deployment along with all required resources to support deployment.
+  title: F5 failover template
+  version: 1.0.0.0
+
+imports:
+  - path: failover.py
+  - path: ../modules/application/application.py
+  - path: ../modules/access/access.py
+  - path: ../modules/bastion/bastion.py
+  - path: ../modules/bigip-standalone/bigip_standalone.py
+  - path: ../modules/dag/dag.py
+  - path: ../modules/network/network.py
+
+required:
+  - restrictedSrcAddressMgmt
+  - restrictedSrcAddressApp
+
+properties:
+  appContainerName:
+    default: 'f5devcentral/f5-demo-app:latest'
+    description: Enter the name of the docker container you want to run as your application
+    type: string
+  application:
+    default: f5app
+    description: Application label.
+    type: string
+  bigIpExternalSelfIp1:
+    default: 10.0.1.11
+    description: External interface private IP address for bigip1.
+    type: string
+  bigIpExternalSelfIp2:
+    default: 10.0.1.12
+    description: External interface private IP address for bigip2.
+    type: string
+  bigIpInternalSelfIp1:
+    default: 10.0.2.11
+    description: Internal interface private IP address for bigip1.
+    type: string
+  bigIpInternalSelfIp2:
+    default: 10.0.2.12
+    description: Internal interface private IP address for bigip2.
+    type: string
+  bigIpMgmtSelfIp1:
+    default: 10.0.0.11
+    description: Management interface private IP address for bigip1.
+    type: string
+  bigIpMgmtSelfIp2:
+    default: 10.0.0.12
+    description: Management interface private IP address for bigip2.
+    type: string
+  bigIpImageName:
+    default: f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328
+    description: BIG-IP image name
+    type: string
+  bigIpInstanceType:
+    default: n1-standard-4
+    description: Instance type assigned to the application, for example 'n1-standard-1'.
+    type: string
+  bigIpRuntimeInitConfig01:
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance01.yaml
+    description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
+    type: string
+  bigIpRuntimeInitConfig01:
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance02.yaml
+    description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
+    type: string
+  bigIpRuntimeInitPackageUrl:
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run
+    description: URL for BIG-IP Runtime Init package
+    type: string
+  cfeTag:
+    default: bigip-high-availability-solution
+    description: Cloud Failover deployment tag value.
+    type: string
+  cfeBucket:
+    default: cfe-storage
+    description: Cloud Failover storage bucket value.
+    type: string
+  cost:
+    default: f5cost
+    description: Cost Center label.
+    type: string
+  environment:
+    default: f5env
+    description: Environment label.
+    type: string
+  group:
+    default: f5group
+    description: Group label.
+    type: string
+  owner:
+    default: f5owner
+    description: Owner label.
+    type: string
+  provisionPublicIp:
+    default: true
+    description: Provision Public IP addresses for the BIG-IP interfaces or to create bastion host
+    type: boolean
+  region:
+    default: us-west1
+    description: cloud region used for this deployment, for example us-west1.
+    type: string
+  restrictedSrcAddressMgmt:
+    description: This field restricts application traffic to a specific network or address. Enter a list of IP addresses or address ranges in CIDR notation. For example, '55.55.55.55/32'.
+    type: array
+  restrictedSrcAddressApp:
+    description: This field restricts application traffic to a specific network or address. Enter a list of IP addresses or address ranges in CIDR notation. For example, '55.55.55.55/32'.
+    type: array
+  uniqueString:
+    default: myuniqstr
+    description: Unique String used when creating object names or Tags.
+    type: string
+  zone:
+    default: us-west1-a
+    description: Enter the zone where you want to deploy the application, for example 'us-west1-a'.
+    type: string
+
+outputs:
+  properties:
+    appInstanceName:
+      description: Application server instance name.
+      type: string
+    appPrivateIp:
+      description: Application server private IP address.
+      type: string
+    appPublicIp:
+      description: Application server public IP address.
+      type: string
+    appUsername:
+      description: Application server user name.
+      type: string
+    bastionInstanceId:
+      description: Bastion instance ID.
+      type: string
+    bastionPublicIp:
+      description: Bastion public IP address.
+      type: string
+    bastionPublicSsh:
+      description: Bastion SSH command.
+      type: string
+    bigIpInstanceId1:
+      description: BIG-IP1 instance ID.
+      type: string
+    bigIpInstanceId2:
+      description: BIG-IP2 instance ID.
+      type: string
+    bigIpInstanceName1:
+      description: BIG-IP1 instance name.
+      type: string
+    bigIpInstanceName2:
+      description: BIG-IP2 instance name.
+      type: string
+    bigIpManagementPrivateIp1:
+      description: BIG-IP1 management private IP address.
+      type: string
+    bigIpManagementPrivateIp2:
+      description: BIG-IP2 management private IP address.
+      type: string
+    bigIpManagementPrivateUrl1:
+      description: BIG-IP1 management private IP URL.
+      type: string
+    bigIpManagementPrivateUrl2:
+      description: BIG-IP2 management private IP URL.
+      type: string
+    bigIpManagementPublicIp1:
+      description: BIG-IP1 management public IP address.
+      type: string
+    bigIpManagementPublicIp2:
+      description: BIG-IP2 management public IP address.
+      type: string
+    bigIpManagementPublicSsh1:
+      description: BIG-IP1 management SSH command.
+      type: string
+    bigIpManagementPublicSsh2:
+      description: BIG-IP2 management SSH command.
+      type: string
+    bigIpManagementPublicUrl1:
+      description: BIG-IP1 management public IP URL.
+      type: string
+    bigIpManagementPublicUrl2:
+      description: BIG-IP2 management public IP URL.
+      type: string
+    deploymentName:
+      description: failover deployment name.
+      type: string
+    networkName0:
+      description: Management network name.
+      type: string
+    networkSelfLink0:
+      description: Management network self link.
+      type: string
+    networkName1:
+      description: External network name.
+      type: string
+    networkSelfLink1:
+      description: External network self link.
+      type: string
+    networkName2:
+      description: Internal network name.
+      type: string
+    networkSelfLink2:
+      description: Internal network self link.
+      type: string
+    vip1PrivateIp1:
+      description: Virtual Server private IP address.
+      type: string
+    vip1PrivateIp2:
+      description: Virtual Server private IP address.
+      type: string
+    vip1PrivateUrlHttp1:
+      description: Virtual Server private HTTP URL.
+      type: string
+    vip1PrivateUrlHttp2:
+      description: Virtual Server private HTTP URL.
+      type: string
+    vip1PrivateUrlHttps1:
+      description: Virtual Server private HTTPS URL.
+      type: string
+    vip1PrivateUrlHttps2:
+      description: Virtual Server private HTTPS URL.
+      type: string
+    vip1PublicIp1:
+      description: Virtual Server public IP address.
+      type: string
+    vip1PublicIp2:
+      description: Virtual Server public IP address.
+      type: string
+    vip1PublicUrlHttp1:
+      description: Virtual Server public HTTP URL.
+      type: string
+    vip1PublicUrlHttp2:
+      description: Virtual Server public HTTP URL.
+      type: string
+    vip1PublicUrlHttps1:
+      description: Virtual Server public HTTPS URL.
+      type: string
+    vip1PublicUrlHttps2:
+      description: Virtual Server public HTTPS URL.
+      type: string
+
+documentation:
+  - README.md
+
+examples:
+  - sample_failover.yaml

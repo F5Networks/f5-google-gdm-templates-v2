@@ -65,6 +65,10 @@ resources:
           subnetwork: >-
             https://www.googleapis.com/compute/v1/projects/myProject/regions/us-west1/subnetworks/myApplicationSubnetwork
       region: us-west1
+      storageBuckets:
+        - name: cfe-bucket
+          labels:
+            f5_cloud_failover_label: bigip-high-availability-solution
       tags:
         items:
           - mgmtfw
