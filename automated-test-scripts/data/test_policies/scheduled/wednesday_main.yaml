@@ -1,0 +1,14 @@
+gdm-failover-existing-payg-example-test:
+  parameters-files:
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/postpub_parameters1.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/postpub_parameters2.yaml
+  random-num-of-tests: 1
+  run: random
+  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test.yaml'
+gdm-failover-existing-byol-example-test:
+  parameters-files:
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/postpub_parameters3.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/postpub_parameters4.yaml
+  random-num-of-tests: 1
+  run: random
+  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml'
