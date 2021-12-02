@@ -13,6 +13,7 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Parameters](#existing-network-parameters)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the gcloud CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
@@ -38,10 +39,14 @@
 
 This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the **[examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules)** directory in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
 
+***Existing Network Deployments (autoscale-existing-network.py)***<br>
+Use autoscale-existing-network.py parent template to deploy the autoscale solution into an existing network which requires providing existing network's and subnets' names. 
+
 The modules below create the following resources:
 
 - **Network**: This template creates Virtual Networks, Subnets, and Route Tables.
 - **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IPs.
+- **Bastion**: This template creates a generic example bastion for use when connecting to the management interfaces of BIG-IPs.
 - **Disaggregation** *(DAG/Ingress)*: This template creates resources required to get traffic to the BIG-IP, including Firewalls, Forwarding Rules, internal/external Load Balancers, and accompanying resources such as health probes.
 - **Access**: This template creates a custom IAM role for the BIG-IP instances and other resources to gain access to Google Cloud services such as compute and storage.
 - **BIG-IP**: This template creates compute instances with F5 BIG-IP Virtual Editions provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM). Traffic flows from the Google load balancer to the BIG-IP VE instances and then to the application servers. The BIG-IP VE(s) are configured in single-NIC mode. Auto scaling means that as certain thresholds are reached, the number of BIG-IP VE instances automatically increases or decreases accordingly. The BIG-IP module template can be deployed separately from the example template provided here into an "existing" stack.
@@ -120,6 +125,16 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
+
+#### Existing Network Parameters
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| subnets.appSubnetName | Yes | Application subnet name |
+| networkName | Yes | Network name |
 
 
 ### Template Outputs

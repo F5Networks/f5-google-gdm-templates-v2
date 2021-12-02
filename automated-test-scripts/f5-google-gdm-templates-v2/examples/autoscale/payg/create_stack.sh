@@ -11,7 +11,7 @@ runtime_update_file='<RUNTIME INIT UPDATE>'
 
 ## Create runtime config with yq
 cp -r $PWD/examples /tmp
-cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>.yaml $runtime_file
+cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>-with-app.yaml $runtime_file
 
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.class = \"User\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.password = \"<SECRET VALUE>\"" -i $runtime_file
