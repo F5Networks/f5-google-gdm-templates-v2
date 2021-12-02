@@ -35,7 +35,7 @@ resources:
       bigIpCoolDownPeriodSec: 60
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package.
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run
@@ -73,6 +73,10 @@ resources:
       # NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
       restrictedSrcAddressMgmt:
         - 10.0.0.0/8
+      ### (REQUIRED) This parameter is used for providing management and application subnets names.
+      subnets:
+        mgmtSubnetName: myuniqstr-mgmt
+        appSubnetName: myuniqstr-app
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
       ### (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify true when updating the deployment. See README for more details.

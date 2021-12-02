@@ -18,13 +18,8 @@ imports:
 
 required:
     - restrictedSrcAddressMgmt
-    - restrictedSrcAddressApp
 
 properties:
-  appContainerName:
-    default: 'f5devcentral/f5-demo-app:latest'
-    description: Enter the name of the docker container you want to run as your application
-    type: string
   application:
     default: f5app
     description: Application label.
@@ -57,7 +52,7 @@ properties:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
   bigIpRuntimeInitConfig:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
@@ -91,9 +86,22 @@ properties:
   restrictedSrcAddressMgmt:
     description: This parameter restricts BIG-IP management traffic to a specific network or address. Enter a yaml list of IP addresses or address ranges in CIDR notation. For example, '- 55.55.55.55/32' for a single host or '- 10.0.0.0/8' for a network.
     type: array
-  restrictedSrcAddressApp:
-    description: This parameter restricts application traffic to a specific network or address. Enter a yaml list of IP addresses or address ranges in CIDR notation. For example, '- 55.55.55.55/32' for a single host or '- 10.0.0.0/8' for a network.
-    type: array
+  subnets:
+    type: object
+    required:
+      - mgmtSubnetName
+      - appSubnetName
+    properties:
+      mgmtSubnetName:
+        type: string
+        description: management subnet name.
+      appSubnetName:
+        type: string
+        description: application subnet name.
+  networkName:
+    type: string
+    description: network name used for hosting BIGIP instances
+    default: bigip-network
   uniqueString:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
@@ -109,18 +117,6 @@ properties:
 
 outputs:
   properties:
-    appInstanceGroupName:
-      type: string
-      description: Application instance group name.
-    appInstanceGroupSelfLink:
-      type: string
-      description: Application instance group self link.
-    bastionInstanceGroupName:
-      type: string
-      description: Bastion instance group name.
-    bastionInstanceGroupSelfLink:
-      type: string
-      description: Bastion instance group self link.
     bigIpInstanceGroupName:
       type: string
       description: BIG-IP instance group name.
