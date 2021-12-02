@@ -53,6 +53,14 @@ gdm-dag-mod-test:
   run: random
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/daily_test.yaml'
 
+gdm-functional-mod-test:
+  parameters-files:
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters1.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters2.yaml
+  random-num-of-tests: 1
+  run: random
+  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/daily_test.yaml'
 
 gdm-network-mod-test:
   parameters-files:
@@ -66,7 +74,7 @@ gdm-network-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/daily_test.yaml'
 
 
-gdm-autoscale-test:
+gdm-autoscale-payg-test:
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/postpub_parameters.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/postpub_parameters1.yaml
@@ -74,11 +82,37 @@ gdm-autoscale-test:
   run: random
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml'
 
-
-gdm-quickstart-module-test:
-  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+gdm-autoscale-bigiq-test:
+  parameters-files:
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/postpub_parameters.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/postpub_parameters1.yaml
   random-num-of-tests: 1
   run: random
+  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml'
+
+
+gdm-quickstart-module-test:
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters1.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters2.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters3.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters4.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters5.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters6.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters7_v14.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/postpub_parameters8_v14.yaml
+  random-num-of-tests: 2
+  run: random
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+
+
+gdm-failover-full-test:
+  parameters-files:
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/postpub_parameters1.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/postpub_parameters2.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/postpub_parameters3.yaml
+    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/postpub_parameters4.yaml
+  random-num-of-tests: 1
+  run: random
+  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test.yaml'
