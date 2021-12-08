@@ -115,12 +115,6 @@ def create_cloud_function(context, deployment_context):
         'function': context.get('name')
     }
 
-    if not deployment_context.properties.get('updateFunction'):
-        location_info = {
-            'location':  f"projects/{ deployment_context.env['project'] }/locations/{ deployment_context.properties.get('region', 'us-west2') }",
-        }
-        properties.update(location_info)
-
     properties.update(populate_properties(context, required_properties, optional_properties))
 
     cloudFunction = {

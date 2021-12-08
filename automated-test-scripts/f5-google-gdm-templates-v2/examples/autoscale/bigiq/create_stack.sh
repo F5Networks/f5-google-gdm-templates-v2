@@ -1,16 +1,30 @@
 #  expectValue = "completed successfully"
+#  expectFailValue = "Failed"
 #  scriptTimeout = 5
 #  replayEnabled = false
 #  replayTimeout = 0
 
 
 # set vars
+TMP_DIR='/tmp/<DEWPOINT JOB ID>'
 config_file='/tmp/examples/autoscale/<LICENSE TYPE>/<DEWPOINT JOB ID>-config.yaml'
 runtime_file='<RUNTIME INIT>'
 runtime_update_file='<RUNTIME INIT UPDATE>'
 mkdir -p /tmp/examples/autoscale/<LICENSE TYPE>
-# LICENSE_HOST=$(aws cloudformation describe-stacks --region us-west-1 --stack-name <STACK NAME>-bigiq-gcp-test|jq -r '.Stacks[0].Outputs[]|select (.OutputKey=="device1Url")|.OutputValue|split(":")[1]|.[2:]')
-LICENSE_HOST='192.168.1.4'
+
+LICENSE_HOST=''
+if [[ "<LICENSE TYPE>" == "bigiq" ]]; then
+    if [ -f "${TMP_DIR}/bigiq_info.json" ]; then
+        echo "Found existing BIG-IQ"
+        cat ${TMP_DIR}/bigiq_info.json
+        bigiq_address=$(cat ${TMP_DIR}/bigiq_info.json | jq -r .bigiq_address)
+        bigiq_password=$(cat ${TMP_DIR}/bigiq_info.json | jq -r .bigiq_password)
+    else
+        echo "Failed - No BIG-IQ found"
+    fi
+    LICENSE_HOST=$bigiq_address
+fi
+
 ## Create runtime config with yq
 cp -r $PWD/examples /tmp
 cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>-with-app.yaml $runtime_file
@@ -23,10 +37,12 @@ cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.HTTP_Service.WAFPolicy.enforcementMode = \"blocking\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.HTTPS_Service.WAFPolicy.url = \"https://cdn.f5.com/product/cloudsolutions/solution-scripts/Rapid_Deployment_Policy_13_1.xml\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.HTTP_Service.WAFPolicy.url = \"https://cdn.f5.com/product/cloudsolutions/solution-scripts/Rapid_Deployment_Policy_13_1.xml\"" -i $runtime_file
+
 if [[ "<LICENSE TYPE>" == "bigiq" ]]; then
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.licensePool = \"production\"" -i $runtime_file
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.bigIqHost = \"${LICENSE_HOST}\"" -i $runtime_file
-    /usr/bin/yq e ".runtime_parameters[5].secretProvider.secretId = \"gregs-secret-test\"" -i $runtime_file
+    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.tenant = \"<DEWPOINT JOB ID>-{{{INSTANCE_ID}}}\"" -i $runtime_file
+    /usr/bin/yq e ".runtime_parameters[5].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $runtime_file
 fi
 
 

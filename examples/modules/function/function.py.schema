@@ -26,10 +26,6 @@ properties:
     uniqueString:
         type: string
         description: Unique String used when creating object names or Tags.
-    updateFunction:
-        default: false
-        description: Used to check if the CloudFuction already exists and needs to be updated.
-        type: boolean
 
 
 outputs:
