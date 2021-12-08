@@ -4,7 +4,7 @@
 #  replayTimeout = 60
 
 # SSH login for <ADMIN USERNAME> is set when we provision the instances, the actual admin user password is configured by runtime init
-TMP_DIR=/tmp/<DEWPOINT JOB ID>
+TMP_DIR='/tmp/<DEWPOINT JOB ID>'
 STATE_FILE=${TMP_DIR}/state.json
 
 # source test functions

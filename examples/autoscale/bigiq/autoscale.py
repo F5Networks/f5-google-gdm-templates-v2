@@ -354,7 +354,6 @@ def create_dag_deployment(context):
     }
     return deployment
 
-
 def create_function_deployment(context):
     """ Create template deployment """
     prefix = context.properties['uniqueString']
@@ -418,15 +417,13 @@ def create_function_deployment(context):
             }
           }
         ],
-        'uniqueString': context.properties['uniqueString'],
-        'updateFunction': context.properties['update']
+        'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
         'dependsOn': depends_on_array
       }
     }
     return deployment
-
 
 def generate_config(context):
     """ Entry point for the deployment resources. """

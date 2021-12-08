@@ -42,7 +42,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"<RESTRICTED SRC ADDRESS APP>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.update = True" -i $config_file
+/usr/bin/yq e ".resources[0].properties.update = False" -i $config_file
 
 # print out config file
 /usr/bin/yq e $config_file
