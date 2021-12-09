@@ -12,6 +12,13 @@ onStart:
   - ./tests/verify_login.sh
   - ./tests/verify_sync.sh
   - ./tests/verify_failover.sh
+  - ./tests/verify_application.sh
+  - ./common/trigger_failover_active_active.sh
+  - ./common/verify_active_active.sh
+  - ./tests/verify_application.sh
+  - ./common/revert_failover_active_active.sh
+  - ./common/verify_active_standby.sh
+  - ./tests/verify_application.sh
   - ../../common/delete_secret.sh
   - ./common/delete_cfe_storage.sh
   - ../../common/delete_storage.sh
