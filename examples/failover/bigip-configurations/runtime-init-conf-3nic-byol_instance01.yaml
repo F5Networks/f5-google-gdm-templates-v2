@@ -67,12 +67,12 @@ extension_services:
             mtu: 1460
           internalGwRoute:
             class: Route
-            target: external
+            target: internal
             network: '{{{INTERNAL_GW}}}/32'
             mtu: 1460
           internalIntRoute:
             class: Route
-            gw: '{{{EXTERNAL_GW}}}'
+            gw: '{{{INTERNAL_GW}}}'
             network: '{{{INTERNAL_NETWORK}}}/{{{INTERNAL_BITMASK}}}'
             mtu: 1460
           configSync:
@@ -111,7 +111,11 @@ extension_services:
             class: SelfIp
             address: '{{{SELF_IP_EXTERNAL}}}/32'
             vlan: external
-            allowService: default
+            allowService:
+              - tcp:80
+              - tcp:443
+              - tcp:4353
+              - udp:1026
             trafficGroup: traffic-group-local-only
           internal:
             class: VLAN
@@ -124,7 +128,9 @@ extension_services:
             class: SelfIp
             address: '{{{SELF_IP_INTERNAL}}}/32'
             vlan: internal
-            allowService: default
+            allowService:
+              - udp:1026
+              - tcp:4353
             trafficGroup: traffic-group-local-only
           myDbVariables:
             class: DbVariables
@@ -133,21 +139,28 @@ extension_services:
             config.allow.rfc3927: enable
             dhclient.mgmt: disable
             tm.tcpudptxchecksum: Software-only
+    - extensionType: cf
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Cloud_Failover
+        environment: gcp
+        controls:
+          class: Controls
+          logLevel: info
+        externalStorage:
+          scopingTags:
+            f5_cloud_failover_label: bigip-high-availability-solution
+        failoverAddresses:
+          enabled: true
+          scopingTags:
+            f5_cloud_failover_label: bigip-high-availability-solution
+          requireScopingTags: false
 pre_onboard_enabled:
   - name: disable_1nic_config
     type: inline
     commands:
       - /usr/bin/setdb provision.1nicautoconfig disable
-bigip_ready_enabled:
-  - name: add_mgmt_ip
-    type: inline
-    commands:
-      - "tmsh create sys management-ip {{{SELF_IP_MGMT}}}/32"
-      - "tmsh delete sys management-route all"
-      - "tmsh create sys management-route mgmt_gw network {{{MGMT_GW}}}/32 type interface"
-      - "tmsh create sys management-route mgmt_net network {{{MGMT_NETWORK}}}/{{{MGMT_BITMASK}}} gateway {{{MGMT_GW}}}"
-      - "tmsh create sys management-route default gateway {{{MGMT_GW}}}"
-      - "tmsh save sys config"
 runtime_parameters:
   - name: BIGIP_PASSWORD
     type: secret
@@ -170,19 +183,13 @@ runtime_parameters:
         value: Google
   - name: UNIQUE
     type: url
-    value: http://169.254.169.254/computeMetadata/v1//instance/attributes/unique-string
+    value: http://169.254.169.254/computeMetadata/v1/instance/attributes/unique-string
     headers:
       - name: Metadata-Flavor
         value: Google
   - name: SELF_IP_EXTERNAL
     type: url
     value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip
-    headers:
-      - name: Metadata-Flavor
-        value: Google
-  - name: SELF_IP_MGMT
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/1/ip
     headers:
       - name: Metadata-Flavor
         value: Google
@@ -195,12 +202,6 @@ runtime_parameters:
   - name: EXTERNAL_GW
     type: url
     value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway
-    headers:
-      - name: Metadata-Flavor
-        value: Google
-  - name: MGMT_GW
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/1/gateway
     headers:
       - name: Metadata-Flavor
         value: Google
@@ -218,14 +219,6 @@ runtime_parameters:
       field: ip
       index: 0
       ipcalc: bitmask
-  - name: MGMT_BITMASK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 1
-      ipcalc: bitmask
   - name: INTERNAL_BITMASK
     type: metadata
     metadataProvider:
@@ -241,14 +234,6 @@ runtime_parameters:
       type: network
       field: ip
       index: 0
-      ipcalc: base
-  - name: MGMT_NETWORK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 1
       ipcalc: base
   - name: INTERNAL_NETWORK
     type: metadata
