@@ -60,4 +60,4 @@ run_expected_outputs_diff:
 
 run_sync_at_metadata:
 	echo "Syncing AT component metadata"
-	cd ${SYNC_AT_DIR} && ./sync_at_components_metadata.sh --config-directories ../../examples/autoscale/bigip-configurations,../../examples/quickstart/bigip-configurations --template-directory ../../examples --runtime-init-package-url https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run --cloud gcp
+	cd ${SYNC_AT_DIR} && ./sync_at_components_metadata.sh --config-directories ../../examples/autoscale/bigip-configurations,../../examples/quickstart/bigip-configurations,../../examples/failover/bigip-configurations --template-directory ../../examples --runtime-init-package-url https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run --cloud gcp
