@@ -13,6 +13,8 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Template Input Parameters](#existing-network-template-input-parameters)
+    - [Existing Network Template Outputs](#existing-network-template-outputs)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the Google CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
@@ -137,6 +139,47 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
+### Existing Network Template Input Parameters
+
+Note: These are specified in the configuration file. See sample_quickstart-existing-network.yaml
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| application | No | Application Tag. |
+| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpExternalSelfIp1 | No | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpExternalSelfIp2 | No | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp1 | No | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp2 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtSelfIp1 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtSelfIp2 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
+| bigIpRuntimeInitConfig01 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpRuntimeInitConfig02 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
+| cfeBucket | No | Bucket name used by Cloud Failover Extension. |
+| cfeTag | No | Cloud Failover deployment tag value. |
+| cost | No | Cost Center Tag. |
+| environment | No | Environment Tag. |
+| group | No | Group Tag. |
+| owner | No | Owner Tag. |
+| networks | Yes | Networks object which provides names for mgmt and app networks |
+| networks.appNetworkName | Yes | Application network name |
+| networks.interlanNetworkName | No | Internal network name |  
+| networks.mgmtNetworkName | No | Management network name | 
+| provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
+| region | No | Google Cloud region used for this deployment, for example 'us-west1'. |
+| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
+| restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.appSubnetName | Yes | Management subnet name |
+| subnets.internalSubnetName | Yes | Internal subnet name |  
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
+
+
 ### Template Outputs
 
 | Name | Description | Type |
@@ -181,6 +224,41 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | vip1PublicUrlHttp2 | Virtual Server public HTTP URL. | string |
 | vip1PublicUrlHttps1 | Virtual Server public HTTPS URL. | string |
 | vip1PublicUrlHttps2 | Virtual Server public HTTPS URL. | string |
+
+
+### Existing Network Template Outputs
+
+
+| Name | Description | Type |
+| ---- | ----------- | ---- |
+| bigIpInstanceId1 | BIG-IP instance ID. | string |
+| bigIpInstanceId2 | BIG-IP instance ID. | string |
+| bigIpInstanceName1 | BIG-IP instance name. | string |
+| bigIpInstanceName2 | BIG-IP instance name. | string |
+| bigIpManagementPrivateIp1 | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateIp2 | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateUrl1 | BIG-IP management private IP URL. | string |
+| bigIpManagementPrivateUrl2 | BIG-IP management private IP URL. | string |
+| bigIpManagementPublicIp1 | BIG-IP management public IP address. | string |
+| bigIpManagementPublicIp2 | BIG-IP management public IP address. | string |
+| bigIpManagementPublicSsh1 | BIG-IP management SSH command. | string |
+| bigIpManagementPublicSsh2 | BIG-IP management SSH command. | string |
+| bigIpManagementPublicUrl1 | BIG-IP management public IP URL. | string |
+| bigIpManagementPublicUrl2 | BIG-IP management public IP URL. | string |
+| deploymentName | Quickstart deployment name. | string |
+| vip1PrivateIp1 | Virtual Server private IP address. | string |
+| vip1PrivateIp2 | Virtual Server private IP address. | string |
+| vip1PrivateUrlHttp1 | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttp2 | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttps1 | Virtual Server private HTTPS URL. | string |
+| vip1PrivateUrlHttps2 | Virtual Server private HTTPS URL. | string |
+| vip1PublicIp1 | Virtual Server public IP address. | string |
+| vip1PublicIp2 | Virtual Server public IP address. | string |
+| vip1PublicUrlHttp1 | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttp2 | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttps1 | Virtual Server public HTTPS URL. | string |
+| vip1PublicUrlHttps2 | Virtual Server public HTTPS URL. | string |
+
 
 ## Deploying this Solution
 

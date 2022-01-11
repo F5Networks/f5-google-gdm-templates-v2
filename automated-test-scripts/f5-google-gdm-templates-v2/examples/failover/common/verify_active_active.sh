@@ -18,8 +18,8 @@ if [[ <PROVISION PUBLIC IP> == False ]]; then
     BASTION_IP=$(cat ${STATE_FILE} | jq -r '.proxyAddress')
     echo "BASTION_IP: ${BASTION_IP}"
 
-    state=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p ubuntu@$BASTION_IP" admin@${IP} "tmsh show sys failover")
-    state2=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p ubuntu@$BASTION_IP" admin@${IP2} "tmsh show sys failover")
+    state=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p dewpt@$BASTION_IP" admin@${IP} "tmsh show sys failover")
+    state2=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p dewpt@$BASTION_IP" admin@${IP2} "tmsh show sys failover")
 
 else
     echo 'MGMT PUBLIC IP IS ENABLED'

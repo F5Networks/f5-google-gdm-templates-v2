@@ -508,7 +508,7 @@ gdm_failover_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/**/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/**/*
       - automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/**/*
       - examples/failover/failover.py
       - examples/modules/access/access.py
@@ -537,6 +537,44 @@ gdm_failover_test_job:
     when:
       - runner_system_failure
       - stuck_or_timeout_failure
+
+
+# Module: GDM Failover Existing Network Template
+gdm_failover_existing_network_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/**/*
+      - examples/failover/failover-existing-network.py
+      - examples/modules/access/access.py
+      - examples/modules/bigip-standalone/bigip_standalone.py
+      - examples/modules/dag/dag.py
+      - examples/failover/bigip-configurations/*
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
 
 
 pre_release_test_job:
