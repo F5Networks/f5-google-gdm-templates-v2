@@ -4,7 +4,7 @@
 #  replayTimeout = 0
 
 # copy local runtime config b4 making changes
-if [[ <PROVISION PUBLIC IP> == True ]]; then
+if [[ "<PROVISION DEMO APP>" == "True" ]]; then
     cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>_instance01_with_app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
     cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>_instance02_with_app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
     # Use local files for waf policies

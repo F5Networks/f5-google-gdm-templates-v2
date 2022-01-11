@@ -81,6 +81,7 @@ def create_instance(context, instance):
             '.c.', context.env['project'], '.internal']),
             'labels': {
                 'appautoscalegroup': context.properties['uniqueString'],
+                'failovergroup': context.properties['uniqueString'],
                 'application': application,
                 'cost': cost,
                 'environment': environment,
@@ -103,7 +104,7 @@ def create_instance(context, instance):
             'name': instance_name,
             'networkInterfaces': create_nics(instance),
             'tags': {
-                'items': [generate_name(prefix, 'app-int-fw')]
+                'items': [generate_name(prefix, 'app-int-fw'), generate_name(prefix, 'app-vip-fw')]
             },
             'zone': instance['zone']
     })
@@ -181,6 +182,7 @@ def create_instance_template(context, instance_templates):
     properties.update({
             'labels': {
                 'appautoscalegroup': prefix,
+                'failovergroup': prefix,
                 'application': application,
                 'cost': cost,
                 'environment': environment,
@@ -188,7 +190,7 @@ def create_instance_template(context, instance_templates):
                 'owner': owner
             },
             'tags': {
-                'items': [generate_name(prefix, 'app-int-fw')]
+                'items': [generate_name(prefix, 'app-int-fw'), generate_name(prefix, 'app-vip-fw')]
             },
             'machineType': context.properties['instanceType'],
             'disks': [{

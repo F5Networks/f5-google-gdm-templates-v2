@@ -9,6 +9,12 @@ STATE_FILE=${TMP_DIR}/state.json
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
+
+if [[ "<PROVISION DEMO APP>" == "False" ]]; then
+    echo "Successful Traffic Test"
+fi
+
+
 FW_RULE1=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
 FW_RULE2=$(get_fr_ip <UNIQUESTRING>-fwrule2 <REGION>)
 

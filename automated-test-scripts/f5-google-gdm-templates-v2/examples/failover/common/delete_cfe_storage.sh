@@ -1,7 +1,7 @@
 #  expectValue = "completed successfully"
 #  scriptTimeout = 10
 #  replayEnabled = false
-#  replayTimeout = 0
+#  replayTimeout = 5
 bucket=`gsutil ls | grep '<UNIQUESTRING>-cfe-storage'`
 
 # delete all files in bucket and delete bucket
