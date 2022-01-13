@@ -4,4 +4,8 @@
 #  replayEnabled = true
 #  replayTimeout = 30
 
-gcloud deployment-manager deployments describe <APPLICATION STACK NAME>
+if [[ "<PROVISION DEMO APP>" == "True" ]]; then
+    gcloud deployment-manager deployments describe <APPLICATION STACK NAME>
+else
+    echo "COMPLETED"
+fi

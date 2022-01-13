@@ -1,0 +1,103 @@
+---
+# yamllint disable rule:line-length
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 1.0.0.0
+#
+# NOTE: When filling out the parameter values for this deployment:
+# Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.
+# '###' Will be used above each parameter and contain description of values required
+# REQUIRED parameters values are left empty and value MUST be entered.
+# OPTIONAL parameters contain defaults (same default from schema file). However, some are deployment specific and generally should be modified to match your environment.
+#
+# CAUTION:
+# Use single quotes around strings when supplying special characters or list of values. Example: applicationPort '443 444 445'.
+# Required fields left empty or faulty values (ex. typos, incorrect timezone strings, etc.)
+# can result in various classes of failures, from template launch failures to silent BIG-IP deployment failures.
+# Use the Troubleshooting section at the bottom of this .yaml to understand if the template and BIG-IP deployed correctly.
+
+imports:
+  - path: failover-existing-network.py
+  - path: ../modules/access/access.py
+  - path: ../modules/bigip-standalone/bigip_standalone.py
+  - path: ../modules/dag/dag.py
+resources:
+  - name: failover-py
+    properties:
+      ### (OPTIONAL) Application label.
+      application: f5app
+      ### (OPTIONAL) External interface private IP address for bigip1.
+      bigIpExternalSelfIp1: 10.0.1.11
+      ### (OPTIONAL) External interface private IP address for bigip2.
+      bigIpExternalSelfIp2: 10.0.1.12
+      ### (OPTIONAL) Internal interface private IP address for bigip2.
+      bigIpInternalSelfIp1: 10.0.2.11
+      ### (OPTIONAL) Internal interface private IP address for bigip2.
+      bigIpInternalSelfIp2: 10.0.2.12
+      ### (OPTIONAL) Management interface private IP address for bigip2.
+      bigIpMgmtSelfIp1: 10.0.0.11
+      ### (OPTIONAL) Management interface private IP address for bigip2.
+      bigIpMgmtSelfIp2: 10.0.0.12
+      ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
+      bigIpImageName: f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
+      bigIpInstanceType: n1-standard-4
+      ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
+      bigIpRuntimeInitConfig01: >-
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance01.yaml
+      bigIpRuntimeInitConfig02: >-
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance02.yaml
+      ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
+      bigIpRuntimeInitPackageUrl: >-
+        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run
+      ### (OPTIONAL) Cloud Failover deployment tag value.
+      cfeTag: bigip-high-availability-solution
+      ### (OPTIONAL) Cloud Failover storage bucket value.
+      cfeBucket: cfe-storage
+      ### (OPTIONAL) Cost Center label.
+      cost: f5cost
+      ### (OPTIONAL) Environment Center label.
+      environment: f5env
+      ### (OPTIONAL) Group label.
+      group: f5group
+      ### (OPTIONAL) Owner label.
+      owner: f5owner
+      ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.
+      provisionPublicIp: true
+      ### (REQUIRED) This parameter is used for providing existing networks names:
+      networks:
+        mgmtNetworkName: myuniqstr-mgmt
+        externalNetworkName: myuniqstr-app
+        internalNetworkName: myuniqstr-internal
+      ### (REQUIRED) This parameter is used for providing management and application subnets names.
+      subnets:
+        mgmtSubnetName: myuniqstr-mgmt
+        appSubnetName: myuniqstr-app
+        internalSubnetName: myuniqstr-internal
+      ### (REQUIRED) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
+      region: us-west1
+      ### (REQUIRED) This field restricts management access to a specific network or address. Enter an IP address or address range in CIDR notation. For example, '55.55.55.55/32'.
+      # The network address should be in array format.*
+      # restrictedSrcAddressMgmt:*
+      # 0.0.0.0/0**
+      restrictedSrcAddressMgmt:
+      ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
+      uniqueString: myuniqstr
+      ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
+      zone: us-west1-a
+    type: failover-existing-network.py
+
+# TROUBLESHOOTING:
+# * If template did not successfully deploy, go to console.cloud.google.com Navigation Menu -> Deployment Manager -> Your Deployment Name for more details
+#   TIP: See "Expanded Config" to see what the final template that was rendered/created with python script and parameters you provided
+# * If template succeeded, wait ~ 6-10 Minutes (Instance needs to swap management NIC and reboot).
+#       * Try Logging in via SSH to confirm BIG-IP deployment was successful (for instance, if startup scripts completed as expected on the BIG-IPs)
+#           To obtain Management IP (eth0 on Single NIC, eth1 on Multi-NIC BIG-IP):
+#           > Go to Console -> Compute Engine -> VM Instances -> YOUR_INSTANCE_NAME -> Network Interfaces
+#           > gcloud compute instances describe YOUR_INSTANCE_NAME --zone YOUR_ZONE --format="text(networkInterfaces)"
+#         Check logs: /var/log/cloud/google/*, /var/log/cloud*, /var/log/restnoded/restnoded.log, etc.
+#       * If not able to log in, check "Serial port 1 (console)" output for any errors.
+#           > Go to Console -> Compute Engine -> VM Instances -> YOUR_INSTANCE_NAME -> Logs
+#           > gcloud compute instances get-serial-port-output YOUR_INSTANCE_NAME --port 1 --zone YOUR_ZONE
+#           See: https://cloud.google.com/compute/docs/instances/viewing-serial-port-output
+#         * See README for additional guidance on troubleshooting, filing issues, getting Support, etc.

@@ -141,7 +141,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 
 ### Existing Network Template Input Parameters
 
-Note: These are specified in the configuration file. See sample_quickstart-existing-network.yaml
+Note: These are specified in the configuration file. See sample_failover_existing_network.yaml
 
 | Parameter | Required | Description |
 | --- | --- | --- |
@@ -164,7 +164,7 @@ Note: These are specified in the configuration file. See sample_quickstart-exist
 | group | No | Group Tag. |
 | owner | No | Owner Tag. |
 | networks | Yes | Networks object which provides names for mgmt and app networks |
-| networks.appNetworkName | Yes | Application network name |
+| networks.externalNetworkName | Yes | External network name |
 | networks.interlanNetworkName | No | Internal network name |  
 | networks.mgmtNetworkName | No | Management network name | 
 | provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |

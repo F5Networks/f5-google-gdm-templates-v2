@@ -3,4 +3,9 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
-gcloud deployment-manager deployments delete <APPLICATION STACK NAME> -q
+
+if [[ "<PROVISION DEMO APP>" == "True" ]]; then
+    gcloud deployment-manager deployments delete <APPLICATION STACK NAME> -q
+else
+    echo "completed successfully"
+fi

@@ -13,6 +13,8 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Template Input Parameters](#existing-network-template-input-parameters)
+    - [Existing Network Template Outputs](#existing-network-template-outputs)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the Google CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
@@ -43,10 +45,14 @@ The goal of this solution is to reduce prerequisites and complexity to a minimum
 
 This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP. The linked templates are located in the `examples/modules` directory in this repository. _F5 recommends cloning this repository and modifying these templates to fit your use case._
 
+Existing Stack Deployments (quickstart-existing-network.py)
+Use quickstart-existing-network.py parent template to deploy the quickstart solution into an existing infrastructure. This template expects existing network, subnets, and bastion host(s) have already been deployed. A demo application is also not part of this parent template as it intended use is for a production deployment.
+
 The modules below create the following cloud resources:
 
 - **Network**: This template creates Google networks and subnets.
 - **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance.
+- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces.
 - **Disaggregation** _(DAG/Ingress)_: This template creates resources required to get traffic to the BIG-IP, including firewall rules.
 - **BIG-IP**: This template creates a BIG-IP VM instance provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM).
 
@@ -127,6 +133,39 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
+
+### Existing Network Template Input Parameters
+
+Note: These are specified in the configuration file. See sample_quickstart-existing-network.yaml
+
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| application | No | Application Tag. |
+| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
+| cost | No | Cost Center Tag. |
+| environment | No | Environment Tag. |
+| group | No | Group Tag. |
+| numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
+| owner | No | Owner Tag. |
+| networks | Yes | Networks object which provides names for mgmt and app networks |
+| networks.externalNetworkName | Yes | External network name |
+| networks.interlanNetworkName | No | Internal network name |  
+| networks.mgmtNetworkName | No | Management network name | 
+| provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
+| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
+| restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.appSubnetName | Yes | Management subnet name |
+| subnets.internalSubnetName | Yes | Internal subnet name |  
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
+
 ### Template Outputs
 
 | Name | Description | Type |
@@ -158,6 +197,27 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | vip1PublicIp | Virtual Server public IP address. | string |
 | vip1PublicUrlHttp | Virtual Server public HTTP URL. | string |
 | vip1PublicUrlHttps | Virtual Server public HTTPS URL. | string |
+
+
+### Existing Network Template Outputs
+
+| Name | Description | Type |
+| ---- | ----------- | ---- |
+| bigIpInstanceId | BIG-IP instance ID. | string |
+| bigIpInstanceName | BIG-IP instance name. | string |
+| bigIpManagementPrivateIp | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateUrl | BIG-IP management private IP URL. | string |
+| bigIpManagementPublicIp | BIG-IP management public IP address. | string |
+| bigIpManagementPublicSsh | BIG-IP management SSH command. | string |
+| bigIpManagementPublicUrl | BIG-IP management public IP URL. | string |
+| deploymentName | Quickstart deployment name. | string |
+| vip1PrivateIp | Virtual Server private IP address. | string |
+| vip1PrivateUrlHttp | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttps | Virtual Server private HTTPS URL. | string |
+| vip1PublicIp | Virtual Server public IP address. | string |
+| vip1PublicUrlHttp | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttps | Virtual Server public HTTPS URL. | string |
+
 
 ## Deploying this Solution
 
@@ -194,14 +254,22 @@ Example from sample_quickstart.yaml:
 
 F5 has provided the following example configuration files in the `examples/quickstart/bigip-configurations` folder:
 
-- These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
+- These examples install Automation Tool Chain packages for a PAYG licensed deployment.
   - `runtime-init-conf-1nic-payg.yaml`
   - `runtime-init-conf-2nic-payg.yaml`
   - `runtime-init-conf-3nic-payg.yaml`
-- These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
+- These examples install Automation Tool Chain packages for a BYOL licensed deployment.
   - `runtime-init-conf-1nic-byol.yaml`
   - `runtime-init-conf-2nic-byol.yaml`
   - `runtime-init-conf-3nic-byol.yaml`
+- These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
+  - `runtime-init-conf-1nic-payg-with-app.yaml`
+  - `runtime-init-conf-2nic-payg-with-app.yaml`
+  - `runtime-init-conf-3nic-payg-with-app.yaml`
+- These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
+  - `runtime-init-conf-1nic-byol-with-app.yaml`
+  - `runtime-init-conf-2nic-byol-with-app.yaml`
+  - `runtime-init-conf-3nic-byol-with-app.yaml`
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
