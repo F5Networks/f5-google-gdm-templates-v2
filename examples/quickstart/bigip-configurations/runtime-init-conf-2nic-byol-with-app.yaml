@@ -12,13 +12,6 @@ runtime_parameters:
     headers:
       - name: Metadata-Flavor
         value: Google
-  - name: SELF_IP_INTERNAL
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
   - name: SELF_IP_EXTERNAL
     type: metadata
     metadataProvider:
@@ -62,7 +55,7 @@ extension_services:
         class: Device
         async: true
         label: >-
-          Quickstart 3NIC BIG-IP declaration for Declarative Onboarding with PAYG
+          Quickstart 2NIC BIG-IP declaration for Declarative Onboarding with BYOL
           license
         Common:
           class: Tenant
@@ -79,6 +72,10 @@ extension_services:
             class: DNS
             nameServers:
               - 169.254.169.254
+          My_License:
+            class: License
+            licenseType: regKey
+            regKey: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
           My_Ntp:
             class: NTP
             servers:
@@ -102,8 +99,8 @@ extension_services:
             shell: bash
           app_route:
             class: Route
-            gw: '10.0.2.1'
-            network: '10.0.3.0/24'
+            gw: '10.0.1.1'
+            network: '10.0.2.0/24'
             mtu: 1500
           default:
             class: Route
@@ -128,27 +125,70 @@ extension_services:
             vlan: external
             allowService: none
             trafficGroup: traffic-group-local-only
-          internal:
-            class: VLAN
-            tag: 4093
-            mtu: 1500
-            interfaces:
-              - name: '1.2'
-                tagged: false
-          internal-self:
-            class: SelfIp
-            address: '{{{SELF_IP_INTERNAL}}}'
-            vlan: internal
-            allowService: default
-            trafficGroup: traffic-group-local-only
+    - extensionType: as3
+      type: inline
+      value:
+        class: ADC
+        schemaVersion: 3.0.0
+        label: Quickstart
+        remark: Quickstart
+        Tenant_1:
+          class: Tenant
+          Shared:
+            class: Application
+            template: shared
+            shared_pool:
+              class: Pool
+              remark: Service 1 shared pool
+              members:
+                - serverAddresses:
+                    - 10.0.2.2
+                  servicePort: 80
+              monitors:
+                - http
+          HTTP_Service:
+            class: Application
+            template: http
+            serviceMain:
+              class: Service_HTTP
+              virtualAddresses:
+                - 0.0.0.0
+              snat: auto
+              policyWAF:
+                use: WAFPolicy
+              pool: /Tenant_1/Shared/shared_pool
+            WAFPolicy:
+              class: WAF_Policy
+              url: >-
+                https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/quickstart/bigip-configurations/Rapid_Deployment_Policy_13_1.xml
+              enforcementMode: blocking
+              ignoreChanges: false
+          HTTPS_Service:
+            class: Application
+            template: https
+            serviceMain:
+              class: Service_HTTPS
+              virtualAddresses:
+                - 0.0.0.0
+              snat: auto
+              policyWAF:
+                use: WAFPolicy
+              pool: /Tenant_1/Shared/shared_pool
+              serverTLS:
+                bigip: /Common/clientssl
+              redirect80: false
+            WAFPolicy:
+              class: WAF_Policy
+              url: >-
+                https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/quickstart/bigip-configurations/Rapid_Deployment_Policy_13_1.xml
+              enforcementMode: blocking
+              ignoreChanges: false
 post_onboard_enabled:
   - name: create_google_routes
     type: inline
     commands:
       - "EXT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway);\
         \ tmsh create net route ext_gw_int network $EXT_GW/32 interface external"
-      - "INT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/gateway);\
-        \ tmsh create net route int_gw_int network $INT_GW/32 interface internal"
       - "MGMT_SELF_IP=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip);\
         \ MGMT_MASK=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/subnetmask);\
         \ MGMT_NETWORK=$(ipcalc -n $MGMT_SELF_IP $MGMT_MASK | sed -n 's/^NETWORK=\\\

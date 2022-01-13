@@ -9,8 +9,8 @@ tmpl_path="/tmp/examples/failover/"
 cp -r $PWD/examples /tmp
 
 # Run GDM failover template
-cp /tmp/examples/failover/sample_failover-existing-network.yaml ${tmpl_path}<DEWPOINT JOB ID>.yaml
-# Update Config File using sample_failover.yaml
+cp /tmp/examples/failover/sample_failover_existing_network.yaml ${tmpl_path}<DEWPOINT JOB ID>.yaml
+# Update Config File using sample_failover_existing_network.yaml
 /usr/bin/yq e ".resources[0].name = \"failover-existing-network-py\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"<RESTRICTED SRC ADDRESS APP>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml

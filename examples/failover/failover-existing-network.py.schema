@@ -15,6 +15,8 @@ imports:
 
 required:
   - restrictedSrcAddressMgmt
+  - networks
+  - subnets
 
 properties:
   application:
@@ -100,6 +102,18 @@ properties:
   restrictedSrcAddressMgmt:
     description: This field restricts application traffic to a specific network or address. Enter a list of IP addresses or address ranges in CIDR notation. For example, '55.55.55.55/32'.
     type: array
+  networks:
+    type: object
+    properties:
+      mgmtNetworkName:
+        type: string
+        description: management network name.
+      externalNetworkName:
+        type: string
+        description: external subnet name.
+      internalNetworkName:
+        type: string
+        description: internal network name.
   subnets:
     type: object
     required:
@@ -115,18 +129,6 @@ properties:
       internalSubnetName:
         type: string
         description: internal subnet name.
-  externalNetworkName:
-    type: string
-    description: external network name
-    default: external-network
-  internalNetworkName:
-    type: string
-    description: internal network name
-    default: internal-network
-  mgmtNetworkName:
-    type: string
-    description: mgmt network name
-    default: mgmt-network
   uniqueString:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
@@ -224,4 +226,4 @@ documentation:
   - README.md
 
 examples:
-  - sample_failover-existing-network.yaml
+  - sample_failover_existing_network.yaml

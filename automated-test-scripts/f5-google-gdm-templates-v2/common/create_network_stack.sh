@@ -13,6 +13,7 @@ curl -k <NETWORK TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 # Create Base config file with no optional properties
 i=0
 ((c=<NUMBER NETWORKS>-1))
+
 until [ $i -gt $c ]; do
     if [ $i = 0 ]; then
         /usr/bin/yq e -n ".imports[${i}].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
@@ -26,8 +27,16 @@ until [ $i -gt $c ]; do
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].name = \"subnet${i}\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].ipCidrRange = \"10.0.${i}.0/24\"" -i <DEWPOINT JOB ID>.yaml
+
     ((i=i+1))
 done
+
+# Creating application subnet
+((i=i-1))
+((j=i+1))
+/usr/bin/yq e ".resources[${i}].properties.subnets[1].name = \"subnet${j}\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[${i}].properties.subnets[1].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[${i}].properties.subnets[1].ipCidrRange = \"10.0.${j}.0/24\"" -i <DEWPOINT JOB ID>.yaml
 
 # Modify base config to add in optional properties - only for first network
 enable_flow_logs="<ENABLE FLOW LOGS>"
