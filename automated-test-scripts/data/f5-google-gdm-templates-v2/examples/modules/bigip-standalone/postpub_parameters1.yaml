@@ -8,7 +8,7 @@ APP PORT: 443
 AUTOSCALE: false
 AVAILABILITY ZONE: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/dd-<DEWPOINT JOB ID>-bigip-standalone-bucket/bigip-configurations/dd-<DEWPOINT JOB ID>-bigip-standalone-config.yaml
-BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.3.2/dist/f5-bigip-runtime-init-1.3.2-1.gz.run
+BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.0/dist/f5-bigip-runtime-init-1.4.0-1.gz.run
 BIGIP VERSION: 16-1-0-0-0-19
 DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/dag/dag.py

@@ -1,11 +1,19 @@
+# Autoscale Existing Network Example Test
+google-autoscale-bigiq-existing-network-example-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
+    run: "all"
+    parameters-files:
+      # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters1.yaml"
+
 ## Autoscale BIGIQ example
-google-autoscale-bigiq-example-test:
-  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
-  run: "random"
-  random-num-of-tests: 1
-  parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters1.yaml"
+# google-autoscale-bigiq-example-test:
+#   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
+#   run: "random"
+#   random-num-of-tests: 1
+#   parameters-files:
+#     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters.yaml"
+#     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters1.yaml"
 
 ## Autoscale PAYG example
 # google-autoscale-payg-example-test:

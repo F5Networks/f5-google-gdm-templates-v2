@@ -34,6 +34,15 @@ done
 # Creating application subnet
 ((i=i-1))
 ((j=i+1))
+
+if echo "<TEMPLATE URL>" | grep "autoscale-existing"; then
+    # For the autoscale-existing-network template, the application
+    # subnet should be created under network0 instead of network1.
+    # This emulates a hardcoded script written to make the
+    # autoscale existing networks work.
+    ((i=i-1))
+fi
+
 /usr/bin/yq e ".resources[${i}].properties.subnets[1].name = \"subnet${j}\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[${i}].properties.subnets[1].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[${i}].properties.subnets[1].ipCidrRange = \"10.0.${j}.0/24\"" -i <DEWPOINT JOB ID>.yaml
