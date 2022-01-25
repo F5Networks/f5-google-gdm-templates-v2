@@ -13,6 +13,7 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Parameters](#existing-network-parameters)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the gcloud CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
@@ -37,6 +38,9 @@
 ## Introduction
 
 This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the **[examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules)** directory in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
+
+***Existing Network Deployments (autoscale-existing-network.py)***<br>
+Use autoscale-existing-network.py parent template to deploy the autoscale solution into an existing network which requires providing existing network's and subnets' names.
 
 The modules below create the following resources:
 
@@ -121,6 +125,14 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
+#### Existing Network Parameters
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| networkName | Yes | Network name |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| subnets.appSubnetName | Yes | Application subnet name |
 
 ### Template Outputs
 
