@@ -67,7 +67,7 @@ properties:
           storageBuckets:
             - name: cfe-bucket
               labels:
-                f5_cloud_failover_label: bigip-high-availability-solution
+                f5_cloud_failover_label: bigip_high_availability_solution
   region:
     description: |
       Enter the region where you want to deploy the application, for example 'us-west1'.

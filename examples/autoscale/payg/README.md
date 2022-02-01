@@ -208,7 +208,7 @@ To change the Pool configuration:
 
 Example:
 ```yaml
-           shared_pool:
+           Shared_Pool:
               class: Pool
               remark: Service 1 shared pool
               members:
