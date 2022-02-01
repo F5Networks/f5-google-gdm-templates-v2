@@ -61,7 +61,7 @@ def create_storage_bucket(context, storage_bucket):
             'project': context.env['project'],
             'name': storage_name,
             'labels': {
-                'f5_cloud_failover_label': generate_name(prefix,'bigip-high-availability-solution')
+                'f5_cloud_failover_label': generate_name(prefix,'bigip_high_availability_solution')
             }
     })
     properties.update(populate_properties(storage_bucket, required_properties, optional_properties))

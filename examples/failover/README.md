@@ -288,8 +288,8 @@ Example from sample_failover.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig01: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance01.yaml
-    bigIpRuntimeInitConfig02: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance02.yaml
+    bigIpRuntimeInitConfig01: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
+    bigIpRuntimeInitConfig02: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
@@ -297,24 +297,24 @@ Example from sample_failover.yaml:
 F5 has provided the following example configuration files in the `examples/failover/bigip-configurations` folder:
 
 - These examples install Automation Tool Chain packages for a PAYG licensed deployment.
-  - `runtime-init-conf-3nic-payg_instance01.yaml`
-  - `runtime-init-conf-3nic-payg_instance02.yaml`
+  - `runtime-init-conf-3nic-payg-instance01.yaml`
+  - `runtime-init-conf-3nic-payg-instance02.yaml`
 - These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
-  - `runtime-init-conf-3nic-payg_instance01_with_app.yaml`
-  - `runtime-init-conf-3nic-payg_instance02_with_app.yaml`
+  - `runtime-init-conf-3nic-payg-instance01-with-app.yaml`
+  - `runtime-init-conf-3nic-payg-instance02-with-app.yaml`
 - These examples install Automation Tool Chain packages for a BYOL licensed deployment.
-  - `runtime-init-conf-3nic-byol_instance01.yaml`
-  - `runtime-init-conf-3nic-byol_instance02.yaml`
+  - `runtime-init-conf-3nic-byol-instance01.yaml`
+  - `runtime-init-conf-3nic-byol-instance02.yaml`
 - These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
-  - `runtime-init-conf-3nic-byol_instance01_with_app.yaml`
-  - `runtime-init-conf-3nic-byol_instance02_with_app.yaml`
+  - `runtime-init-conf-3nic-byol-instance01-with-app.yaml`
+  - `runtime-init-conf-3nic-byol-instance02-with-app.yaml`
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
 
 By default, this solution deploys 3NIC BIG-IP instances using these examples:
-  - `runtime-init-conf-3nic-payg_instance01.yaml`
-  - `runtime-init-conf-3nic-payg_instance02.yaml`
+  - `runtime-init-conf-3nic-payg-instance01.yaml`
+  - `runtime-init-conf-3nic-payg-instance02.yaml`
 
 - When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
@@ -480,7 +480,7 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 
 ### Testing the WAF Service
 
-To test the WAF service (if deploying using runtime-init-conf-*_with_app.yaml), perform the following steps:
+To test the WAF service (if deploying using runtime-init-conf-*-with-app.yaml), perform the following steps:
 
 - Obtain the IP address of the WAF service:
   - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > vip1PublicIp1**.

@@ -13,8 +13,8 @@ fi
 
 if [[ "<PROVISION DEMO APP>" == "True" ]]; then
     # Use local files for waf policies
-    /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.HTTP_Service.WAFPolicy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
-    /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.HTTPS_Service.WAFPolicy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
+    /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
+    /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
 fi
 # Uncomment this 2 debug
 # /usr/bin/yq e ".controls.logLevel = \"silly\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml

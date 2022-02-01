@@ -62,11 +62,11 @@ properties:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
   bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance01.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
-  bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg_instance02.yaml
+  bigIpRuntimeInitConfig02:
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
@@ -74,7 +74,7 @@ properties:
     description: URL for BIG-IP Runtime Init package
     type: string
   cfeTag:
-    default: bigip-high-availability-solution
+    default: bigip_high_availability_solution
     description: Cloud Failover deployment tag value.
     type: string
   cfeBucket:

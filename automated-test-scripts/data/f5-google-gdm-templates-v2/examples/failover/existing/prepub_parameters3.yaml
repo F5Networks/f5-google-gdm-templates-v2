@@ -26,7 +26,7 @@ LICENSE TYPE: byol
 OS IMAGE: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
 PROVISION PUBLIC IP: true
 PROVISION DEMO APP: false
-REGION: us-west2
+REGION: us-west1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
 PRIVATE IP GOOGLE ACCESS: ''
