@@ -39,7 +39,7 @@ The following example will create a role with custom permissions.
 
 ```yaml
 ---
-# Copyright 2021 F5 Networks All rights reserved.
+# Copyright 2022 F5 Networks All rights reserved.
 #
 # Version 0.1.0s
 
