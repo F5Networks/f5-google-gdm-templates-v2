@@ -618,12 +618,15 @@ List of endpoints BIG-IP may contact during onboarding:
 
 ## BIG-IP Versions
 
-These templates have been tested and validated with the following versions of BIG-IP. 
+These templates have only been explicitly tested and validated with the following versions of BIG-IP.
+
 
 | Google Cloud BIG-IP Image Version | BIG-IP Version |
 | --- | --- |
 | 16.1.000000 | 16.1.0.0 Build 0.0.19 |
 | 14.1.400000 | 14.1.4.4 Build 0.0.4* |
+
+These templates leverage Runtime-Init, which requires BIG-IP Versions 14.1.2.6 and up, and are assumed compatible to work. 
 
 ***Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.*
 
