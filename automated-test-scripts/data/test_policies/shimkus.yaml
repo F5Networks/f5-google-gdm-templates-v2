@@ -60,7 +60,7 @@ google-gdm-bigip-standalone-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
   run: "random"
   random-num-of-tests: 1
-  parameters-files1
+  parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters2.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters3.yaml"

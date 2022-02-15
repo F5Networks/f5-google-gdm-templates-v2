@@ -29,6 +29,9 @@ fi
 cp -r $PWD/examples /tmp
 cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>-with-app.yaml $runtime_file
 
+# Uncomment to debug
+/usr/bin/yq e ".controls.logLevel = \"silly\"" -i $runtime_file
+
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.class = \"User\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.password = \"<SECRET VALUE>\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.shell = \"bash\"" -i $runtime_file

@@ -89,6 +89,8 @@ This solution leverages traditional Autoscale configuration management practices
 
 - If you have cloned this repository to modify the templates or BIG-IP config files and published to your own location, you can use the **templateBaseUrl** and **artifactLocation** input parameters to specify the new location of the customized templates and the **bigIpRuntimeInitConfig** input parameter to specify the new location of the BIG-IP Runtime-Init config. See main [/examples/README.md](../../README.md#cloud-configuration) for more template customization details. See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
 
+- If you create multiple deployments of this solution that use the same BIG-IQ device for licensing, please use the **bigIpIpCidrRange** parameter to specify a unique CIDR range for each private management subnet. When deploying the existing network solution, please ensure that the subnetworks used for **bigIpIpCidrRange** have unique CIDR ranges. Google Cloud assigns MAC addresses using the private management subnet and BIG-IQ uses MAC addresses to assign the license. If two BIG-IPs share the same MAC address, there will be a conflict in licensing.
+
 - In this solution, the BIG-IP VE has the [LTM](https://f5.com/products/big-ip/local-traffic-manager-ltm) and [ASM](https://f5.com/products/big-ip/application-security-manager-asm) modules enabled to provide advanced traffic management and web application security functionality. 
 
 - You are required to specify which Availability Zone you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
@@ -108,6 +110,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpIpCidrRange | No | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
 | bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
 | bigIpScaleOutCpuThreshold | No | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
