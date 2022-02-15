@@ -90,7 +90,7 @@ google-autoscale-bigiq-example-test:
 google-quickstart-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters2.yaml"
@@ -103,7 +103,8 @@ google-quickstart-example-test:
 google-autoscale-bigiq-existing-network-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 2
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters2a.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters2b.yaml"
 

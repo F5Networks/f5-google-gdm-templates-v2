@@ -26,7 +26,7 @@ def create_network_deployment(context):
                 'description': 'Subnetwork used for management',
                 'name': 'mgmt',
                 'region': context.properties['region'],
-                'ipCidrRange': '10.0.0.0/24'
+                'ipCidrRange': context.properties['bigIpIpCidrRange']
             },
             {
                 'description': 'Subnetwork used for application services',
@@ -269,7 +269,7 @@ def create_dag_deployment(context):
                 'description': 'Allow web traffic to public network',
                 'name': context.properties['uniqueString'] + '-app-int-fw',
                 'network': '$(ref.' + net_name + '.selfLink)',
-                'sourceRanges': [ '10.0.0.0/24' ],
+                'sourceRanges': [ context.properties['bigIpIpCidrRange'] ],
                 'targetTags': [ context.properties['uniqueString'] + '-app-int-fw' ]
             },
             {

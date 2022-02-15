@@ -57,12 +57,16 @@ properties:
     default: n1-standard-4
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
+  bigIpIpCidrRange:
+    default: 10.0.0.0/24
+    decription: IP CIDR range used by the management network of the BIG-IP.
+    type: string
   bigIpRuntimeInitConfig:
     default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.0/dist/f5-bigip-runtime-init-1.4.0-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
   cost:

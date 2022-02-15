@@ -7,9 +7,9 @@
 
 TMP_DIR='/tmp/<DEWPOINT JOB ID>'
 
-bigiq_stack_name=$(aws cloudformation describe-stacks --query 'Stacks[?Tags[?Key == `bigiq` && Value == `True`]].{StackName: StackName}' | jq -r .[0].StackName)
-bigiq_stack_id=$(aws cloudformation describe-stacks --stack-name $bigiq_stack_name | jq -r .Stacks[0].StackId)
-bigiq_stack_status=$(aws cloudformation describe-stacks --stack-name $bigiq_stack_name | jq -r .Stacks[0].StackStatus)
+bigiq_stack_name=$(aws cloudformation describe-stacks --region us-east-1 --query 'Stacks[?Tags[?Key == `bigiq` && Value == `True`]].{StackName: StackName}' | jq -r .[0].StackName)
+bigiq_stack_id=$(aws cloudformation describe-stacks --region us-east-1 --stack-name $bigiq_stack_name | jq -r .Stacks[0].StackId)
+bigiq_stack_status=$(aws cloudformation describe-stacks --region us-east-1 --stack-name $bigiq_stack_name | jq -r .Stacks[0].StackStatus)
 bigiq_stack_region=$(echo $bigiq_stack_id | awk -F '[:]' '{ print $4 }')
 bigiq_address=$(aws cloudformation describe-stacks --region $bigiq_stack_region --stack-name $bigiq_stack_name | jq -r '.Stacks[].Outputs[]|select (.OutputKey=="device1ManagementEipAddress")|.OutputValue')
 bigiq_password=''
