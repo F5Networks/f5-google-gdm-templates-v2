@@ -1,6 +1,6 @@
 ---
 # Autoscale Example Test
-google-autoscale-payg-example-test:
+google-autoscale-bigiq-example-test:
     test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
     run: "all"
     parameters-files:
