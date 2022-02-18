@@ -125,6 +125,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
         'properties': {
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'bigIpPeerAddr': context.properties['bigIpPeerAddr'] if instance_number == 2 else None,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
             'name': 'bigip' + str(instance_number),

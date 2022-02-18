@@ -22,6 +22,7 @@ BASTION STACK NAME: <UNIQUESTRING>-bastion
 BASTION TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
 NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+NUMBER NETWORKS: 3
 LICENSE TYPE: byol
 OS IMAGE: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
 PROVISION PUBLIC IP: false
@@ -30,7 +31,6 @@ REGION: us-central1
 SECONDARY IP CIDR RANGE 1: ''
 SECONDARY RANGE NAME 1: ''
 PRIVATE IP GOOGLE ACCESS: ''
-NUMBER NETWORKS: 3
 RESTRICTED SRC ADDRESS: '0.0.0.0/0'
 RESTRICTED SRC ADDRESS APP: '0.0.0.0/0'
 STACK NAME: failover-<LICENSE TYPE>-<DEWPOINT JOB ID>

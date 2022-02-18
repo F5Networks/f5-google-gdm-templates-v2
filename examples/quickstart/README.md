@@ -41,18 +41,21 @@
 
 ## Introduction
 
-The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few clicks, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
+The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few steps, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP. The linked templates are located in the `examples/modules` directory in this repository. _F5 recommends cloning this repository and modifying these templates to fit your use case._
+This solution uses a parent template to launch several linked child templates (modules) to create an example BIG-IP solution. The linked templates are in the [examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules) directory in this repository. *F5 recommends you clone this repository and modify these templates to fit your use case.*
 
-Existing Stack Deployments (quickstart-existing-network.py)
-Use quickstart-existing-network.py parent template to deploy the quickstart solution into an existing infrastructure. This template expects existing network, subnets, and bastion host(s) have already been deployed. A demo application is also not part of this parent template as it intended use is for a production deployment.
+***Full Stack (quickstart.py)***<br>
+Use the *quickstart.py* parent template to deploy an example full stack BIG-IP solution, complete with virtual networks, bastion *(optional)*, dag/ingress, BIG-IP and example web application.  
+
+***Existing Network Stack (quickstart-existing-network.py)***<br>
+Use *quickstart-existing-network.py* parent template to deploy an example BIG-IP solution into an existing infrastructure. This template expects the virtual networks, subnets, and bastion host(s) have already been deployed. The example web application is also not part of this parent template as it intended use is for an existing environment.
 
 The modules below create the following cloud resources:
 
-- **Network**: This template creates Google networks and subnets.
-- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance.
-- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces.
+- **Network**: This template creates Google networks and subnets. *(Full stack only)*
+- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces. *(Full stack only)*
+- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance. *(Full stack only)*
 - **Disaggregation** _(DAG/Ingress)_: This template creates resources required to get traffic to the BIG-IP, including firewall rules.
 - **BIG-IP**: This template creates a BIG-IP VM instance provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM).
 

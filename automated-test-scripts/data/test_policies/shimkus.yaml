@@ -50,7 +50,7 @@ google-gdm-dag-module-test:
 google-gdm-bigip-autoscale-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters1.yaml"
@@ -59,7 +59,7 @@ google-gdm-bigip-autoscale-module-test:
 google-gdm-bigip-standalone-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters1.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/prepub_parameters2.yaml"
@@ -72,7 +72,7 @@ google-gdm-bigip-standalone-module-test:
 google-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/prepub_parameters1.yaml"
@@ -86,15 +86,68 @@ google-autoscale-bigiq-example-test:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/prepub_parameters1.yaml"
 
-# Quickstart example
-google-quickstart-example-test:
+# Autoscale Existing Network BIG-IQ Example Test
+google-autoscale-bigiq-existing-network-example-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters1.yaml"
+
+# Autoscale Existing Network Example Test
+google-autoscale-payg-existing-network-example-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/daily_test.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/prepub_parameters.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/prepub_parameters1.yaml"
+
+# BIGIP Quickstart Tests - Example
+google-gdm-quickstart-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters1.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters2.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters3.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters4.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters5.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters6.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters1.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters2.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters3.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters4.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters5.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters6.yaml"
+
+# BIGIP Quickstart Existing Network
+google-gdm-quickstart-existing-network-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_existing_network_test.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters1.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters2.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters3.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters4.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters5.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters6.yaml"
+
+# BIGIP Failover Example Tests
+google-gdm-failover-example-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test.yaml"
+  run: "random"
+  random-num-of-tests: 4
+  parameters-files:
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/prepub_parameters1.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/prepub_parameters2.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/prepub_parameters3.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/prepub_parameters4.yaml"
+
+# BIGIP Failover Existing Network Tests
+google-gdm-failover-existing-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing_network.yaml"
+  run: "random"
+  random-num-of-tests: 4
+  parameters-files:
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters1.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters2.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters3.yaml"
+      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters4.yaml"
