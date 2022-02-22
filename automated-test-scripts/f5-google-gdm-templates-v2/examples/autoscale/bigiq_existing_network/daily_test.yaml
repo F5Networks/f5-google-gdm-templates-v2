@@ -11,6 +11,7 @@ onStart:
 - ./create_stack.sh
 - ../../../common/verify_create_autoscale.sh
 - ../../../../sleep/5_minutes.sh
+- ../common/verify_telemetry.sh
 - ../common/verify_login.sh
 - ../common/scale_down.sh
 - ../common/verify_scale_down.sh

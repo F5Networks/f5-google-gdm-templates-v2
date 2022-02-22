@@ -55,7 +55,15 @@ def create_bigip_deployment(context):
                 'cpuUtilization': {
                   'utilizationTarget': context.properties['bigIpScaleOutCpuThreshold']
                 },
-                'coolDownPeriodSec': context.properties['bigIpCoolDownPeriodSec']
+                'coolDownPeriodSec': context.properties['bigIpCoolDownPeriodSec'],
+                'customMetricUtilizations': [
+                    {
+                        'metric': 'custom.googleapis.com/system/cpu',
+                        'filter': 'resource.type = \"generic_node\"',
+                        'utilizationTarget': 60,
+                        'utilizationTargetType': 'GAUGE'
+                    }
+                ]
               }
           }],
           'cost': context.properties['cost'],
