@@ -20,7 +20,7 @@ until [ $i -gt $c ]; do
     if [ $i = 0 ]; then
         /usr/bin/yq e -n ".imports[${i}].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
     fi 
-    if [ $i = 0 ] && [ -n "$mgmt_ip_cidr_range" ] && [ "$mgmt_ip_cidr_range" != null ] && [[ ! "$mgmt_ip_cidr_range"=~*"<"* ]]; then
+    if [ $i = 0 ] && echo "<TEMPLATE URL>" | grep "autoscale/bigiq" && [[ "$mgmt_ip_cidr_range"=~*"."* ]]; then
         /usr/bin/yq e ".resources[${i}].properties.subnets[0].ipCidrRange = \"${mgmt_ip_cidr_range}\"" -i <DEWPOINT JOB ID>.yaml
     else
         /usr/bin/yq e ".resources[${i}].properties.subnets[0].ipCidrRange = \"10.0.${i}.0/24\"" -i <DEWPOINT JOB ID>.yaml

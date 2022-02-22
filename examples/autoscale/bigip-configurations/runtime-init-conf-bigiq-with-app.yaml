@@ -9,6 +9,12 @@ runtime_parameters:
     headers:
       - name: Metadata-Flavor
         value: Google
+  - name: PROJECT_ID
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/project/project-id
+    headers:
+      - name: Metadata-Flavor
+        value: Google
   - name: REGION
     type: url
     value: 'http://metadata.google.internal/computeMetadata/v1/instance/attributes/region'
@@ -27,13 +33,6 @@ runtime_parameters:
     headers:
       - name: Metadata-Flavor
         value: Google
-  - name: SPLUNK_API_KEY
-    type: secret
-    secretProvider:
-      type: SecretsManager
-      environment: gcp
-      version: latest
-      secretId: my-secret-id-01
   - name: BIGIQ_PASSWORD
     type: secret
     secretProvider:
@@ -41,12 +40,6 @@ runtime_parameters:
       environment: gcp
       version: latest
       secretId: my-secret-id-02
-  - name: PROJECT_ID
-    type: url
-    value: 'http://metadata.google.internal/computeMetadata/v1/project/project-id'
-    headers:
-      - name: Metadata-Flavor
-        value: Google
 bigip_ready_enabled: []
 extension_packages:
   install_operations:
@@ -246,13 +239,12 @@ extension_services:
           My_Listener:
             class: Telemetry_Listener
             port: 6514
-          My_Splunk_Consumer:
+          My_Google_Cloud_Logs:
             class: Telemetry_Consumer
-            type: Splunk
-            host: 192.168.2.4
-            protocol: https
-            port: 8088
-            passphrase:
-              cipherText: '{{{SPLUNK_API_KEY}}}'
-            compressionType: gzip
+            type: Google_Cloud_Logging
+            logScope: projects
+            logScopeId: '{{{PROJECT_ID}}}'
+            logId: f5-waf-logs
+            serviceEmail: '{{{UNIQUE_STRING}}}-admin@{{{PROJECT_ID}}}.iam.gserviceaccount.com'
+            useServiceAccountToken: true
 post_onboard_enabled: []

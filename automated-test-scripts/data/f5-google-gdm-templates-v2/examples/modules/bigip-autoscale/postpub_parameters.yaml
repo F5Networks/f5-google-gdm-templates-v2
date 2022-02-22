@@ -21,7 +21,7 @@ IMAGE SUFFIX: '210623021328'
 IMAGE TYPE: best-200mbps
 INSTANCE TYPE: n1-standard-8
 BIGIP VERSION: 16-1-0-0-0-19
-BIGIP RUNTIME INIT PACKAGEURL: 'https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.0/dist/f5-bigip-runtime-init-1.4.0-1.gz.run'
+BIGIP RUNTIME INIT PACKAGEURL: 'https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run'
 BIGIP RUNTIME INIT CONFIG: 'https://ak-metadata-package-poc.s3.amazonaws.com/runtime-init-gcp-conf.yaml'
 SCALING MAX: 8
 SCALING MIN: 2
