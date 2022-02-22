@@ -21,6 +21,7 @@
     - [Validating the Deployment](#validating-the-deployment)
     - [Testing the WAF Service](#testing-the-waf-service)
     - [Accessing the BIG-IP](#accessing-the-big-ip)
+    - [Viewing Autoscale events](#viewing-autoscale-events)
   - [Updating this Solution](#updating-this-solution)
     - [Updating the Configuration](#updating-the-configuration)
     - [Upgrading the BIG-IP VE Image](#upgrading-the-big-ip-ve-image)
@@ -424,7 +425,12 @@ From Parent Template Outputs:
   - To Login: 
     - username: `<YOUR_WEBUI_USERNAME>`
     - password: `<YOUR_STRONG_PASSWORD>`
-      
+
+### Viewing Autoscale events
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends metrics to Google Cloud Monitoring service and those metrics are used by autoscaling policies to perform autoscale events.
+- Autoscaling events can be seen under the instance group monitoring view.
+
 ### Further Exploring
 
 #### Using the WebUI
