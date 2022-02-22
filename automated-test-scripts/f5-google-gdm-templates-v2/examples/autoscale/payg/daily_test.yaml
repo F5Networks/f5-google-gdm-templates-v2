@@ -16,6 +16,7 @@ onStart:
 - ../common/verify_waf_transparent.sh
 - ../common/scale_down.sh
 - ../common/verify_scale_down.sh
+- ../common/verify_waf_logging.sh
 - ./update_stack_for_delete.sh
 - ../../../common/verify_create.sh
 - ../../../common/delete_stack.sh

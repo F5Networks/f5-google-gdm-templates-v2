@@ -20,6 +20,7 @@
   - [Validation](#validation)
     - [Validating the Deployment](#validating-the-deployment)
     - [Testing the WAF Service](#testing-the-waf-service)
+    - [Viewing WAF Logs](#viewing-waf-logs)
     - [Accessing the BIG-IP](#accessing-the-big-ip)
     - [Viewing Autoscale events](#viewing-autoscale-events)
   - [Updating this Solution](#updating-this-solution)
@@ -314,6 +315,11 @@ To test the WAF service, perform the following steps:
     $ curl -sk -X DELETE https://55.55.55.55
     <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 2394594827598561347<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
     ```
+
+### Viewing WAF Logs
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends WAF logs to the Google Cloud Logging service.
+- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for logId in the F5 BIG-IP Runtime Init My_Remote_Logs_Namespace configuration. The default value is ***f5-waf-logs***.
 
 ### Accessing the BIG-IP
 
@@ -613,7 +619,7 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014) about Checksums for F5 Supported Cloud templates on GitHub.
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://community.f5.com/t5/crowdsrc/checksums-for-f5-supported-cloud-templates-on-github/ta-p/284471) about Checksums for F5 Supported Cloud templates on GitHub.
 
 List of endpoints BIG-IP may contact during onboarding:
 - BIG-IP image default:
