@@ -98,7 +98,12 @@ def create_role_permissions(context, solution_type):
             'compute.networks.updatePolicy',
             'compute.globalOperations.get',
             'logging.logEntries.create',
-            'monitoring.timeSeries.create'
+            'monitoring.timeSeries.create',
+            'monitoring.metricDescriptors.create',
+            'monitoring.metricDescriptors.get',
+            'monitoring.metricDescriptors.list',
+            'monitoring.monitoredResourceDescriptors.get',
+            'monitoring.monitoredResourceDescriptors.list'
         ]
     if solution_type in ['secret', 'remoteLogging', 'failover']:
         included_permissions = included_permissions + [

@@ -6,7 +6,7 @@ AUTOFILL EVAL LICENSE KEY 2: null
 AVAILABILITY ZONE: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
-BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.0/dist/f5-bigip-runtime-init-1.4.0-1.gz.run
+BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
 BIGIP VERSION: 16-1-0-0-0-19
 DESCRIPTION: ''
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
@@ -22,6 +22,7 @@ BASTION STACK NAME: <UNIQUESTRING>-bastion
 BASTION TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
 NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+NUMBER NETWORKS: 3
 LICENSE TYPE: byol
 OS IMAGE: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
 PROVISION PUBLIC IP: true
@@ -32,7 +33,6 @@ SECONDARY RANGE NAME 1: ''
 PRIVATE IP GOOGLE ACCESS: ''
 RESTRICTED SRC ADDRESS: '0.0.0.0/0'
 RESTRICTED SRC ADDRESS APP: '0.0.0.0/0'
-NUMBER NETWORKS: 3
 STACK NAME: failover-<LICENSE TYPE>-<DEWPOINT JOB ID>
 TEMPLATE NAME: failover-existing-network.py
 TEMPLATE URL: file://$PWD/examples/failover/failover-existing-network.py

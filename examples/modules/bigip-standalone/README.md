@@ -38,6 +38,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | --- | --- | --- |
 | bigIpRuntimeInitPackageUrl | Yes | URL for BIG-IP Runtime Init package. | 
 | bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | imageName | Yes | BIG-IP image name.|
 | instanceType | Yes | Instance type assigned to the application. For example: `n1-standard-1`.|
 | name | Yes | Name used for instance.| 

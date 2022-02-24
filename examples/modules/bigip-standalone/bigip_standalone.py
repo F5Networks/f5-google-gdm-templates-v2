@@ -300,6 +300,13 @@ def metadata(context):
                     )
                 }]
     }
+    if 'bigIpPeerAddr' in context.properties and context.properties['bigIpPeerAddr'] is not None:
+        metadata_config['items'].append(
+            {
+                'key': 'bigip-peer-addr',
+                'value': str(context.properties['bigIpPeerAddr'])
+            }
+        )
     return metadata_config
 
 def create_target_instance(context, target_instance, instance_name):

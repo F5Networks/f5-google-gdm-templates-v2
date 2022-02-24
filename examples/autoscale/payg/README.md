@@ -20,7 +20,9 @@
   - [Validation](#validation)
     - [Validating the Deployment](#validating-the-deployment)
     - [Testing the WAF Service](#testing-the-waf-service)
+    - [Viewing WAF Logs](#viewing-waf-logs)
     - [Accessing the BIG-IP](#accessing-the-big-ip)
+    - [Viewing Autoscale events](#viewing-autoscale-events)
   - [Updating this Solution](#updating-this-solution)
     - [Updating the Configuration](#updating-the-configuration)
     - [Upgrading the BIG-IP VE Image](#upgrading-the-big-ip-ve-image)
@@ -37,16 +39,19 @@
 
 ## Introduction
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the **[examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules)** directory in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
+This solution uses a parent template to launch several linked child templates (modules) to create an example BIG-IP autoscale solution. The linked templates are located in the [`examples/modules`](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules) directory in this repository. **F5 recommends cloning this repository and modifying these templates to fit your use case.** 
 
-***Existing Network Deployments (autoscale-existing-network.py)***<br>
-Use autoscale-existing-network.py parent template to deploy the autoscale solution into an existing network which requires providing existing network's and subnets' names. 
+***Full Stack (autoscale.py)***<br>
+Use the *autoscale.py* parent template to deploy an example full stack autoscale solution, complete with virtual network, bastion *(optional)*, dag/ingress, access, BIG-IP(s) and example web application.  
+
+***Existing Network Stack (autoscale-existing-network.py)***<br>
+Use the *autoscale-existing-network.py* parent template to deploy the autoscale solution into an existing infrastructure. This template expects the virtual networks, subnets, and bastion host(s) have already been deployed. The example web application is also not part of this parent template as it intended for an existing environment.
 
 The modules below create the following resources:
 
-- **Network**: This template creates Virtual Networks, Subnets, and Route Tables.
-- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IPs.
-- **Bastion**: This template creates a generic example bastion for use when connecting to the management interfaces of BIG-IPs.
+- **Network**: This template creates Virtual Networks, Subnets, and Route Tables. *(Full stack only)*
+- **Bastion**: This template creates a generic example bastion for use when connecting to the management interfaces of BIG-IPs. *(Full stack only)*
+- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IPs. *(Full stack only)*
 - **Disaggregation** *(DAG/Ingress)*: This template creates resources required to get traffic to the BIG-IP, including Firewalls, Forwarding Rules, internal/external Load Balancers, and accompanying resources such as health probes.
 - **Access**: This template creates a custom IAM role for the BIG-IP instances and other resources to gain access to Google Cloud services such as compute and storage.
 - **BIG-IP**: This template creates compute instances with F5 BIG-IP Virtual Editions provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM). Traffic flows from the Google load balancer to the BIG-IP VE instances and then to the application servers. The BIG-IP VE(s) are configured in single-NIC mode. Auto scaling means that as certain thresholds are reached, the number of BIG-IP VE instances automatically increases or decreases accordingly. The BIG-IP module template can be deployed separately from the example template provided here into an "existing" stack.
@@ -311,6 +316,11 @@ To test the WAF service, perform the following steps:
     <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 2394594827598561347<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
     ```
 
+### Viewing WAF Logs
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends WAF logs to the Google Cloud Logging service.
+- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for logId in the F5 BIG-IP Runtime Init My_Remote_Logs_Namespace configuration. The default value is ***f5-waf-logs***.
+
 ### Accessing the BIG-IP
 
 - NOTE:
@@ -418,6 +428,12 @@ From Parent Template Outputs:
   - To Login: 
     - username: `<YOUR_WEBUI_USERNAME>`
     - password: `<YOUR_STRONG_PASSWORD>`
+
+### Viewing Autoscale events
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends metrics to Google Cloud Monitoring service and those metrics are used by autoscaling policies to perform autoscale events.
+- Autoscaling events can be seen under the instance group monitoring view. 
+
       
 ### Further Exploring
 
@@ -603,7 +619,7 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014) about Checksums for F5 Supported Cloud templates on GitHub.
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://community.f5.com/t5/crowdsrc/checksums-for-f5-supported-cloud-templates-on-github/ta-p/284471) about Checksums for F5 Supported Cloud templates on GitHub.
 
 List of endpoints BIG-IP may contact during onboarding:
 - BIG-IP image default:

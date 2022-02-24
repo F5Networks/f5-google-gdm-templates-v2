@@ -1,6 +1,6 @@
 ---
-# BIGIP Quickstart Tests - Latest
-google-gdm-bigip-standalone-module-test:
+# BIGIP Failover Tests - Example
+google-gdm-failover-example-test:
     test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test.yaml"
     run: "all"
     parameters-files:

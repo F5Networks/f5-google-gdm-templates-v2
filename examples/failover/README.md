@@ -27,6 +27,7 @@
       - [WebUI](#webui-1)
       - [SSH](#ssh-1)
     - [Testing the WAF Service](#testing-the-waf-service)
+    - [Testing Failover](#testing-failover)
   - [Deleting this Solution](#deleting-this-solution)
     - [Deleting the deployment via Google Console](#deleting-the-deployment-via-google-cloud-console)
     - [Deleting the deployment using the Google CLI](#deleting-the-deployment-using-the-gcloud-cli)
@@ -40,29 +41,34 @@
 
 ## Introduction
 
-The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few clicks, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
+The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few steps, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP. The linked templates are located in the `examples/modules` directory in this repository. _F5 recommends cloning this repository and modifying these templates to fit your use case._
+This solution uses a parent template to launch several linked child templates (modules) to create an example BIG-IP Highly Available (HA) solution using the F5 Cloud Failover Extension (CFE).  For information about this deployment, see the F5 Cloud Failover Extension [documentation](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html). The linked templates are located in the [`examples/modules`](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules) directory in this repository. *F5 recommends cloning this repository and modifying these templates to fit your use case.*
 
-***Existing Stack Deployments (failover-existing-network.py)***<br>
-Use failover-existing-network.yaml parent template to deploy HA solution into an existing infrastructure. This template expects vpc, subnets, and bastion host(s) have already been deployed. A demo application is also not part of this parent template as it intended use is for a production deployment.
+***Full Stack (failover.py)***<br>
+Use the *failover.py* parent template to deploy an example full stack HA solution, complete with virtual network, bastion *(optional)*, dag/ingress, access, BIG-IP(s) and example web application.  
+
+***Existing Network Stack (failover-existing-network.py)***<br>
+Use the *failover-existing-network.py* parent template to deploy HA solution into an existing network infrastructure. This template expects the virtual network, subnets, and bastion host(s) have already been deployed. A example web application is also not part of this parent template as it intended use is for an existing environment.
 
 The modules below create the following cloud resources:
 
-- **Network**: This template creates Google networks and subnets.
-- **Access**: This template creates a custom IAM role for the BIG-IP instances and other resources to gain access to Google Cloud services such as compute and storage.
-- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance.
-- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces. **Not included in failover-existing-network.py*
+- **Network**: This template creates Google networks and subnets. *(Full stack only)*
+- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces. *(Full stack only)*
+- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance. *(Full stack only)*
 - **Disaggregation** _(DAG/Ingress)_: This template creates resources required to get traffic to the BIG-IP, including firewall rules.
+- **Access**: This template creates a custom IAM role for the BIG-IP instances and other resources to gain access to Google Cloud services such as compute and storage.
 - **BIG-IP**: This template creates a BIG-IP VM instance provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM).
 
 By default, this solution creates a 3 VPC Networks, an example Web Application instance and two BIG-IP instances with three network interfaces each (one for management and two for dataplane/application traffic - called external and internal). Application traffic from the Internet traverses an external network interface configured with both public and private IP addresses. Traffic to the application traverses an internal network interface configured with a private IP address.
 
-**_DISCLAIMER/WARNING_**: To reduce prerequisites and complexity to a bare minimum for evaluation purposes only, this template provides immediate access to the management interface via a Public IP. At the very _minimum_, configure the **restrictedSrcAddressMgmt** parameter to limit access to your client IP or trusted network. In production deployments, management access should never be directly exposed to the Internet and instead should be accessed via typical management best practices like bastion hosts/jump boxes, VPNs, etc.
+**_DISCLAIMER/WARNING_**: To reduce prerequisites and complexity to a bare minimum for evaluation purposes only, this template optionally provides immediate access to the management interface via a Public IP. At the very _minimum_, configure the **restrictedSrcAddressMgmt** parameter to limit access to your client IP or trusted network. In production deployments, management access should never be directly exposed to the Internet and instead should be accessed via typical management best practices like bastion hosts/jump boxes, VPNs, etc.
 
 ## Diagram
 
 ![Configuration Example](diagram.png)
+
+For information about this type of deployment, see the F5 Cloud Failover Extension [documentation](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html).
 
 ## Prerequisites
 
@@ -123,6 +129,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpInternalSelfIp2 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtSelfIp1 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtSelfIp2 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
+| bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
@@ -154,6 +161,7 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | bigIpInternalSelfIp2 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtSelfIp1 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtSelfIp2 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
+| bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
@@ -466,17 +474,23 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 
 #### SSH
 
-- From tmsh shell, type 'bash' to enter the bash shell
-  - Examine BIG-IP configuration via [F5 Automation Toolchain](https://www.f5.com/pdf/products/automation-toolchain-overview.pdf) declarations:
-  ```bash
-  curl -u admin: http://localhost:8100/mgmt/shared/declarative-onboarding | jq .
-  curl -u admin: http://localhost:8100/mgmt/shared/appsvcs/declare | jq .
-  curl -u admin: http://localhost:8100/mgmt/shared/telemetry/declare | jq .
-  ```
-- Examine the Runtime-Init Config downloaded:
-  ```bash
-  cat /config/cloud/runtime-init.conf
-  ```
+  - From tmsh shell, type 'bash' to enter the bash shell:
+    - Examine BIG-IP configuration via [F5 Automation Toolchain](https://www.f5.com/pdf/products/automation-toolchain-overview.pdf) declarations:
+    ```bash
+    curl -u admin: http://localhost:8100/mgmt/shared/declarative-onboarding | jq .
+    ```
+    - If you deployed the example application (**provisionExampleApp** = **true**), examine the Application Services declaration:
+    ```bash
+    curl -u admin: http://localhost:8100/mgmt/shared/appsvcs/declare | jq .
+    ```
+    - Exampine the BIG-IP [Cloud Failover Extension (CFE)](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/) declaration:
+    ```bash
+    curl -su admin: http://localhost:8100/mgmt/shared/cloud-failover/declare | jq . 
+    ```
+    - Examine the [Runtime-Init](https://github.com/F5Networks/f5-bigip-runtime-init) Config downloaded: 
+    ```bash 
+    cat /config/cloud/runtime-init.conf
+    ```
 
 ### Testing the WAF Service
 
@@ -509,8 +523,34 @@ To test the WAF service (if deploying using runtime-init-conf-*-with-app.yaml), 
     <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 2394594827598561347<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
     ```
 
+### Testing Failover
+
+ When **provisionExampleApp** is **true**, to test failover, perform the following steps:
+
+1. Log on the BIG-IPs per instructions above:
+
+  - **WebUI**: Go to Device Management of Active Instance -> Traffic-Groups -> Select box next to *traffic-group-1* -> Click the "Force to Standby" button *.
+  - **BIG-IP CLI**: 
+      ```bash 
+      tmsh run sys failover standby
+      ```
+
+Verify the Virtual Service (**vip1PublicIp**) is remapped to the peer BIG-IP target instance after failover. 
+  - **Console**: Navigate to  **Network Services > Load Balancing > Go to the Advanced view by clicking on "load balancing components view" link > *fwrule1* > Target**
+  - **gcloud CLI** 
+      ```bash 
+      gcloud compute forwarding-rules list
+      ```
+
+For information on the Cloud Failover solution, see [F5 Cloud Failover Extension](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html).
+
 
 ## Deleting this Solution
+
+
+As Google Deployment Manager does not delete storage buckets that contain data, in order to delete this deployment, you will first need to manually empty and/or delete the storage bucket created for the Cloud Failover Extension (provided via *cfeBucket* parameter). Go to *Google Cloud Console -> S3* and search for *cfeBucket* bucket name, select the box associated with it and then click the "Delete" button. 
+
+You can now delete the deployment.
 
 ### Deleting the deployment via Google Cloud Console
 
@@ -598,7 +638,7 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [checksums-for-f5-supported-cft-and-arm-templates-on-github](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014).
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [checksums-for-f5-supported-cft-and-arm-templates-on-github](https://community.f5.com/t5/crowdsrc/checksums-for-f5-supported-cloud-templates-on-github/ta-p/284471).
 
 List of endpoints BIG-IP may contact during onboarding:
 

@@ -14,16 +14,23 @@ else
     cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance01.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
     cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance02.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
 fi
+
 # Add secret
 /usr/bin/yq e ".runtime_parameters.[0].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
 /usr/bin/yq e ".runtime_parameters.[0].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
+
 # Add lic key if byol
 if [[ "<LICENSE TYPE>" == "byol" ]]; then
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY 2>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
 fi
+
 # Uncomment this 2 debug
 # /usr/bin/yq e ".controls.logLevel = \"silly\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
+echo "Config 1:"
+cat $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
+echo "Config 2:"
+cat $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
 
 # Create Bucket, copy local files to bucket, add reaper label, and make files public
 gsutil mb gs://<STACK NAME>-bucket
