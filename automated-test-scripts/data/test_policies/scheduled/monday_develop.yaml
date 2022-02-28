@@ -1,9 +1,11 @@
-gdm-quickstart-payg-example-test:
-  parameters-files:
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/prepub_parameters1.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/prepub_parameters3.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/prepub_parameters5.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/prepub_parameters7_v14.yaml
+gdm-quickstart-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+  run: "random"
   random-num-of-tests: 1
-  run: random
-  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml'
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters4.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters5.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/prepub_parameters6.yaml"

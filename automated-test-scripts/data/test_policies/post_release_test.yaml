@@ -133,15 +133,6 @@ gdm-dag-mod-test:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/postpub_parameters1.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/postpub_parameters.yaml
 
-gdm-functional-mod-test:
-  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/daily_test.yaml'
-  run: random
-  random-num-of-tests: 1
-  parameters-files:
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters2.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters1.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/postpub_parameters.yaml
-
 gdm-network-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/daily_test.yaml'
   run: random
