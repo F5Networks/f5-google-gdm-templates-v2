@@ -20,7 +20,7 @@ This Google Deployment Manager template creates an IAM Service Account to be use
 
 ## Prerequisites
 
- - None
+ - This template creates service accounts, custom IAM roles, and service account bindings. The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed. For more information about this account, see the Google-managed service account [documentation](https://cloud.google.com/iam/docs/maintain-custom-roles-deployment-manager)
 
 ## Important Configuration Notes
 
