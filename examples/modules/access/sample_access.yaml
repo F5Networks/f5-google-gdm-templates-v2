@@ -10,4 +10,4 @@ resources:
     type: access.py
     properties:
       solutionType: standard
-      uniqueString: myApp
+      uniqueString: myapp

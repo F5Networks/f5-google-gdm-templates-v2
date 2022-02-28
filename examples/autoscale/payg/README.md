@@ -73,6 +73,7 @@ This solution leverages traditional Autoscale configuration management practices
   - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
   - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
     - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-payg-25mbps)
+  - This solution creates service accounts, custom IAM roles, and service account bindings. The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed. For more information about this account, see the Google-managed service account [documentation](https://cloud.google.com/iam/docs/maintain-custom-roles-deployment-manager)
 
 
 ## Important Configuration Notes
@@ -247,30 +248,6 @@ Example:
   2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.).
   3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration.
   4. Deploy or Re-Deploy.
-
-
-As instances in an autoscaled deployment are ephemeral, remote logging is critical. By default, this solution deploys a Telemetry Streaming configuration that has a placeholder for the remote logging destination. 
-
-To update the Remote Logging configuration:
-
-  1. Edit/modify the Telemetry Streaming (TS) declaration in a corresponding runtime-init config file [runtime-init-conf-payg.yaml](../bigip-configurations/runtime-init-conf-payg.yaml) with the new destination values. 
-
-Example: Replace 
-```yaml
-          My_Splunk_Consumer:
-            class: Telemetry_Consumer
-            type: Splunk
-            host: 192.168.2.4
-            protocol: https
-            port: 8088
-            passphrase:
-              cipherText: '{{{SPLUNK_API_KEY}}}'
-            compressionType: gzip
-```
-with your remote logging destination. See Telemetry Streaming [documentation](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/setting-up-consumer.html) for more details.
- 
-  2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, git, Google Cloud Storage, etc.).
-  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the URL of the customized configuration file.
 
 
 ## Validation
