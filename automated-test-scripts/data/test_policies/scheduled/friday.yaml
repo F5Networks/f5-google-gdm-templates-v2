@@ -1,0 +1,90 @@
+# Daily Scheduled test plan
+# Azure v2 autoscale example tests
+azure-autoscale-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/autoscale/postpub_parameters.yaml"
+
+# Azure v2 failover example tests
+azure-failover-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/failover/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/failover/postpub_parameters.yaml"
+
+# Azure v2 quickstart example tests
+azure-quickstart-example-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/quickstart/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/quickstart/postpub_parameters.yaml"
+
+# AWS bigip module tests
+aws-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+aws-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# Azure bigip module tests
+azure-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+azure-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# Google bigip module tests
+google-bigip-autoscale-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/postpub_parameters.yaml"
+
+google-bigip-standalone-module-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    # TBD - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/postpub_parameters.yaml"
+
+# AWS v1 failover-api tests
+aws-failover-api-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-aws-cloudformation/supported/failover/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation/supported/failover/same-net/via-api/3nic/existing-stack/payg/postpub_parameters.yaml"
+    - "cloud-tools/automated-test-scripts/data/f5-aws-cloudformation/supported/failover/across-net/via-api/2nic/existing-stack/byol/postpub_parameters.yaml"
+
+# Azure v1 failover-api tests
+azure-failover-api-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates/supported/failover/via-api/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates/supported/failover/same-net/via-api/n-nic/existing-stack/payg/postpub_parameters.yaml"
+
+# Azure v1 failover-lb tests
+azure-failover-lb-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-azure-arm-templates/supported/failover/via-lb/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-azure-arm-templates/supported/failover/same-net/via-lb/3nic/existing-stack/payg/postpub_parameters.yaml"
+
+# Google v1 failover-api tests
+google-failover-api-test:
+  test-url: "file://cloud-tools/automated-test-scripts/f5-google-gdm-templates/supported/failover/via-api/daily_test.yaml"
+  run: "all"
+  parameters-files:
+    - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates/supported/failover/same-net/via-api/3nic/existing-stack/payg/v15_postpub_parameters.yaml"
+    - "cloud-tools/automated-test-scripts/data/f5-google-gdm-templates/supported/failover/same-net/via-api/2nic/existing-stack/payg/v14_postpub_parameters.yaml"

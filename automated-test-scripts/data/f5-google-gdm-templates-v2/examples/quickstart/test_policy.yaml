@@ -1,0 +1,21 @@
+---
+# BIGIP Quickstart Tests - Latest
+google-gdm-bigip-standalone-module-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+    run: "all"
+    parameters-files:
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters2.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters3.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters4.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters5.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters6.yaml"
+
+# BIGIP Quickstart Tests - Safe Harbor
+# Uncomment these tests when v14 ca-bundle is updated
+# google-gdm-bigip-standalone-module-test-v14:
+#     test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml"
+#     run: "all"
+#     parameters-files:
+#         - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters7_v14.yaml"
+#         - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/prepub_parameters8_v14.yaml"
