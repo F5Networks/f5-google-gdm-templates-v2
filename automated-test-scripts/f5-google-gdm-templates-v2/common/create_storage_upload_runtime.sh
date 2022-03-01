@@ -9,11 +9,11 @@ cp $PWD/examples/quickstart/bigip-configurations/runtime-init-conf-<NUMBER NICS>
 # Add lic key if byol
 if [[ "<LICENSE TYPE>" == "byol" ]]; then
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml
+    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
 fi
 
 if [[ "<PROVISION DEMO APP>" == "True" ]]; then
     # Use local files for waf policies
-    /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
     /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
 fi
 # Uncomment this 2 debug
