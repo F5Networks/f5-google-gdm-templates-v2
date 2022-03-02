@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a pair of bigip's HA deployment along with all required resources to support deployment.
   title: F5 failover template
-  version: 1.0.0.0
+  version: 2.0.0.0
 
 imports:
   - path: failover.py
@@ -66,11 +66,11 @@ properties:
     description: Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. |
     type: string
   bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitConfig02:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
@@ -110,7 +110,7 @@ properties:
     description: cloud region used for this deployment, for example us-west1.
     type: string
   restrictedSrcAddressMgmt:
-    description: This field restricts application traffic to a specific network or address. Enter a list of IP addresses or address ranges in CIDR notation. For example, '55.55.55.55/32'.
+    description: An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE-If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**-The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet.
     type: array
   restrictedSrcAddressApp:
     description: This field restricts application traffic to a specific network or address. Enter a list of IP addresses or address ranges in CIDR notation. For example, '55.55.55.55/32'.

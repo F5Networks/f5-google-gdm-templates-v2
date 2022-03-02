@@ -1,9 +1,11 @@
-gdm-quickstart-payg-example-test:
-  parameters-files:
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/postpub_parameters1.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/postpub_parameters3.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/postpub_parameters5.yaml
-    - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/postpub_parameters7_v14.yaml
+gdm-quickstart-existing-network-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_existing_network_test.yaml"
+  run: "random"
   random-num-of-tests: 1
-  run: random
-  test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test.yaml'
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters4.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters5.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/postpub_parameters6.yaml"

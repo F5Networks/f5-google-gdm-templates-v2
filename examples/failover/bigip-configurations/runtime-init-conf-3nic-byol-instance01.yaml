@@ -25,6 +25,13 @@ extension_services:
         Common:
           class: Tenant
           hostname: '{{{HOST}}}'
+          My_DbVariables:
+            class: DbVariables
+            provision.extramb: 1000
+            restjavad.useextramb: true
+            config.allow.rfc3927: enable
+            dhclient.mgmt: disable
+            tm.tcpudptxchecksum: Software-only
           My_Provisioning:
             class: Provision
             ltm: nominal
@@ -68,6 +75,97 @@ extension_services:
             gw: '{{{EXTERNAL_GW}}}'
             network: default
             mtu: 1460
+          external:
+            class: VLAN
+            tag: 4094
+            mtu: 1460
+            interfaces:
+              - name: '1.0'
+                tagged: false
+          external-self:
+            class: SelfIp
+            address: '{{{SELF_IP_EXTERNAL}}}/32'
+            vlan: external
+            allowService:
+              - tcp:80
+              - tcp:443
+              - tcp:4353
+              - udp:1026
+            trafficGroup: traffic-group-local-only
+    - extensionType: cf
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Cloud_Failover
+        environment: gcp
+        controls:
+          class: Controls
+          logLevel: silly
+        externalStorage:
+          scopingTags:
+            f5_cloud_failover_label: bigip_high_availability_solution
+        failoverAddresses:
+          enabled: true
+          scopingTags:
+            f5_cloud_failover_label: bigip_high_availability_solution
+          requireScopingTags: false
+    - extensionType: do
+      type: inline
+      value:
+        schemaVersion: 1.0.0
+        class: Device
+        async: true
+        label: FAILOVER 3NIC BIG-IP declaration for Declarative Onboarding with BYOL
+          license
+        Common:
+          class: Tenant
+          hostname: '{{{HOST}}}'
+          My_DbVariables:
+            class: DbVariables
+            provision.extramb: 1000
+            restjavad.useextramb: true
+            config.allow.rfc3927: enable
+            dhclient.mgmt: disable
+            tm.tcpudptxchecksum: Software-only
+          My_Provisioning:
+            class: Provision
+            ltm: nominal
+            asm: nominal
+          My_Ntp:
+            class: NTP
+            servers:
+              - 0.pool.ntp.org
+              - 1.pool.ntp.org
+            timezone: UTC
+          My_Dns:
+            class: DNS
+            nameServers:
+              - 169.254.169.254
+            search:
+              - f5.com
+          My_System:
+            autoPhonehome: true
+            class: System
+          admin:
+            class: User
+            userType: regular
+            password: '{{{BIGIP_PASSWORD}}}'
+            shell: bash
+          externalGwRoute:
+            class: Route
+            target: external
+            network: '{{{EXTERNAL_GW}}}/32'
+            mtu: 1460
+          externalIntRoute:
+            class: Route
+            gw: '{{{EXTERNAL_GW}}}'
+            network: '{{{EXTERNAL_NETWORK}}}/{{{EXTERNAL_BITMASK}}}'
+            mtu: 1460
+          default:
+            class: Route
+            gw: '{{{EXTERNAL_GW}}}'
+            network: default
+            mtu: 1460
           internalGwRoute:
             class: Route
             target: internal
@@ -78,31 +176,6 @@ extension_services:
             gw: '{{{INTERNAL_GW}}}'
             network: '{{{INTERNAL_NETWORK}}}/{{{INTERNAL_BITMASK}}}'
             mtu: 1460
-          configSync:
-            class: ConfigSync
-            configsyncIp: '{{{SELF_IP_EXTERNAL}}}'
-          failoverAddress:
-            class: FailoverUnicast
-            address: '{{{SELF_IP_EXTERNAL}}}'
-          failoverGroup:
-            class: DeviceGroup
-            type: sync-failover
-            members:
-              - '{{{HOST}}}'
-              - '{{{UNIQUE}}}-bigip2.c.{{{PROJECT_ID}}}.internal'
-            owner: /Common/failoverGroup/members/0
-            autoSync: true
-            saveOnAutoSync: false
-            networkFailover: true
-            fullLoadOnSync: false
-            asmSync: false
-          trust:
-            class: DeviceTrust
-            localUsername: admin
-            localPassword: '{{{BIGIP_PASSWORD}}}'
-            remoteHost: /Common/failoverGroup/members/0
-            remoteUsername: admin
-            remotePassword: '{{{BIGIP_PASSWORD}}}'
           external:
             class: VLAN
             tag: 4094
@@ -135,30 +208,31 @@ extension_services:
               - udp:1026
               - tcp:4353
             trafficGroup: traffic-group-local-only
-          My_DbVariables:
-            class: DbVariables
-            provision.extramb: 1000
-            restjavad.useextramb: true
-            config.allow.rfc3927: enable
-            dhclient.mgmt: disable
-            tm.tcpudptxchecksum: Software-only
-    - extensionType: cf
-      type: inline
-      value:
-        schemaVersion: 1.0.0
-        class: Cloud_Failover
-        environment: gcp
-        controls:
-          class: Controls
-          logLevel: silly
-        externalStorage:
-          scopingTags:
-            f5_cloud_failover_label: bigip_high_availability_solution
-        failoverAddresses:
-          enabled: true
-          scopingTags:
-            f5_cloud_failover_label: bigip_high_availability_solution
-          requireScopingTags: false
+          configSync:
+            class: ConfigSync
+            configsyncIp: '{{{SELF_IP_EXTERNAL}}}'
+          failoverAddress:
+            class: FailoverUnicast
+            address: '{{{SELF_IP_EXTERNAL}}}'
+          failoverGroup:
+            class: DeviceGroup
+            type: sync-failover
+            members:
+              - '{{{HOST}}}'
+              - '{{{UNIQUE}}}-bigip2.c.{{{PROJECT_ID}}}.internal'
+            owner: /Common/failoverGroup/members/0
+            autoSync: true
+            saveOnAutoSync: false
+            networkFailover: true
+            fullLoadOnSync: false
+            asmSync: false
+          trust:
+            class: DeviceTrust
+            localUsername: admin
+            localPassword: '{{{BIGIP_PASSWORD}}}'
+            remoteHost: /Common/failoverGroup/members/0
+            remoteUsername: admin
+            remotePassword: '{{{BIGIP_PASSWORD}}}'
 pre_onboard_enabled: []
 runtime_parameters:
   - name: BIGIP_PASSWORD
