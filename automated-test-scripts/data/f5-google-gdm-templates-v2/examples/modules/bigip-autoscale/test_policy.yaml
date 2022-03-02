@@ -1,8 +1,0 @@
----
-# BIGIP Autoscale Module  Tests
-google-gdm-bigip-autoscale-module-test:
-    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml"
-    run: "all"
-    parameters-files:
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters.yaml"
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters1.yaml"
