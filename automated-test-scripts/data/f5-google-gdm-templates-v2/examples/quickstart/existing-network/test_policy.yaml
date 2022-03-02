@@ -1,0 +1,11 @@
+# BIGIP Quickstart Existing Network Tests - Latest
+google-gdm-quickstart-existing-network-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_existing_network_test.yaml"
+    run: "all"
+    parameters-files:
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters2.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters3.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters4.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters5.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/prepub_parameters6.yaml"

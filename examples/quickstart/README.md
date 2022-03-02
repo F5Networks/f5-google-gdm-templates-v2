@@ -13,6 +13,8 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Template Input Parameters](#existing-network-template-input-parameters)
+    - [Existing Network Template Outputs](#existing-network-template-outputs)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the Google CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
@@ -39,14 +41,21 @@
 
 ## Introduction
 
-The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few clicks, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
+The goal of this solution is to reduce prerequisites and complexity to a minimum so with a few steps, a user can quickly deploy a BIG-IP, login and begin exploring the BIG-IP platform in a working full-stack deployment capable of passing traffic.
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP. The linked templates are located in the `examples/modules` directory in this repository. _F5 recommends cloning this repository and modifying these templates to fit your use case._
+This solution uses a parent template to launch several linked child templates (modules) to create an example BIG-IP solution. The linked templates are in the [examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules) directory in this repository. *F5 recommends you clone this repository and modify these templates to fit your use case.*
+
+***Full Stack (quickstart.py)***<br>
+Use the *quickstart.py* parent template to deploy an example full stack BIG-IP solution, complete with virtual networks, bastion *(optional)*, dag/ingress, BIG-IP and example web application.  
+
+***Existing Network Stack (quickstart-existing-network.py)***<br>
+Use *quickstart-existing-network.py* parent template to deploy an example BIG-IP solution into an existing infrastructure. This template expects the virtual networks, subnets, and bastion host(s) have already been deployed. The example web application is also not part of this parent template as it intended use is for an existing environment.
 
 The modules below create the following cloud resources:
 
-- **Network**: This template creates Google networks and subnets.
-- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance.
+- **Network**: This template creates Google networks and subnets. *(Full stack only)*
+- **Bastion**: This template creates a bastion host for accessing the BIG-IP instances when no public IP address is used for the management interfaces. *(Full stack only)*
+- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IP instance. *(Full stack only)*
 - **Disaggregation** _(DAG/Ingress)_: This template creates resources required to get traffic to the BIG-IP, including firewall rules.
 - **BIG-IP**: This template creates a BIG-IP VM instance provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM).
 
@@ -122,16 +131,96 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
 | owner | No | Owner Tag. |
 | provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
-| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
-| restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
+| restrictedSrcAddressApp | Yes | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | Yes | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
+
+### Existing Network Template Input Parameters
+
+Note: These are specified in the configuration file. See sample_quickstart-existing-network.yaml
+
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| application | No | Application Tag. |
+| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
+| cost | No | Cost Center Tag. |
+| environment | No | Environment Tag. |
+| group | No | Group Tag. |
+| numNics | No | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
+| owner | No | Owner Tag. |
+| networks | Yes | Networks object which provides names for mgmt and app networks |
+| networks.externalNetworkName | Yes | External network name |
+| networks.interlanNetworkName | No | Internal network name |  
+| networks.mgmtNetworkName | No | Management network name | 
+| provisionPublicIp | No | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
+| restrictedSrcAddressApp | Yes | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | Yes | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.appSubnetName | Yes | Management subnet name |
+| subnets.internalSubnetName | Yes | Internal subnet name |  
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
 
 ### Template Outputs
 
 | Name | Description | Type |
 | ---- | ----------- | ---- |
-| deployment_name | Name of quickstart deployment | string |
+| appInstanceName | Application server instance name. | string |
+| appPrivateIp | Application server private IP address. | string |
+| appPublicIp | Application server public IP address. | string |
+| appUsername | Application server user name. | string |
+| bastionInstanceId | Bastion instance ID. | string |
+| bastionPublicIp | Bastion public IP address. | string |
+| bastionPublicSsh | Bastion SSH command. | string |
+| bigIpInstanceId | BIG-IP instance ID. | string |
+| bigIpInstanceName | BIG-IP instance name. | string |
+| bigIpManagementPrivateIp | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateUrl | BIG-IP management private IP URL. | string |
+| bigIpManagementPublicIp | BIG-IP management public IP address. | string |
+| bigIpManagementPublicSsh | BIG-IP management SSH command. | string |
+| bigIpManagementPublicUrl | BIG-IP management public IP URL. | string |
+| deploymentName | Quickstart deployment name. | string |
+| networkName0 | Management network name. | string |
+| networkName1 | External network name. | string |
+| networkName2 | Internal network name. | string |
+| networkSelfLink0 | Management network self link. | string |
+| networkSelfLink1 | External network self link. | string |
+| networkSelfLink2 | Internal network self link. | string |
+| vip1PrivateIp | Virtual Server private IP address. | string |
+| vip1PrivateUrlHttp | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttps | Virtual Server private HTTPS URL. | string |
+| vip1PublicIp | Virtual Server public IP address. | string |
+| vip1PublicUrlHttp | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttps | Virtual Server public HTTPS URL. | string |
+
+
+### Existing Network Template Outputs
+
+| Name | Description | Type |
+| ---- | ----------- | ---- |
+| bigIpInstanceId | BIG-IP instance ID. | string |
+| bigIpInstanceName | BIG-IP instance name. | string |
+| bigIpManagementPrivateIp | BIG-IP management private IP address. | string |
+| bigIpManagementPrivateUrl | BIG-IP management private IP URL. | string |
+| bigIpManagementPublicIp | BIG-IP management public IP address. | string |
+| bigIpManagementPublicSsh | BIG-IP management SSH command. | string |
+| bigIpManagementPublicUrl | BIG-IP management public IP URL. | string |
+| deploymentName | Quickstart deployment name. | string |
+| vip1PrivateIp | Virtual Server private IP address. | string |
+| vip1PrivateUrlHttp | Virtual Server private HTTP URL. | string |
+| vip1PrivateUrlHttps | Virtual Server private HTTPS URL. | string |
+| vip1PublicIp | Virtual Server public IP address. | string |
+| vip1PublicUrlHttp | Virtual Server public HTTP URL. | string |
+| vip1PublicUrlHttps | Virtual Server public HTTPS URL. | string |
+
 
 ## Deploying this Solution
 
@@ -144,7 +233,7 @@ To deploy this solution, you must use the [gcloud CLI](#deploying-via-the-gcloud
 To deploy the BIG-IP VE from the parent template YAML file, use the following command syntax:
 
 ```bash
-gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}`
+gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
 ```
 
 Keep in mind the following:
@@ -161,21 +250,29 @@ Example from sample_quickstart.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
 
 F5 has provided the following example configuration files in the `examples/quickstart/bigip-configurations` folder:
 
-- These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
+- These examples install Automation Tool Chain packages for a PAYG licensed deployment.
   - `runtime-init-conf-1nic-payg.yaml`
   - `runtime-init-conf-2nic-payg.yaml`
   - `runtime-init-conf-3nic-payg.yaml`
-- These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
+- These examples install Automation Tool Chain packages for a BYOL licensed deployment.
   - `runtime-init-conf-1nic-byol.yaml`
   - `runtime-init-conf-2nic-byol.yaml`
   - `runtime-init-conf-3nic-byol.yaml`
+- These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
+  - `runtime-init-conf-1nic-payg-with-app.yaml`
+  - `runtime-init-conf-2nic-payg-with-app.yaml`
+  - `runtime-init-conf-3nic-payg-with-app.yaml`
+- These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
+  - `runtime-init-conf-1nic-byol-with-app.yaml`
+  - `runtime-init-conf-2nic-byol-with-app.yaml`
+  - `runtime-init-conf-3nic-byol-with-app.yaml`
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
@@ -246,45 +343,44 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 ### Accessing the BIG-IP
 
 - NOTE:
-
-  - Replace _${UNIQUE_STRING}_ and _${ZONE}_ with the values you provided for your _uniqueString_ and _zone_ parameters.
+  - The following CLI commands require the gcloud CLI and yq: https://github.com/mikefarah/yq#install
   - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. Once connected to the bastion host, you may then connect via SSH to the private Management IP address of the BIG-IP instance. The default username is **quickstart** and the default password is the BIG-IP's **Instance ID**.
 
-- Obtain the Instance ID of the BIG-IP instance.
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > "Instance Id".
-  - **gcloud CLI**:
-
+From Parent Template Outputs:
+  - **Console**:  Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs**.
+  - **Google CLI**:
     ```bash
-    UNIQUE_STRING="myuniquestr"
-    ZONE="us-west1-a"
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format='value(id)'
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq .resources[0].outputs
     ```
 
-- Obtain the Public IP address of the BIG-IP Management Port:
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic1 (select nic0 if 1NIC) > External IP**.
-  - **gcloud CLI**:
-
-    ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
+- Obtain the IP address of the BIG-IP Management Port:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpManagementPublicIp***.
+  - **Google CLI**: 
+    ``` bash 
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPublicIp")).finalValue'
     ```
 
 OR if you are going through a bastion host (when **provisionPublicIP** = **false**):
 
 - Obtain the Public IP address of the bastion host:
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bastion > Network Interfaces > nic0 > External IP**.
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bastionPublicIp**.
   - **gcloud CLI**:
     ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bastion" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bastionPublicIp")).finalValue'
     ```
 
 - Obtain the Private IP address of the BIG-IP Management Port = nic1 (select nic0 if 1NIC) :
   - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic1 (select nic0 if 1NIC) > Primary internal IP **.
   - **gcloud CLI**:
     ```bash
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Private Ips'](networkInterfaces.name, networkInterfaces.networkIP)" --flatten="networkInterfaces[]"
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPrivateIp")).finalValue'
+    ```
+
+- Obtain the vmId of the BIG-IP Virtual Machine *(will be used for password later)*:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bigIpInstanceId**.
+  - **Google CLI**: 
+    ```bash
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceId")).finalValue'
     ```
 
 #### SSH
@@ -321,10 +417,6 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
   - See 'Obtain the public IP address of the BIG-IP Management Port' section above:
   - By default, the Management URL will be `https://${MANAGEMENT-IP}/`
   - For 1NIC deployments, the Management URL will be `https://${MANAGEMENT-IP}:8443/`
-
-          
-
-          
 
   - OR when you are going through a bastion host (when **provisionPublicIP** = **false**):
 
@@ -373,18 +465,12 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 
 To test the WAF service, perform the following steps:
 
-- Obtain the IP address of the WAF service. By default, this service as well as the Self-IP is provisioned on the Primary IP of 1st NIC. 
-
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic0 > External IP (or Primary internal IP if provisionPublicIP is false) **.
-  - **gcloud CLI**:
-
-    ```bash
-    # If public IP
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Public Ips'](networkInterfaces.accessConfigs[0].name,networkInterfaces.accessConfigs[0].natIP)" --flatten="networkInterfaces[]"
-    #If using Primary
-    gcloud compute instances describe "${UNIQUE_STRING}-bigip1" --zone=${ZONE} --format="table[box,title='Private Ips'](networkInterfaces.name, networkInterfaces.networkIP)" --flatten="networkInterfaces[]"
-
-    ```
+- Obtain the IP address of the WAF service:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > vip1PublicIp**.
+  - **Google CLI**: 
+      ```bash
+      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("vip1PublicIp")).finalValue'
+      ```
 
 - Verify the application is responding:
   - Paste the IP address in a browser: `https://${IP_ADDRESS_FROM_OUTPUT}`
@@ -496,7 +582,7 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [checksums-for-f5-supported-cft-and-arm-templates-on-github](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014).
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [checksums-for-f5-supported-cft-and-arm-templates-on-github](https://community.f5.com/t5/crowdsrc/checksums-for-f5-supported-cloud-templates-on-github/ta-p/284471).
 
 List of endpoints BIG-IP may contact during onboarding:
 

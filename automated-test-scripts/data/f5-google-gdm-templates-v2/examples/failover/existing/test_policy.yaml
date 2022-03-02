@@ -1,0 +1,10 @@
+---
+# BIGIP Failover Existing Network Tests
+google-gdm-failover-existing-test:
+    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing_network.yaml"
+    run: "all"
+    parameters-files:
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters2.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters3.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/prepub_parameters4.yaml"

@@ -1,0 +1,20 @@
+---
+name: Google Examples - Function
+onStart:
+- ../../../common/helper_init.sh
+- ../../../common/create_storage.sh
+- ../../../common/verify_create_storage.sh
+- ./create_stack.sh
+- ../../../common/verify_create.sh
+- ./tests/verify_function.sh
+- ./tests/verify_job.sh
+- ./tests/verify_topic.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+onFail:
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh

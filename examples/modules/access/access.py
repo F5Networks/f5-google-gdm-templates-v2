@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 1.0.0.0
+# Version 2.0.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -98,7 +98,12 @@ def create_role_permissions(context, solution_type):
             'compute.networks.updatePolicy',
             'compute.globalOperations.get',
             'logging.logEntries.create',
-            'monitoring.timeSeries.create'
+            'monitoring.timeSeries.create',
+            'monitoring.metricDescriptors.create',
+            'monitoring.metricDescriptors.get',
+            'monitoring.metricDescriptors.list',
+            'monitoring.monitoredResourceDescriptors.get',
+            'monitoring.monitoredResourceDescriptors.list'
         ]
     if solution_type in ['secret', 'remoteLogging', 'failover']:
         included_permissions = included_permissions + [

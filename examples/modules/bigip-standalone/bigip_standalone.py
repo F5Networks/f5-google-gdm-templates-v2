@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 1.0.0.0
+# Version 2.0.0.0
 
 """Creates BIGIP Instance"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -9,6 +9,68 @@ COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 def generate_name(prefix, suffix):
     """ Generate unique name """
     return prefix + "-" + suffix
+
+def populate_properties(context, required_properties, optional_properties):
+    """ Generate properties. """
+    properties = {}
+    properties.update(
+        {
+            p: context[p]
+            for p in required_properties
+        }
+    )
+
+    properties.update(
+        {
+            p: context[p]
+            for p in optional_properties
+            if p in context.keys()
+        }
+    )
+    return properties
+
+
+def create_storage_bucket(context, storage_bucket):
+    """ Create storage bucket. """
+    # Build instance property lists
+    required_properties = ['name']
+    optional_properties = [
+        'acl',
+        'billing',
+        'cors',
+        'defaultEventBasedHold',
+        'defaultObjectAcl',
+        'encryption',
+        'iamConfiguration',
+        'labels',
+        'lifecycle',
+        'location',
+        'logging',
+        'retentionPolicy',
+        'rpo',
+        'storageClass',
+        'versioning',
+        'website'
+    ]
+    name = storage_bucket.get('name') or \
+        context.env['name'] if 'name' in storage_bucket or 'name' in context.env else 'cfe-storage'
+    prefix = context.properties['uniqueString']
+    storage_name = generate_name(prefix, name)
+    properties = {}
+    properties.update({
+            'project': context.env['project'],
+            'name': storage_name,
+            'labels': {
+                'f5_cloud_failover_label': generate_name(prefix,'bigip_high_availability_solution')
+            }
+    })
+    properties.update(populate_properties(storage_bucket, required_properties, optional_properties))
+    storage = {
+        'name': storage_name,
+        'type': 'storage.v1.bucket',
+        'properties': properties
+    }
+    return storage
 
 
 def create_instance(context):
@@ -125,6 +187,14 @@ def metadata(context):
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     metadata_config = {
                 'items': [{
+                    'key': 'unique-string',
+                    'value': str(context.properties['uniqueString'])
+                },
+                {
+                    'key': 'region',
+                    'value': str(context.properties['region'])
+                },
+                {
                     'key': 'startup-script',
                     'value': ('\n'.join(['#!/bin/bash',
                                     'if [ -f /config/startup_finished ]; then',
@@ -165,27 +235,37 @@ def metadata(context):
                                     '   MULTI_NIC=' + str(multi_nic),
                                     '   if [[ ${MULTI_NIC} == "True" ]]; then',
                                     '       # Need to remove existing and recreate a MGMT default route as not provided by DHCP on 2nd NIC Route name must be same as in DO config.',
+                                    '       source /usr/lib/bigstart/bigip-ready-functions',
+                                    '       wait_bigip_ready',
                                     '       tmsh modify sys global-settings mgmt-dhcp disabled',
                                     '       tmsh delete sys management-route all',
                                     '       tmsh delete sys management-ip all',
-                                    '       source /usr/lib/bigstart/bigip-ready-functions',
                                     '       wait_bigip_ready',
                                     '       # Wait until a little more until dhcp/chmand is finished re-configuring MGMT IP w/ "chmand[4267]: 012a0003:3: Mgmt Operation:0 Dest:0.0.0.0"',
                                     '       sleep 15',
                                     '       MGMT_GW=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | grep -oE \'[^ ]+$\' | tr -d \';\')',
+                                    '       SELF_IP_MGMT=$(egrep fixed-address /var/lib/dhclient/dhclient.leases | tail -1 | grep -oE \'[^ ]+$\' | tr -d \';\')',
+                                    '       MGMT_BITMASK=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | cut -d \',\' -f 2 | cut -d \' \' -f 1 | cut -d \'.\' -f 1)',
+                                    '       MGMT_NETWORK=$(egrep static-routes /var/lib/dhclient/dhclient.leases | tail -1 | cut -d \',\' -f 2 | cut -d \' \' -f 1 | cut -d \'.\' -f 2-4).0',
+                                    '       echo "MGMT_GW - "',
+                                    '       echo $MGMT_GW',
+                                    '       echo "SELF_IP_MGMT - "',
+                                    '       echo $SELF_IP_MGMT',
+                                    '       echo "MGMT_BITMASK - "',
+                                    '       echo $MGMT_BITMASK',
+                                    '       echo "MGMT_NETWORK - "',
+                                    '       echo $MGMT_NETWORK',
+                                    '       tmsh create sys management-ip ${SELF_IP_MGMT}/32',
+                                    '       echo "tmsh list sys management-ip - "',
+                                    '       tmsh list sys management-ip',
+                                    '       tmsh create sys management-route mgmt_gw network ${MGMT_GW}/32 type interface',
+                                    '       tmsh create sys management-route mgmt_net network ${MGMT_NETWORK}/${MGMT_BITMASK} gateway $MGMT_GW',
                                     '       tmsh create sys management-route defaultManagementRoute network default gateway $MGMT_GW mtu 1460',
+                                    '       echo "tmsh list sys management-route - "',
+                                    '       tmsh list sys management-route',
                                     '       tmsh modify sys global-settings remote-host add { metadata.google.internal { hostname metadata.google.internal addr 169.254.169.254 } }',
                                     '       tmsh save /sys config',
                                     '   fi',
-                                    '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp\'',
-                                    '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
-                                    '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
-                                    '   /usr/bin/touch /config/startup_finished',
-                                    'EOF',
-                                    '   /usr/bin/chmod +x /config/nic-swap.sh',
-                                    '   /usr/bin/chmod +x /config/startup-script.sh',
-                                    '   MULTI_NIC=' + str(multi_nic),
                                     '   RUNTIME_CONFIG=' + str(context.properties['bigIpRuntimeInitConfig']),
                                     '   for i in {1..30}; do',
                                     '       /usr/bin/curl -fv --retry 1 --connect-timeout 5 -L ' + str(context.properties['bigIpRuntimeInitPackageUrl']) + ' -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10',
@@ -197,6 +277,15 @@ def metadata(context):
                                     '   else',
                                     '       /usr/bin/printf \'%s\\n\' "${RUNTIME_CONFIG}" | jq .  > /config/cloud/runtime-init-conf.yaml',
                                     '   fi',
+                                    '   # install and run f5-bigip-runtime-init',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.0.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
+                                    '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
+                                    '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
+                                    '   /usr/bin/touch /config/startup_finished',
+                                    'EOF',
+                                    '   /usr/bin/chmod +x /config/nic-swap.sh',
+                                    '   /usr/bin/chmod +x /config/startup-script.sh',
+                                    '   MULTI_NIC=' + str(multi_nic),
                                     '   /usr/bin/touch /config/first_run_flag',
                                     'fi',
                                     'if [[ ${MULTI_NIC} == "True" ]]; then',
@@ -211,7 +300,45 @@ def metadata(context):
                     )
                 }]
     }
+    if 'bigIpPeerAddr' in context.properties and context.properties['bigIpPeerAddr'] is not None:
+        metadata_config['items'].append(
+            {
+                'key': 'bigip-peer-addr',
+                'value': str(context.properties['bigIpPeerAddr'])
+            }
+        )
     return metadata_config
+
+def create_target_instance(context, target_instance, instance_name):
+    """Create target instance."""
+    # Build instance property lists
+    required_properties = []
+    optional_properties = [
+        'description'
+    ]
+
+    # Setup Variables
+    prefix = context.properties['uniqueString']
+    name = target_instance.get('name') or context.env['name'] if 'name' in target_instance or 'name' in context.env else 'bigip'
+    target_instance_name = generate_name(prefix, name + '-ti')
+    properties = {}
+
+    # Setup Defaults - property updated to given value when property exists in config
+    properties.update({
+        'description': 'targetInstance',
+        'instance': '$(ref.' + instance_name + '.selfLink)',
+        'name': target_instance_name,
+        'natPolicy': 'NO_NAT',
+        'zone': context.properties['zone']
+    })
+
+    properties.update(populate_properties(target_instance, required_properties, optional_properties))
+    target_instance_config = {
+        'name': target_instance_name,
+        'type': 'compute.v1.targetInstance',
+        'properties': properties
+    }
+    return target_instance_config
 
 def create_instance_outputs(context):
     """ Create standalone instance outputs"""
@@ -224,9 +351,33 @@ def create_instance_outputs(context):
     }
     return instance
 
+def create_target_instance_outputs(context, target_instance):
+    """Create target instance outputs."""
+    prefix = context.properties['uniqueString']
+    name = target_instance.get('name') or context.env['name'] if 'name' in target_instance or 'name' in context.env else 'bigip'
+    target_instance_name = generate_name(prefix, name + '-ti')
+    target_instance = {
+        'name': 'targetInstanceSelfLink',
+        'resourceName': target_instance_name,
+        'value': '$(ref.' + target_instance_name + '.selfLink)'
+    }
+    return target_instance
+
 def generate_config(context):
     """ Create single bigip instance"""
+    name = context.properties.get('name') or \
+        context.env['name']
+    instance_name = generate_name(context.properties['uniqueString'], name)
     # build resources
-    resources = [create_instance(context),]
+    resources = [create_instance(context)]
+    storage_list = context.properties.get('storageBuckets', [])
+    for storage_bucket in storage_list:
+        resources.append(create_storage_bucket(context, storage_bucket))
+    for target_instance in context.properties.get('targetInstances', []):
+        resources.append(create_target_instance(context, target_instance, instance_name))
+    # build outputs
     outputs = [create_instance_outputs(context)]
+    for target_instance in context.properties.get('targetInstances', []):
+        outputs = outputs + [create_target_instance_outputs(context, target_instance)]
+
     return {'resources': resources, 'outputs': outputs}

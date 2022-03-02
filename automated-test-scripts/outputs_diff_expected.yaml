@@ -1,4 +1,10 @@
+../../examples/autoscale/bigiq/autoscale.py.schema:
+- No Key Diff
+- No Value Diff
 ../../examples/autoscale/payg/autoscale.py.schema:
+- No Key Diff
+- No Value Diff
+../../examples/failover/failover.py.schema:
 - No Key Diff
 - No Value Diff
 ../../examples/modules/access/access.py.schema:
@@ -17,6 +23,9 @@
 - No Key Diff
 - No Value Diff
 ../../examples/modules/dag/dag.py.schema:
+- No Key Diff
+- No Value Diff
+../../examples/modules/function/function.py.schema:
 - No Key Diff
 - No Value Diff
 ../../examples/modules/network/network.py.schema:

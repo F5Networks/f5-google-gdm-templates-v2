@@ -13,12 +13,16 @@
   - [Important Configuration Notes](#important-configuration-notes)
     - [Template Input Parameters](#template-input-parameters)
     - [Template Outputs](#template-outputs)
+    - [Existing Network Parameters](#existing-network-parameters)
   - [Deploying this Solution](#deploying-this-solution)
     - [Deploying via the gcloud CLI](#deploying-via-the-gcloud-cli)
     - [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment)
   - [Validation](#validation)
     - [Validating the Deployment](#validating-the-deployment)
     - [Testing the WAF Service](#testing-the-waf-service)
+    - [Viewing WAF Logs](#viewing-waf-logs)
+    - [Accessing the BIG-IP](#accessing-the-big-ip)
+    - [Viewing Autoscale events](#viewing-autoscale-events)
   - [Updating this Solution](#updating-this-solution)
     - [Updating the Configuration](#updating-the-configuration)
     - [Upgrading the BIG-IP VE Image](#upgrading-the-big-ip-ve-image)
@@ -35,12 +39,19 @@
 
 ## Introduction
 
-This solution uses a parent template to launch several linked child templates (modules) to create a full example stack for the BIG-IP Autoscale solution. The linked templates are located in the **[examples/modules](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules)** directory in this repository. **F5 recommends you clone this repository and modify these templates to fit your use case.** 
+This solution uses a parent template to launch several linked child templates (modules) to create an example BIG-IP autoscale solution. The linked templates are located in the [`examples/modules`](https://github.com/F5Networks/f5-google-gdm-templates-v2/tree/main/examples/modules) directory in this repository. **F5 recommends cloning this repository and modifying these templates to fit your use case.** 
+
+***Full Stack (autoscale.py)***<br>
+Use the *autoscale.py* parent template to deploy an example full stack autoscale solution, complete with virtual network, bastion *(optional)*, dag/ingress, access, BIG-IP(s) and example web application.  
+
+***Existing Network Stack (autoscale-existing-network.py)***<br>
+Use the *autoscale-existing-network.py* parent template to deploy the autoscale solution into an existing infrastructure. This template expects the virtual networks, subnets, and bastion host(s) have already been deployed. The example web application is also not part of this parent template as it intended for an existing environment.
 
 The modules below create the following resources:
 
-- **Network**: This template creates Virtual Networks, Subnets, and Route Tables.
-- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IPs.
+- **Network**: This template creates Virtual Networks, Subnets, and Route Tables. *(Full stack only)*
+- **Bastion**: This template creates a generic example bastion for use when connecting to the management interfaces of BIG-IPs. *(Full stack only)*
+- **Application**: This template creates a generic example application for use when demonstrating live traffic through the BIG-IPs. *(Full stack only)*
 - **Disaggregation** *(DAG/Ingress)*: This template creates resources required to get traffic to the BIG-IP, including Firewalls, Forwarding Rules, internal/external Load Balancers, and accompanying resources such as health probes.
 - **Access**: This template creates a custom IAM role for the BIG-IP instances and other resources to gain access to Google Cloud services such as compute and storage.
 - **BIG-IP**: This template creates compute instances with F5 BIG-IP Virtual Editions provisioned with Local Traffic Manager (LTM) and Application Security Manager (ASM). Traffic flows from the Google load balancer to the BIG-IP VE instances and then to the application servers. The BIG-IP VE(s) are configured in single-NIC mode. Auto scaling means that as certain thresholds are reached, the number of BIG-IP VE instances automatically increases or decreases accordingly. The BIG-IP module template can be deployed separately from the example template provided here into an "existing" stack.
@@ -62,6 +73,7 @@ This solution leverages traditional Autoscale configuration management practices
   - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
   - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
     - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-payg-25mbps)
+  - This solution creates service accounts, custom IAM roles, and service account bindings. The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed. For more information about this account, see the Google-managed service account [documentation](https://cloud.google.com/iam/docs/maintain-custom-roles-deployment-manager)
 
 
 ## Important Configuration Notes
@@ -114,18 +126,39 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | owner | No | Owner label. |
 | provisionPublicIp | No | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
 | region | No | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes | This parameter restricts network access to the web application. Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, '- 0.0.0.0/0' for Internet access, etc. |
-| restrictedSrcAddressMgmt | Yes | This parameter restricts network access to the BIG-IP's management interface. Provide a yaml list of addresses or networks in CIDR notation, for example, '55.55.55.55/32' for a host, '10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '10.0.0.0/8'. |
+| restrictedSrcAddressApp | Yes | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | Yes | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
 | zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+
+
+#### Existing Network Parameters
+
+| Parameter | Required | Description |
+| --- | --- | --- |
+| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
+| subnets.mgmtSubnetName | Yes | Management subnet name | 
+| subnets.appSubnetName | Yes | Application subnet name |
+| networkName | Yes | Network name |
 
 
 ### Template Outputs
 
 | Name | Description | Type |
 | ---- | ----------- | ---- |
-| deployment_name | Name of parent deployment | string |
+| appInstanceGroupName | Application instance group name. | string |
+| appInstanceGroupSelfLink | Application instance group self link. | string |
+| bastionInstanceGroupName | Bastion instance group name. | string |
+| bastionInstanceGroupSelfLink | Bastion instance group self link. | string |
+| bigIpInstanceGroupName | BIG-IP instance group name. | string |
+| bigIpInstanceGroupSelfLink | BIG-IP instance group self link. | string |
+| deploymentName | Autoscale WAF deployment name. | string |
+| networkName | Network name. | string |
+| networkSelfLink | Network self link. | string |
+| wafExternalHttpsUrl | WAF external HTTP URL. | string |
+| wafInternalHttpsUrl | WAF external HTTPS URL. | string |
+| wafPublicIp | WAF public IP. | string |
 
 
 ## Deploying this Solution
@@ -156,7 +189,7 @@ You will most likely want or need to change the BIG-IP configuration. This gener
 Example from sample_autoscale.yaml
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.0.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
 ```
 
 ***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*
@@ -181,7 +214,7 @@ To change the Pool configuration:
 
 Example:
 ```yaml
-           shared_pool:
+           Shared_Pool:
               class: Pool
               remark: Service 1 shared pool
               members:
@@ -217,30 +250,6 @@ Example:
   4. Deploy or Re-Deploy.
 
 
-As instances in an autoscaled deployment are ephemeral, remote logging is critical. By default, this solution deploys a Telemetry Streaming configuration that has a placeholder for the remote logging destination. 
-
-To update the Remote Logging configuration:
-
-  1. Edit/modify the Telemetry Streaming (TS) declaration in a corresponding runtime-init config file [runtime-init-conf-payg.yaml](../bigip-configurations/runtime-init-conf-payg.yaml) with the new destination values. 
-
-Example: Replace 
-```yaml
-          My_Splunk_Consumer:
-            class: Telemetry_Consumer
-            type: Splunk
-            host: 192.168.2.4
-            protocol: https
-            port: 8088
-            passphrase:
-              cipherText: '{{{SPLUNK_API_KEY}}}'
-            compressionType: gzip
-```
-with your remote logging destination. See Telemetry Streaming [documentation](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/setting-up-consumer.html) for more details.
- 
-  2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, git, Google Cloud Storage, etc.).
-  3. Update the **bigIpRuntimeInitConfig** input parameter to reference the URL of the customized configuration file.
-
-
 ## Validation
 
 This section describes how to validate the template deployment, test the WAF service, and troubleshoot common problems.
@@ -259,11 +268,10 @@ If any of the deployments are in a failed state, proceed to the [Troubleshooting
 To test the WAF service, perform the following steps:
 - Check the instance group health state; instance health is based on Google Cloud's ability to connect to your application via the instance group's load balancer. The health state for each instance should be "Healthy". If the state is "Unhealthy", proceed to the [Troubleshooting Steps](#troubleshooting-steps) section.
 - Obtain the IP address of the WAF service:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > wafPublicIp**.
   - **gcloud CLI**: 
       ```bash
-      UNIQUE_STRING="myuniquestr"
-      REGION="us-west1"
-      gcloud compute forwarding-rules describe ${UNIQUE_STRING}-fwrule1 --region=${REGION} --format='value(IPAddress)'
+      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("wafPublicIp")).finalValue'
       ```
 - Verify the application is responding:
   - Paste the IP address in a browser: ```https://${IP_ADDRESS_FROM_OUTPUT}```
@@ -285,29 +293,49 @@ To test the WAF service, perform the following steps:
     <html><head><title>Request Rejected</title></head><body>The requested URL was rejected. Please consult with your administrator.<br><br>Your support ID is: 2394594827598561347<br><br><a href='javascript:history.back();'>[Go Back]</a></body></html>
     ```
 
+### Viewing WAF Logs
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends WAF logs to the Google Cloud Logging service.
+- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for logId in the F5 BIG-IP Runtime Init My_Remote_Logs_Namespace configuration. The default value is ***f5-waf-logs***.
+
 ### Accessing the BIG-IP
 
-
 - NOTE:
-
-  - Replace _${UNIQUE_STRING}_ and _${ZONE}_ with the values you provided for your _uniqueString_ and _zone_ parameters.
+  - The following CLI commands require the gcloud CLI and yq: https://github.com/mikefarah/yq#install
   - When **false** is selected for **provisionPublicIp**, you must connect to the BIG-IP instance via a bastion host. Once connected to a bastion host, you may then connect via SSH to the private IP addresses of the BIG-IP instances in *uniqueString*-bigip-igm.
 
+From Parent Template Outputs:
+  - **Console**:  Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs**.
+  - **Google CLI**:
+    ```bash
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq .resources[0].outputs
+    ```
 
 - Obtain the IP address of the BIG-IP Management Port:
-
   - **gcloud CLI**:
-      - Instances (BIG-IP)
-      ```
-      UNIQUE_STRING="myuniquestr"
-      ZONE="us-west1-a"
-      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bigip-igm --zone=${ZONE} --format json | jq -r .[].instance
-      ```
 
+      - Instance Group (BIG-IP)
+        - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bigIpInstanceGroupName***.
+        - **Google CLI**: 
+          ``` bash 
+          BIG_IP_INSTANCE_GROUP_NAME=$(gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceGroupName")).finalValue')
+          ```
+      - Instances (BIG-IP)
+        ```
+        ZONE="us-west1-a"
+        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        ```
+
+    - Instance Group (Bastion)
+        - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > *bastionInstanceGroupName***.
+        - **Google CLI**: 
+          ``` bash 
+          BASTION_INSTANCE_GROUP_NAME=$(gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bastionInstanceGroupName")).finalValue')
+          ```
     - Instances (Bastion)
-      ```
-      gcloud compute instance-groups list-instances ${UNIQUE_STRING}-bastion-igm --zone=${ZONE} --format json | jq -r .[].instance
-      ```
+        ```
+        gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        ```
  
     - Public IPs (BIG-IP or Bastion instance): 
       ```shell 
@@ -377,6 +405,12 @@ To test the WAF service, perform the following steps:
   - To Login: 
     - username: `<YOUR_WEBUI_USERNAME>`
     - password: `<YOUR_STRONG_PASSWORD>`
+
+### Viewing Autoscale events
+
+- This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends metrics to Google Cloud Monitoring service and those metrics are used by autoscaling policies to perform autoscale events.
+- Autoscaling events can be seen under the instance group monitoring view. 
+
       
 ### Further Exploring
 
@@ -562,7 +596,7 @@ extension_services:
 
 More information about F5 BIG-IP Runtime Init and additional examples can be found in the [GitHub repository](https://github.com/F5Networks/f5-bigip-runtime-init/blob/main/README.md).
 
-If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://devcentral.f5.com/codeshare/checksums-for-f5-supported-cft-and-arm-templates-on-github-1014) about Checksums for F5 Supported Cloud templates on GitHub.
+If you want to verify the integrity of the template itself, F5 provides checksums for all of our templates. For instructions and the checksums to compare against, see [this article](https://community.f5.com/t5/crowdsrc/checksums-for-f5-supported-cloud-templates-on-github/ta-p/284471) about Checksums for F5 Supported Cloud templates on GitHub.
 
 List of endpoints BIG-IP may contact during onboarding:
 - BIG-IP image default:

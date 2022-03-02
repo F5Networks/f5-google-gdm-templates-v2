@@ -1,5 +1,5 @@
 ---
-name: Google Examples - bigip-standalone
+name: Google Examples - bigip-quickstart
 onStart:
   - ../../common/helper_init.sh
   - ../../common/create_storage_upload_runtime.sh
