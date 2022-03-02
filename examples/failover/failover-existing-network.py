@@ -75,7 +75,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
         storage_config = [{
             'name': context.properties['cfeBucket'],
             'labels': {
-                'f5_cloud_failover_label': 'bigip_high_availability_solution'
+                'f5_cloud_failover_label': context.properties['cfeTag']
                 }
             }]
     else:
@@ -94,7 +94,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             'storageBuckets': storage_config,
             'region': context.properties['region'],
             'labels': {
-                'f5_cloud_failover_label': 'bigip_high_availability_solution'
+                'f5_cloud_failover_label': context.properties['cfeTag']
             },
             'serviceAccounts': [
                 {
@@ -235,7 +235,7 @@ def create_dag_deployment(context, num_nics):
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"bigip_high_availability_solution\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
+                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
                 },
                 {
                     'name': context.properties['uniqueString'] + '-fwrule2',
@@ -243,7 +243,7 @@ def create_dag_deployment(context, num_nics):
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name2 + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"bigip_high_availability_solution\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
+                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
                 }
             ],
             'healthChecks': [
