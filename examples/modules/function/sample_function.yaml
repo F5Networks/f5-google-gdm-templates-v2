@@ -1,0 +1,38 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+#
+# Version 2.0.0.0s
+
+imports:
+  - path: /tmp/function.py
+resources:
+  - name: function
+    type: function.py
+    properties:
+      uniqueString: my-unique-value
+      region: us-west1
+      jobs:
+        - name: job-my-unique-value
+          schedule: '* * * * *'
+          timeZone: America/Los_Angeles
+          pubsubTarget:
+            topicName: projects/my-project-id/topics/topic-my-unique-value
+            data: VGhpcyBteSBoZWxsbyBtZXNzYWdl
+      topics:
+        - name: projects/my-project-id/topics/topic-my-unique-value
+          topic: topic-my-unique-value
+      functions:
+        - name: func-my-unique-value
+          serviceAccountEmail: my-project-id@appspot.gserviceaccount.com
+          sourceArchiveUrl: >-
+            gs://f5-gcp-bigiq-revoke-us/develop/v1.0.0/cloud_functions_bigiq_revoke.zip
+          entryPoint: hello_pubsub
+          eventTrigger:
+            eventType: google.pubsub.topic.publish
+            resource: projects/my-project-id/topics/topic-my-unique-value
+          runtime: python37
+          maxInstances: 10
+          environmentVariables:
+            bigIpRuntimeInitConfig: >-
+              https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
+            bigipInstanceGroup: myBigipInstanceGroup

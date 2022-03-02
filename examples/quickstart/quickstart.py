@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 1.0.0.0
+# Version 2.0.0.0
 
 
 """Creates full stack for POC"""
@@ -122,6 +122,9 @@ def create_bigip_deployment(context):
                     generate_name(prefix, 'app-int-vip-fw')
                 ]
             },
+            'targetInstances': [{
+                'name': 'bigip'
+            }],
             'uniqueString': context.properties['uniqueString'],
             'zone': context.properties['zone']
         },
@@ -242,6 +245,8 @@ def create_dag_deployment(context):
         depends_on_array.append(int_net_name)
     if context.properties['numNics'] > 3:
         depends_on_array.append(app_net_name)
+    target_instance_name = generate_name(prefix, 'bigip-ti')
+    depends_on_array.append(target_instance_name)
     dag_configuration = [{
       'name': 'dag',
       'type': '../modules/dag/dag.py',
@@ -290,6 +295,15 @@ def create_dag_deployment(context):
                     'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
                 }
             ],
+            'forwardingRules': [
+                {
+                    'name': context.properties['uniqueString'] + '-fwrule1',
+                    'region': context.properties['region'],
+                    'IPProtocol': 'TCP',
+                    'target': '$(ref.' + target_instance_name + '.selfLink)',
+                    'loadBalancingScheme': 'EXTERNAL'
+                }
+            ],
             'healthChecks': [
                 {
                     'checkIntervalSec': 5,
@@ -335,18 +349,152 @@ def generate_config(context):
 
     name = context.properties.get('name') or \
            context.env['name']
+    prefix = context.properties['uniqueString']
+    
     deployment_name = generate_name(context.properties['uniqueString'], name)
+    application_instance_name= generate_name(prefix, 'application')
+    bastion_instance_name= generate_name(prefix, 'bastion')
+    bigip_instance_name= generate_name(prefix, 'bigip1')
+    fw_rule_name = generate_name(prefix, 'fwrule1')
+    mgmt_net_name = generate_name(prefix, 'mgmt-network')
+    ext_net_name = generate_name(prefix, 'external-network')
+    int_net_name = generate_name(prefix, 'internal' + \
+            str(context.properties['numNics'] - 1) + '-network')
 
     resources = create_network_deployment(context) + create_bigip_deployment(context) \
     + create_application_deployment(context) + create_dag_deployment(context)
+    outputs = []
+    mgmt_nic_index = '0' if context.properties['numNics'] == 1 else '1'
+    mgmt_port = '8443' if context.properties['numNics'] == 1 else '443'
 
     if not context.properties['provisionPublicIp']:
         resources = resources + [create_bastion_deployment(context)]
+        outputs = outputs + [
+            {
+                'name': 'bastionInstanceId',
+                'value': '$(ref.' + bastion_instance_name + '.id)'
+            },
+            {
+                'name': 'bastionPublicIp',
+                'value': '$(ref.' + bastion_instance_name + '.networkInterfaces[0].accessConfigs[0].natIP)'
+            },
+            {
+                'name': 'bastionPublicSsh',
+                'value': 'ssh ubuntu@' + '$(ref.' + bastion_instance_name + '.networkInterfaces[0].accessConfigs[0].natIP)'
+            }
+        ]
+    else:
+        outputs = outputs + [
+            {
+                'name': 'bigIpManagementPublicIp',
+                'value': '$(ref.' + bigip_instance_name + '.networkInterfaces[' + mgmt_nic_index + '].accessConfigs[0].natIP)'
+            },
+            {
+                'name': 'bigIpManagementPublicUrl',
+                'value': 'https://' + '$(ref.' + bigip_instance_name + '.networkInterfaces[' + mgmt_nic_index + '].accessConfigs[0].natIP)' + ':' + mgmt_port
+            },
+            {
+                'name': 'bigIpManagementPublicSsh',
+                'value': 'ssh quickstart@' + '$(ref.' + bigip_instance_name + '.networkInterfaces[' + mgmt_nic_index + '].accessConfigs[0].natIP)'
+            }
+        ]
 
-    outputs = [
+    if context.properties['numNics'] == 2:
+        outputs = outputs + [
+            {
+                'name': 'networkName1',
+                'value': ext_net_name
+            },
+            {
+                'name': 'networkSelfLink1',
+                'value': '$(ref.' + ext_net_name + '.selfLink)'
+            }
+        ]
+
+    if context.properties['numNics'] == 3:
+        outputs = outputs + [
+            {
+                'name': 'networkName2',
+                'value': int_net_name
+            },
+            {
+                'name': 'networkSelfLink2',
+                'value': '$(ref.' + int_net_name + '.selfLink)'
+            }
+        ]
+
+    outputs = outputs + [
         {
             'name': 'deploymentName',
             'value': deployment_name
+        },
+        {
+            'name': 'appPrivateIp',
+            'value': '$(ref.' + application_instance_name + '.networkInterfaces[0].networkIP)'
+        },
+        {
+            'name': 'appPublicIp',
+            'value': '$(ref.' + application_instance_name + '.networkInterfaces[0].accessConfigs[0].natIP)'
+        },
+        {
+            'name': 'appUsername',
+            'value': 'ubuntu'
+        },
+        {
+            'name': 'appInstanceName',
+            'value': application_instance_name
+        },
+        {
+            'name': 'bigIpInstanceId',
+            'value': '$(ref.' + bigip_instance_name + '.id)'
+        },
+        {
+            'name': 'bigIpInstanceName',
+            'value': bigip_instance_name
+        },
+        {
+            'name': 'bigIpManagementPrivateIp',
+            'value': '$(ref.' + bigip_instance_name + '.networkInterfaces[' + mgmt_nic_index + '].networkIP)'
+        },
+        {
+            'name': 'bigIpManagementPrivateUrl',
+            'value': 'http://' + '$(ref.' + bigip_instance_name + '.networkInterfaces[' + mgmt_nic_index + '].networkIP)' + ':' + mgmt_port
+        },
+        {
+            'name': 'bigIpUsername',
+            'value': 'quickstart'
+        },
+        {
+            'name': 'vip1PrivateIp',
+            'value': '$(ref.' + bigip_instance_name + '.networkInterfaces[0].networkIP)'
+        },
+        {
+            'name': 'vip1PrivateUrlHttp',
+            'value': 'http://' + '$(ref.' + bigip_instance_name + '.networkInterfaces[0].networkIP)'
+        },
+        {
+            'name': 'vip1PrivateUrlHttps',
+            'value': 'https://' + '$(ref.' + bigip_instance_name + '.networkInterfaces[0].networkIP)'
+        },
+        {
+            'name': 'vip1PublicIp',
+            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+        },
+        {
+            'name': 'vip1PublicUrlHttp',
+            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+        },
+        {
+            'name': 'vip1PublicUrlHttps',
+            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+        },
+        {
+            'name': 'networkName0',
+            'value': mgmt_net_name
+        },
+        {
+            'name': 'networkSelfLink0',
+            'value': '$(ref.' + mgmt_net_name + '.selfLink)'
         }
     ]
 

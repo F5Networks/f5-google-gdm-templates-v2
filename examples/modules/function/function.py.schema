@@ -1,0 +1,41 @@
+---
+# Copyright 2021 F5 Networks All rights reserved.
+
+info:
+  title: F5 Sample Function
+  author: F5 Networks
+  description: Creates a sample function module.
+  version: 2.0.0.0
+
+imports:
+  - path: function.py
+
+required:
+    - uniqueString
+
+properties:
+    topics:
+        description: list of declaration of settings used for provisioning PubSub topics intended for . More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics
+        type: array
+    jobs:
+        description: list of declaration of settings used for provisioning scheduled jobs intended for . More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/scheduler/docs/reference/rest/v1/projects.locations.jobs
+        type: array
+    functions:
+        description: list of declaration of settings used for provisioning cloud functions intended for . More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions
+        type: array
+    uniqueString:
+        type: string
+        description: Unique String used when creating object names or Tags.
+
+
+outputs:
+  properties:
+    deploymentName:
+      type: string
+      description: Function deployment name
+
+documentation:
+  - README.md
+
+examples:
+  - sample_function.yaml

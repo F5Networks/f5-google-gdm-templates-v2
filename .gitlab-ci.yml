@@ -53,6 +53,22 @@ run_link_checker:
   script:
     - make link_check
 
+# validate test policy parameters are present
+run_test_param_checker:
+  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3.7
+  stage: smoke-tests
+  tags:
+    - docker-executor
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+  script:
+    - make test_policy_check
+
 # validate parameters match style guide
 verify_parameters_match_style_guide:
   stage: smoke-tests
@@ -117,8 +133,8 @@ gdm_network_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/**/*
       - examples/modules/network/network.py
   except:
     refs:
@@ -127,6 +143,7 @@ gdm_network_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
@@ -148,8 +165,8 @@ gdm_application_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/**/*
       - examples/modules/application/application.py
   except:
     refs:
@@ -158,6 +175,7 @@ gdm_application_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
@@ -179,8 +197,8 @@ gdm_bastion_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/**/*
       - examples/modules/bastion/bastion.py
   except:
     refs:
@@ -189,6 +207,7 @@ gdm_bastion_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
@@ -210,8 +229,8 @@ gdm_bigip_autoscale_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/**/*
       - examples/modules/bigip-autoscale/bigip_autoscale.py
   except:
     refs:
@@ -220,6 +239,7 @@ gdm_bigip_autoscale_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
@@ -241,8 +261,8 @@ gdm_bigip_standalone_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/**/*
       - examples/modules/bigip-standalone/bigip_standalone.py
   except:
     refs:
@@ -251,6 +271,7 @@ gdm_bigip_standalone_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-standalone/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
@@ -272,8 +293,8 @@ gdm_dag_module_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/**/*
       - examples/modules/dag/dag.py
   except:
     refs:
@@ -282,8 +303,41 @@ gdm_dag_module_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+# Module: GDM Function Template
+gdm_function_module_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/**/*
+      - examples/modules/function/function.py
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
     - pip install -r cloud-tools/master-job/requirements.txt
@@ -303,9 +357,16 @@ gdm_autoscale_payg_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/**/*
       - examples/autoscale/payg/autoscale.py
+      - examples/modules/access/access.py
+      - examples/modules/application/application.py
+      - examples/modules/bastion/bastion.py
+      - examples/modules/bigip-autoscale/bigip_autoscale.py
+      - examples/modules/dag/dag.py
+      - examples/modules/network/network.py
+      - examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
   except:
     refs:
       - schedules
@@ -313,8 +374,117 @@ gdm_autoscale_payg_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
     TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+# Module: GDM Autoscale Existing Network PAYG Template
+gdm_autoscale_existing_network_payg_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/**/*
+      - examples/autoscale/payg/autoscale-existing-network.py
+      - examples/autoscale/payg/autoscale-existing-network.py.schema
+      - examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+# Module: GDM Autoscale BIGIQ Template
+gdm_autoscale_bigiq_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/**/*
+      - examples/autoscale/bigiq/autoscale.py
+      - examples/modules/access/access.py
+      - examples/modules/application/application.py
+      - examples/modules/bastion/bastion.py
+      - examples/modules/bigip-autoscale/bigip_autoscale.py
+      - examples/modules/dag/dag.py
+      - examples/modules/function/function.py
+      - examples/modules/network/network.py
+      - examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+# Module: GDM Autoscale Existing Network BIG-IQ Template
+gdm_autoscale_existing_network_bigiq_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/**/*
+      - examples/autoscale/bigiq/autoscale-existing-network.py
+      - examples/autoscale/bigiq/autoscale-existing-network.py.schema
+      - examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
     - pip install -r cloud-tools/master-job/requirements.txt
@@ -334,9 +504,14 @@ gdm_quickstart_test_job:
     refs:
       - branches
     changes:
-      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/*
-      - automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/*
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/**/*
       - examples/quickstart/quickstart.py
+      - examples/modules/application/application.py
+      - examples/modules/bastion/bastion.py
+      - examples/modules/bigip-standalone/bigip_standalone.py
+      - examples/modules/dag/dag.py
+      - examples/modules/network/network.py
       - examples/quickstart/bigip-configurations/*
   except:
     refs:
@@ -345,8 +520,9 @@ gdm_quickstart_test_job:
       - pipelines
     variables:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
   variables:
-    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/test_policy.yaml
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/full/test_policy.yaml
     STACK_TYPE: dewdrop-preproduction
   script:
     - pip install -r cloud-tools/master-job/requirements.txt
@@ -356,6 +532,120 @@ gdm_quickstart_test_job:
     when:
       - runner_system_failure
       - stuck_or_timeout_failure
+
+# Module: GDM Quickstart Existing Network Template
+gdm_quickstart_existing_network_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/**/*
+      - examples/quickstart/quickstart-existing-network.py
+      - examples/modules/bigip-standalone/bigip_standalone.py
+      - examples/modules/dag/dag.py
+      - examples/quickstart/bigip-configurations/*
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/existing-network/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+
+# Module: GDM Failover Template
+gdm_failover_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/**/*
+      - examples/failover/failover.py
+      - examples/modules/access/access.py
+      - examples/modules/application/application.py
+      - examples/modules/bastion/bastion.py
+      - examples/modules/bigip-standalone/bigip_standalone.py
+      - examples/modules/dag/dag.py
+      - examples/modules/network/network.py
+      - examples/failover/bigip-configurations/*
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/full/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+
+# Module: GDM Failover Existing Network Template
+gdm_failover_existing_network_test_job:
+  stage: sprinkle-tests
+  tags:
+    - docker-executor
+  only:
+    refs:
+      - branches
+    changes:
+      - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/**/*
+      - automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/**/*
+      - examples/failover/failover-existing-network.py
+      - examples/modules/access/access.py
+      - examples/modules/bigip-standalone/bigip_standalone.py
+      - examples/modules/dag/dag.py
+      - examples/failover/bigip-configurations/*
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+    variables:
+      - $RELEASE_RUNTIME_INIT_TESTS == "true"
+      - $CI_COMMIT_MESSAGE =~ /smart:init/
+  variables:
+    TEST_POLICY: automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/existing/test_policy.yaml
+    STACK_TYPE: dewdrop-preproduction
+  script:
+    - pip install -r cloud-tools/master-job/requirements.txt
+    - cloud-tools/master-job/sprinkler.py --test-plan $TEST_POLICY --token $CI_JOB_TOKEN --branch $CI_COMMIT_REF_NAME --stack-type $STACK_TYPE --project-id $CI_PROJECT_ID
+  retry:
+    max: 2
+    when:
+      - runner_system_failure
+      - stuck_or_timeout_failure
+
+
 
 pre_release_test_job:
   stage: sprinkle-tests
@@ -511,3 +801,22 @@ run_link_checker_release:
       - $RELEASE_RUNTIME_INIT_TESTS == "true"
   script:
     - make link_check_release
+
+# verifies all examples use the latest AT Components versions
+check_at_components_metadata:
+  stage: smoke-tests
+  image: ${ARTIFACTORY_SERVER}/dockerhub-remote/python:3
+  except:
+    refs:
+      - schedules
+      - triggers
+      - pipelines
+  script:
+    - curl -sL https://deb.nodesource.com/setup_12.x | bash - && apt-get install -yq nodejs build-essential
+    - apt-get install -y jq
+    - pip3 install yq
+    - if [[ ! -z ${RUNTIME_INIT_PACKAGE_URL} && ! $CI_COMMIT_BRANCH == "main" ]]; then ./cloud-tools/sync-at-components-metadata/sync_at_components_metadata.sh --config-directories examples/autoscale/bigip-configurations,examples/quickstart/bigip-configurations --template-directory examples --cloud gcp --runtime-init-package-url $RUNTIME_INIT_PACKAGE_URL; fi
+    - if [[ -z $RUNTIME_INIT_PACKAGE_URL ]]; then ./cloud-tools/sync-at-components-metadata/sync_at_components_metadata.sh --config-directories examples/autoscale/bigip-configurations,examples/quickstart/bigip-configurations --template-directory examples --cloud gcp; fi
+    - if git diff | grep 'diff --git'; then exit 1; else exit 0; fi
+  tags:
+    - cm-official-docker-executor

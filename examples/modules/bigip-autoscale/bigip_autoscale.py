@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 1.0.0.0
+# Version 2.0.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -83,7 +83,7 @@ def create_instance_template(context, instance_template):
         'machineType': context.properties['instanceType'],
         'serviceAccounts': [{
             'email': context.properties['serviceAccountEmail'],
-            'scopes': ['https://www.googleapis.com/auth/compute', 'https://www.googleapis.com/auth/devstorage.read_write']
+            'scopes': ['https://www.googleapis.com/auth/compute', 'https://www.googleapis.com/auth/devstorage.read_write', "https://www.googleapis.com/auth/cloud-platform"]
         }],
         'disks': [{
             'deviceName': 'boot',
@@ -142,7 +142,7 @@ def create_instance_template(context, instance_template):
                                     'done',
                                     '',
                                     '# Run',
-                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp\'',
+                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.0.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
                                     'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf',

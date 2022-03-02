@@ -5,7 +5,7 @@
 
 ## Contents
 
-- [Deploying BIGIP Autoscale Template](#deploying-bigip-autoscale-template)
+- [Deploying BIG-IP Autoscale Template](#deploying-bigip-autoscale-template)
   - [Contents](#contents)
   - [Introduction](#introduction)
   - [Prerequisites](#prerequisites)
@@ -61,6 +61,6 @@ This Google Deployment Manager template creates an autoscale group of BIG-IP ins
 
 | Name | Description | Required Resource | Type |
 | --- | --- | --- | --- |
-| bigipAutoscaleName | BIGIP Autoscale resource name |  All resources |  String |
-| instanceGroup | Self-link to BIGIP Instance group | Instance Group | String |
+| bigipAutoscaleName | BIG-IP Autoscale resource name. |  All resources |  String |
+| instanceGroup | Self-link to BIG-IP Instance group. | Instance Group | String |
 | targetPool | Self-link to Target Pool | Target Pool | String |

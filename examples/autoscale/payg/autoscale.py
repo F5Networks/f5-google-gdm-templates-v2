@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 1.0.0.0
+# Version 2.0.0.0
 
 # pylint: disable=W,C,R
 
@@ -179,7 +179,15 @@ def create_bigip_deployment(context):
                 'cpuUtilization': {
                   'utilizationTarget': context.properties['bigIpScaleOutCpuThreshold']
                 },
-                'coolDownPeriodSec': context.properties['bigIpCoolDownPeriodSec']
+                'coolDownPeriodSec': context.properties['bigIpCoolDownPeriodSec'],
+                'customMetricUtilizations': [
+                    {
+                        'metric': 'custom.googleapis.com/system/cpu',
+                        'filter': 'resource.type = \"generic_node\"',
+                        'utilizationTarget': 60,
+                        'utilizationTargetType': 'GAUGE'
+                    }
+                ]
               }
           }],
           'cost': context.properties['cost'],
@@ -359,22 +367,76 @@ def generate_config(context):
 
     name = context.properties.get('name') or \
            context.env['name']
-    deployment_name = generate_name(context.properties['uniqueString'], name)
+    prefix = context.properties['uniqueString']
+
+    deployment_name = generate_name(prefix, name)
+    application_igm_name= generate_name(prefix, 'f5-demo-igm')
+    bastion_igm_name= generate_name(prefix, 'bastion-igm')
+    bigip_igm_name= generate_name(prefix, 'bigip-igm')
+    fw_rule_name = generate_name(prefix, 'fwrule1')
+    net_name = generate_name(prefix, 'f5-network')
 
     resources = [create_network_deployment(context)] + \
                 [create_access_deployment(context)] + \
                 [create_application_deployment(context)] + \
                 [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
+    outputs = []
 
 
     if not context.properties['provisionPublicIp']:
         resources = resources + [create_bastion_deployment(context)]
+        outputs = outputs + [
+            {
+                'name': 'bastionInstanceGroupName',
+                'value': bastion_igm_name
+            },
+            {
+                'name': 'bastionInstanceGroupSelfLink',
+                'value': '$(ref.' + bastion_igm_name + '.selfLink)'
+            }
+        ]
 
-    outputs = [
+    outputs = outputs + [
         {
             'name': 'deploymentName',
             'value': deployment_name
+        },
+        {
+            'name': 'appInstanceGroupName',
+            'value': application_igm_name
+        },
+        {
+            'name': 'appInstanceGroupSelfLink',
+            'value': '$(ref.' + application_igm_name + '.selfLink)'
+        },
+        {
+            'name': 'bigIpInstanceGroupName',
+            'value': bigip_igm_name
+        },
+        {
+            'name': 'bigIpInstanceGroupSelfLink',
+            'value': '$(ref.' + bigip_igm_name + '.selfLink)'
+        },
+        {
+            'name': 'networkName',
+            'value': net_name
+        },
+        {
+            'name': 'networkSelfLink',
+            'value': '$(ref.' + net_name + '.selfLink)'
+        },
+        {
+            'name': 'wafExternalHttpUrl',
+            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+        },
+        {
+            'name': 'wafExternalHttpsUrl',
+            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+        },
+        {
+            'name': 'wafPublicIp',
+            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
         }
     ]
 

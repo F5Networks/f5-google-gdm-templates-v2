@@ -9,7 +9,8 @@ info:
 
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/instances
-  version: 1.0.0.0
+      - https://cloud.google.com/storage/docs/json_api/v1/buckets
+  version: 2.0.0.0
 imports:
   - path: bigip_standalone.py
 
@@ -58,6 +59,15 @@ properties:
               aliasIpRanges:
                 - ipCidrRange: 10.0.31.181
                   subnetworkRangeName: myAlias Subnet
+  storageBuckets:
+    type: array
+    description: |
+      Creates storage buckets
+        Example:
+          storageBuckets:
+            - name: cfe-bucket
+              labels:
+                f5_cloud_failover_label: bigip_high_availability_solution
   region:
     description: |
       Enter the region where you want to deploy the application, for example 'us-west1'.
@@ -72,6 +82,9 @@ properties:
             - myMgmtFwTag
               myAppFwTag
       type: array
+  targetIntances:
+    description: List of settings for provisioning target instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances
+    type: array
   uniqueString:
     description: Unique String used when creating object names or Tags.
     type: string
@@ -83,6 +96,9 @@ outputs:
     instanceName:
       type: string
       description:  Bigip deployment name.
+    targetInstanceSelfLink:
+      type: string
+      description:  Bigip target instance self link.
 
 documentation:
   - README.md

@@ -9,19 +9,25 @@ TMP_DIR=/tmp/<DEWPOINT JOB ID>
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-APP_ADDRESS=$(get_app_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> public)
+APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
 echo "APP_ADDRESS: ${APP_ADDRESS}"
 
-# confirm app is available
-ACCEPTED_RESPONSE=$(curl -vv http://${APP_ADDRESS})
-echo "ACCEPTED_RESPONSE: ${ACCEPTED_RESPONSE}"
+if [[ "<PROVISION DEMO APP>" == "True" ]]; then
+        # confirm app is available
+        ACCEPTED_RESPONSE=$(curl -vv http://${APP_ADDRESS})
+        echo "ACCEPTED_RESPONSE: ${ACCEPTED_RESPONSE}"
 
-# try something illegal (enforcement mode should be set to blocking by default)
-REJECTED_RESPONSE=$(curl -vv -X DELETE http://${APP_ADDRESS})
-echo "REJECTED_RESPONSE: ${REJECTED_RESPONSE}"
 
-if echo $ACCEPTED_RESPONSE | grep -q "Demo App" && echo $REJECTED_RESPONSE | grep -q "The requested URL was rejected"; then
-    echo "Succeeded"
+
+    # try something illegal (enforcement mode should be set to blocking by default)
+    REJECTED_RESPONSE=$(curl -vv -X DELETE http://${APP_ADDRESS})
+    echo "REJECTED_RESPONSE: ${REJECTED_RESPONSE}"
+
+    if echo $ACCEPTED_RESPONSE | grep -q "Demo App" && echo $REJECTED_RESPONSE | grep -q "The requested URL was rejected"; then
+        echo "Succeeded"
+    else
+        echo "Failed"
+    fi
 else
-    echo "Failed"
+    echo "Succeeded"
 fi

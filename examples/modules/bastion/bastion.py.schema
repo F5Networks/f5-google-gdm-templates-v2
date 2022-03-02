@@ -12,7 +12,7 @@ info:
       - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
-  version: 1.0.0.0
+  version: 2.0.0.0
 
 imports:
   - path: bastion.py
@@ -112,7 +112,7 @@ properties:
   osImage:
     description: Self link for OS Image
     type: string
-    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1604-lts'
+    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts'
   owner:
     description: Owner label.
     type: string
