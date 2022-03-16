@@ -23,27 +23,27 @@ properties:
     default: f5app
     description: Application label.
     type: string
-  bigIpExternalSelfIp1:
+  bigIpExternalSelfIp01:
     default: 10.0.1.11
     description: External interface private IP address for bigip1.
     type: string
-  bigIpExternalSelfIp2:
+  bigIpExternalSelfIp02:
     default: 10.0.1.12
     description: External interface private IP address for bigip2.
     type: string
-  bigIpInternalSelfIp1:
+  bigIpInternalSelfIp01:
     default: 10.0.2.11
     description: Internal interface private IP address for bigip1.
     type: string
-  bigIpInternalSelfIp2:
+  bigIpInternalSelfIp02:
     default: 10.0.2.12
     description: Internal interface private IP address for bigip2.
     type: string
-  bigIpMgmtSelfIp1:
+  bigIpMgmtAddress01:
     default: 10.0.0.11
     description: Management interface private IP address for bigip1.
     type: string
-  bigIpMgmtSelfIp2:
+  bigIpMgmtAddress02:
     default: 10.0.0.12
     description: Management interface private IP address for bigip2.
     type: string

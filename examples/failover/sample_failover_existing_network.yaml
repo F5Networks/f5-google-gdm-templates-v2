@@ -27,17 +27,17 @@ resources:
       ### (OPTIONAL) Application label.
       application: f5app
       ### (OPTIONAL) External interface private IP address for bigip1.
-      bigIpExternalSelfIp1: 10.0.1.11
+      bigIpExternalSelfIp01: 10.0.1.11
       ### (OPTIONAL) External interface private IP address for bigip2.
-      bigIpExternalSelfIp2: 10.0.1.12
+      bigIpExternalSelfIp02: 10.0.1.12
       ### (OPTIONAL) Internal interface private IP address for bigip2.
-      bigIpInternalSelfIp1: 10.0.2.11
+      bigIpInternalSelfIp01: 10.0.2.11
       ### (OPTIONAL) Internal interface private IP address for bigip2.
-      bigIpInternalSelfIp2: 10.0.2.12
+      bigIpInternalSelfIp02: 10.0.2.12
       ### (OPTIONAL) Management interface private IP address for bigip2.
-      bigIpMgmtSelfIp1: 10.0.0.11
+      bigIpMgmtAddress01: 10.0.0.11
       ### (OPTIONAL) Management interface private IP address for bigip2.
-      bigIpMgmtSelfIp2: 10.0.0.12
+      bigIpMgmtAddress02: 10.0.0.12
       ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
       bigIpImageName: f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328
       ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.

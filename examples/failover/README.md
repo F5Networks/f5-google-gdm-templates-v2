@@ -124,12 +124,12 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | application | No | Application Tag. |
 | bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpExternalSelfIp1 | No | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
-| bigIpExternalSelfIp2 | No | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
-| bigIpInternalSelfIp1 | No | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
-| bigIpInternalSelfIp2 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
-| bigIpMgmtSelfIp1 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
-| bigIpMgmtSelfIp2 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
+| bigIpExternalSelfIp01 | No | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpExternalSelfIp02 | No | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp01 | No | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp02 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtAddress01 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtAddress02 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
 | bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
@@ -156,12 +156,12 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | application | No | Application Tag. |
 | bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpExternalSelfIp1 | No | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
-| bigIpExternalSelfIp2 | No | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
-| bigIpInternalSelfIp1 | No | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
-| bigIpInternalSelfIp2 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
-| bigIpMgmtSelfIp1 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
-| bigIpMgmtSelfIp2 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
+| bigIpExternalSelfIp01 | No | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpExternalSelfIp02 | No | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp01 | No | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
+| bigIpInternalSelfIp02 | No | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtAddress01 | No | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
+| bigIpMgmtAddress02 | No | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
 | bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
