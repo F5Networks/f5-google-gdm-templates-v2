@@ -112,7 +112,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | appContainerName | No | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | Application label. |
 | bigIpCoolDownPeriodSec | No | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
-| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-1-0-0-10-payg-best-25mbps-211222203736`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
@@ -618,7 +618,7 @@ These templates have been tested and validated with the following versions of BI
 
 | Google Cloud BIG-IP Image Version | BIG-IP Version |
 | --- | --- |
-| 16.1.000000 | 16.1.0.0 Build 0.0.19 |
+| 16.1.200000 | 16.1.2.1 Build 0.0.10 |
 | 14.1.400000 | 14.1.4.4 Build 0.0.4* |
 
 ***Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.*
