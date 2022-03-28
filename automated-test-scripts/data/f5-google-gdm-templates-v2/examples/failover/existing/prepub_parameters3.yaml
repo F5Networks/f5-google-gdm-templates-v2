@@ -8,10 +8,10 @@ BIGIP IP CIDR RANGE: 10.0.23.0/24
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
 BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
-BIGIP VERSION: 16-1-0-0-0-19
+BIGIP VERSION: 16-1-2-1-0-0-10
 DESCRIPTION: ''
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '210623021328'
+IMAGE SUFFIX: '1222211103'
 IMAGE TYPE: all-modules-2boot-loc
 INSTANCE NAME: <UNIQUESTRING>-bigip1
 INSTANCE NAME2: <UNIQUESTRING>-bigip2

@@ -17,10 +17,10 @@ MGMT PORT: 8443
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-payg-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '210623021328'
+IMAGE SUFFIX: '211222203943'
 IMAGE TYPE: best-200mbps
 INSTANCE TYPE: n1-standard-8
-BIGIP VERSION: 16-1-0-0-0-19
+BIGIP VERSION: 16-1-2-1-0-0-10
 BIGIP RUNTIME INIT PACKAGEURL: 'https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run'
 BIGIP RUNTIME INIT CONFIG: 'https://ak-metadata-package-poc.s3.amazonaws.com/runtime-init-gcp-conf.yaml'
 SCALING MAX: 8
