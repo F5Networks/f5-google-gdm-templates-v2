@@ -81,21 +81,12 @@ def create_role_permissions(context, solution_type):
     if solution_type in ['standard', 'secret', 'storage',
                          'remoteLogging', 'failover']:
         included_permissions = [
-            'compute.instances.create',
             'compute.instances.get',
             'compute.instances.list',
             'compute.targetInstances.get',
             'compute.targetInstances.list',
-            'compute.targetInstances.use',
-            'compute.routes.get',
-            'compute.routes.list',
-            'compute.routes.create',
-            'compute.routes.delete',
             'compute.forwardingRules.get',
-            'compute.forwardingRules.list',
-            'compute.forwardingRules.setTarget',
-            'compute.instances.updateNetworkInterface',
-            'compute.networks.updatePolicy',
+            'compute.forwardingRules.list',          
             'compute.globalOperations.get',
             'logging.logEntries.create',
             'monitoring.timeSeries.create',
@@ -103,15 +94,11 @@ def create_role_permissions(context, solution_type):
             'monitoring.metricDescriptors.get',
             'monitoring.metricDescriptors.list',
             'monitoring.monitoredResourceDescriptors.get',
-            'monitoring.monitoredResourceDescriptors.list'
+            'monitoring.monitoredResourceDescriptors.list',
+            'resourcemanager.projects.get'
         ]
-    if solution_type in ['secret', 'remoteLogging', 'failover']:
-        included_permissions = included_permissions + [
-            'resourcemanager.projects.get',
-            'secretmanager.versions.add',
-            'secretmanager.versions.destroy',
-            'secretmanager.versions.disable',
-            'secretmanager.versions.enable',
+    if solution_type in ['secret', 'failover']:
+        included_permissions = included_permissions + [          
             'secretmanager.versions.get',
             'secretmanager.versions.list',
             'secretmanager.versions.access'
@@ -128,6 +115,18 @@ def create_role_permissions(context, solution_type):
             'storage.buckets.update',
             'storage.buckets.delete',
             'storage.buckets.list'
+        ]
+    if solution_type in ['failover']:
+        included_permissions = included_permissions + [
+            'compute.instances.create',
+            'compute.routes.get',
+            'compute.routes.list',
+            'compute.routes.create',
+            'compute.routes.delete',
+            'compute.targetInstances.use',
+            'compute.forwardingRules.setTarget',
+            'compute.instances.updateNetworkInterface',
+            'compute.networks.updatePolicy'
         ]
     if solution_type in ['custom']:
         included_permissions = context.properties['includedPermissions'].split()
