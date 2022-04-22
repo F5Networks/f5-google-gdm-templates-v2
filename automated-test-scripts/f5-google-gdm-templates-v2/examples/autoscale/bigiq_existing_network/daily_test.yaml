@@ -8,6 +8,10 @@ onStart:
 - ../../../common/verify_create_storage.sh
 - ../../../common/create_network_stack.sh
 - ../../../common/verify_create_network.sh
+- ../../../common/create_bastion_dag_stack.sh
+- ../../../common/verify_create_dag.sh
+- ../../../common/create_bastion_stack.sh
+- ../../../common/verify_create_bastion.sh
 - ./create_stack.sh
 - ../../../common/verify_create_autoscale.sh
 - ../../../../sleep/5_minutes.sh
@@ -19,6 +23,10 @@ onStart:
 - ../../../common/verify_delete_storage.sh
 - ../../../common/delete_stack_autoscale.sh
 - ../../../common/verify_delete_autoscale.sh
+- ../../../common/delete_bastion_stack.sh
+- ../../../common/verify_delete_bastion.sh
+- ../../../common/delete_dag_stack.sh
+- ../../../common/verify_delete_dag.sh
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 - ../../../common/delete_secret.sh
@@ -27,6 +35,10 @@ onFail:
 - ../../../common/verify_delete_storage.sh
 - ../../../common/delete_stack_autoscale.sh
 - ../../../common/verify_delete_autoscale.sh
+- ../../../common/delete_bastion_stack.sh
+- ../../../common/verify_delete_bastion.sh
+- ../../../common/delete_dag_stack.sh
+- ../../../common/verify_delete_dag.sh
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 - ../../../common/delete_secret.sh

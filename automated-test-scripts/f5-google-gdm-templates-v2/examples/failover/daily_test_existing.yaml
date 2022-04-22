@@ -6,6 +6,8 @@ onStart:
   - ../../common/create_secret.sh
   - ../../common/create_network_stack.sh
   - ../../common/verify_create_network.sh
+  - ../../common/create_bastion_dag_stack.sh
+  - ../../common/verify_create_dag.sh
   - ../../common/create_application_stack.sh
   - ../../common/verify_create_application.sh
   - ../../common/create_bastion_stack.sh
@@ -34,6 +36,8 @@ onStart:
   - ../../common/delete_application_stack.sh
   - ../../common/verify_delete_bastion.sh
   - ../../common/verify_delete_application.sh
+  - ../../common/delete_dag_stack.sh
+  - ../../common/verify_delete_dag.sh
   - ../../common/delete_network_stack.sh
   - ../../common/verify_delete_network.sh
 onFail:
@@ -46,5 +50,7 @@ onFail:
   - ../../common/delete_application_stack.sh
   - ../../common/verify_delete_bastion.sh
   - ../../common/verify_delete_application.sh
+  - ../../common/delete_dag_stack.sh
+  - ../../common/verify_delete_dag.sh
   - ../../common/delete_network_stack.sh
   - ../../common/verify_delete_network.sh

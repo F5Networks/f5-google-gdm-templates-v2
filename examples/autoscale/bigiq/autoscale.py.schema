@@ -46,7 +46,7 @@ properties:
     description: Minimum number of BIG-IP instances you want available in the Auto Scale Group.
     type: integer
   bigIpImageName:
-    default: f5-bigip-16-1-2-1-0-0-10-payg-best-25mbps-211222203736
+    default: f5-bigip-16-1-2-1-0-0-10-byol-all-modules-2boot-loc-1222211103
     description: BIG-IP image name
     type: string
   bigIpInstanceTemplateVersion:
@@ -62,7 +62,7 @@ properties:
     decription: IP CIDR range used by the management network of the BIG-IP.
     type: string
   bigIpRuntimeInitConfig:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
