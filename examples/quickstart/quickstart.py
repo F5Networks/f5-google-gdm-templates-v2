@@ -235,9 +235,71 @@ def create_dag_deployment(context):
         int_net_name = generate_name(prefix, 'internal' + \
             str(context.properties['numNics'] - 1) + '-network')
     int_net_cidr = '10.0.' + str(context.properties['numNics'] - 1) + '.0/24'
+    mgmt_port = 8443
+    bastion_instance_name = generate_name(prefix, 'bastion')
+    firewalls_config = [
+        {
+            'allowed': [
+                {
+                    'IPProtocol': 'TCP',
+                    'ports': [ 22, mgmt_port , 443 ]
+                }
+            ],
+            'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
+            'name': context.properties['uniqueString'] + '-mgmt-fw',
+            'network': '$(ref.' + mgmt_net_name + '.selfLink)',
+            'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] if context.properties['provisionPublicIp'] else '$(ref.' + bastion_instance_name + '.networkInterfaces[0].networkIP)' ],
+            'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
+        },
+        {
+            'allowed': [
+                {
+                    'IPProtocol': 'TCP',
+                    'ports': [ 80 , 443 ]
+                }
+            ],
+            'description': 'Allow web traffic to internal app network',
+            'name': context.properties['uniqueString'] + '-app-int-fw',
+            'network': '$(ref.' + int_net_name + '.selfLink)',
+            'sourceRanges': [ int_net_cidr ],
+            'targetTags': [
+                generate_name(prefix, 'app-int-fw'),
+                generate_name(prefix, 'app-int-vip-fw')
+            ]
+        },
+        {
+            'allowed': [
+                {
+                    'IPProtocol': 'TCP',
+                    'ports': [ 80, 443 ]
+                }
+            ],
+            'description': 'Allow web traffic to public network',
+            'name': context.properties['uniqueString'] + '-app-vip-fw',
+            'network': '$(ref.' + app_net_name + '.selfLink)',
+            'sourceRanges': [ context.properties['restrictedSrcAddressApp'] ],
+            'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
+        }
+    ]
+    bastion_firewall_config = {
+        'allowed': [
+            {
+                'IPProtocol': 'TCP',
+                'ports': [ 22, mgmt_port, 443 ]
+            }
+        ],
+        'description': 'Allow ssh and ' + str(mgmt_port) + ' to bastion',
+        'name': context.properties['uniqueString'] + '-bastion-fw',
+        'network': '$(ref.' + mgmt_net_name + '.selfLink)',
+        'sourceRanges': [ 
+            context.properties['restrictedSrcAddressMgmt']
+        ],
+        'targetTags': [ generate_name(prefix, 'bastion-fw') ]
+    }
+    if not context.properties['provisionPublicIp']:
+        firewalls_config.append(bastion_firewall_config)
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
-    mgmt_port = 8443
     if context.properties['numNics'] > 1:
         depends_on_array.append(ext_net_name)
         mgmt_port = 443
@@ -251,50 +313,7 @@ def create_dag_deployment(context):
       'name': 'dag',
       'type': '../modules/dag/dag.py',
       'properties': {
-            'firewalls' : [
-                {
-                    'allowed': [
-                        {
-                            'IPProtocol': 'TCP',
-                            'ports': [ 22, mgmt_port , 443 ]
-                        }
-                    ],
-                    'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
-                    'name': context.properties['uniqueString'] + '-mgmt-fw',
-                    'network': '$(ref.' + mgmt_net_name + '.selfLink)',
-                    'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] ],
-                    'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
-                },
-                {
-                    'allowed': [
-                        {
-                            'IPProtocol': 'TCP',
-                            'ports': [ 80 , 443 ]
-                        }
-                    ],
-                    'description': 'Allow web traffic to internal app network',
-                    'name': context.properties['uniqueString'] + '-app-int-fw',
-                    'network': '$(ref.' + int_net_name + '.selfLink)',
-                    'sourceRanges': [ int_net_cidr ],
-                    'targetTags': [
-                        generate_name(prefix, 'app-int-fw'),
-                        generate_name(prefix, 'app-int-vip-fw')
-                    ]
-                },
-                {
-                    'allowed': [
-                        {
-                            'IPProtocol': 'TCP',
-                            'ports': [ 80, 443 ]
-                        }
-                    ],
-                    'description': 'Allow web traffic to public network',
-                    'name': context.properties['uniqueString'] + '-app-vip-fw',
-                    'network': '$(ref.' + app_net_name + '.selfLink)',
-                    'sourceRanges': [ context.properties['restrictedSrcAddressApp'] ],
-                    'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
-                }
-            ],
+            'firewalls' : firewalls_config,
             'forwardingRules': [
                 {
                     'name': context.properties['uniqueString'] + '-fwrule1',

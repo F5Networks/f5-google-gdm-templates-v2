@@ -12,12 +12,7 @@ tmpl_file='/tmp/dag.py'
 curl -k <DAG TEMPLATE URL> -o $tmpl_file
 curl -k <DAG TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 
-# source test functions
-source ${TMP_DIR}/test_functions.sh
-
-# determine test environment public ip address
-source_cidr=$(get_env_public_ip)
-echo "source_cidr=$source_cidr"
+src_ip=$(curl ifconfig.me)/32
 
 mgmtNetworkSelfLink=''
 mgmtSubnetSelfLink=''
@@ -86,7 +81,7 @@ fi
 /usr/bin/yq e ".resources[0].properties.firewalls[0].description = \"Allow ssh and 443 to management\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].name = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.firewalls[0].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[0].sourceRanges[0] = \"${src_ip}\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[0] = \"<UNIQUESTRING>-mgmtfw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[0].targetTags[1] = \"<UNIQUESTRING>-mgmt-fw\"" -i <DEWPOINT JOB ID>.yaml
 
@@ -97,7 +92,7 @@ fi
 /usr/bin/yq e ".resources[0].properties.firewalls[1].description = \"Allow web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].name = \"<UNIQUESTRING>-app-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.firewalls[1].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[1].sourceRanges[0] = \"0.0.0.0/0\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[0] = \"<UNIQUESTRING>-app-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[1].targetTags[1] = \"<UNIQUESTRING>-app-int-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].allowed[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
@@ -105,7 +100,7 @@ fi
 /usr/bin/yq e ".resources[0].properties.firewalls[2].description = \"Allow app web traffic to public network\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].name = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.firewalls[2].sourceRanges.items[0] = 0.0.0.0/0" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.firewalls[2].sourceRanges[0] = \"${src_ip}\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.firewalls[2].targetTags[0] = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 
 

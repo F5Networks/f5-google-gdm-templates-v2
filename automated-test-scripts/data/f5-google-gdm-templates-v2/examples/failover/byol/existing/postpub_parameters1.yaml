@@ -18,6 +18,8 @@ APPLICATION STACK NAME: <UNIQUESTRING>-application
 APPLICATION TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
 BASTION STACK NAME: <UNIQUESTRING>-bastion
 BASTION TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
+DAG STACK NAME: <UNIQUESTRING>-bastion-dag
+DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
 NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 LICENSE TYPE: byol

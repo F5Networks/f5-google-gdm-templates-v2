@@ -173,20 +173,24 @@ def create_dag_deployment(context, num_nics):
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 22, mgmt_port , 443 ]
+                            'ports': [ 22, mgmt_port, 443 ]
                         }
                     ],
                     'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
                     'name': context.properties['uniqueString'] + '-mgmt-fw',
                     'network': mgmt_net_ref,
-                    'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] ],
+                    'sourceRanges': [ 
+                        context.properties['restrictedSrcAddressMgmt'], 
+                        context.properties['bigIpMgmtAddress01'], 
+                        context.properties['bigIpMgmtAddress02'] 
+                    ],
                     'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
                 },
                 {
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 80 , 443 ]
+                            'ports': [ 80, 443 ]
                         }
                     ],
                     'description': 'Allow web traffic to internal app network',
@@ -215,7 +219,7 @@ def create_dag_deployment(context, num_nics):
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 4353 ]
+                            'ports': [ 4353, 443 ]
                         },
                         {   'IPProtocol': 'UDP',
                             'ports': [ 1026 ]

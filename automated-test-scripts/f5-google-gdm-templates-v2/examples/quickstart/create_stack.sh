@@ -3,6 +3,7 @@
 #  replayEnabled = false
 #  replayTimeout = 0
 
+src_ip=$(curl ifconfig.me)/32
 tmpl_path="/tmp/examples/quickstart/"
 
 # grab template and schema
@@ -12,8 +13,8 @@ cp -r $PWD/examples /tmp
 cp /tmp/examples/quickstart/sample_quickstart.yaml ${tmpl_path}<DEWPOINT JOB ID>.yaml
 # Update Config File using sample_quickstart.yaml
 /usr/bin/yq e ".resources[0].name = \"quickstart-py\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"<RESTRICTED SRC ADDRESS APP>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
