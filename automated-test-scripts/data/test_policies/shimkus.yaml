@@ -25,7 +25,7 @@ gdm-autoscale-bigiq-existing-test:
 gdm-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prepub_parameters1.yaml"
@@ -34,7 +34,7 @@ gdm-autoscale-payg-example-test:
 gdm-autoscale-payg-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prepub_parameters1.yaml"

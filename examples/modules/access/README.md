@@ -72,7 +72,6 @@ These are the IAM permissions produced by each type of solution supported by thi
 | compute.forwardingRules.list | standard, secret, failover | 
 | compute.forwardingRules.setTarget | failover | 
 | compute.globalOperations.get | standard, secret, storage, remoteLogging, failover | 
-| compute.instances.create | failover |
 | compute.instances.get | standard, secret, failover |
 | compute.instances.list | standard, secret, failover | 
 | compute.instances.updateNetworkInterface | failover | 
@@ -95,8 +94,6 @@ These are the IAM permissions produced by each type of solution supported by thi
 | secretmanager.versions.access | secret, failover |
 | secretmanager.versions.get | secret, failover | 
 | secretmanager.versions.list | secret, failover | 
-| storage.buckets.create | storage, remoteLogging, failover |
-| storage.buckets.delete | storage, remoteLogging, failover | 
 | storage.buckets.get | storage, remoteLogging, failover | 
 | storage.buckets.list | storage, remoteLogging, failover | 
 | storage.buckets.update | storage, remoteLogging, failover | 

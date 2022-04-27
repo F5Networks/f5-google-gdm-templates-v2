@@ -41,14 +41,11 @@ if sys.argv[1] in ['storage', 'remoteLogging', 'failover']:
         'storage.objects.list',
         'storage.objects.delete',
         'storage.buckets.get',
-        'storage.buckets.create',
         'storage.buckets.update',
-        'storage.buckets.delete',
         'storage.buckets.list'
     ]
 if sys.argv[1] in ['failover']:
     included_permissions = included_permissions + [
-        'compute.instances.create',
         'compute.routes.get',
         'compute.routes.list',
         'compute.routes.create',

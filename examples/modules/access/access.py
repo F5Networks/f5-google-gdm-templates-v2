@@ -111,14 +111,11 @@ def create_role_permissions(context, solution_type):
             'storage.objects.list',
             'storage.objects.delete',
             'storage.buckets.get',
-            'storage.buckets.create',
             'storage.buckets.update',
-            'storage.buckets.delete',
             'storage.buckets.list'
         ]
     if solution_type in ['failover']:
         included_permissions = included_permissions + [
-            'compute.instances.create',
             'compute.routes.get',
             'compute.routes.list',
             'compute.routes.create',
