@@ -267,29 +267,37 @@ runtime_parameters:
       - name: Metadata-Flavor
         value: Google
   - name: SELF_IP_EXTERNAL
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 0
+      ipcalc: address
   - name: SELF_IP_INTERNAL
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/ip
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 2
+      ipcalc: address
   - name: EXTERNAL_GW
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 0
+      ipcalc: first
   - name: INTERNAL_GW
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/gateway
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 2
+      ipcalc: first
   - name: EXTERNAL_BITMASK
     type: metadata
     metadataProvider:

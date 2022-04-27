@@ -22,18 +22,23 @@ runtime_parameters:
       type: network
       field: ip
       index: 0
-  - name: DEFAULT_GW
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+      ipcalc: address
+  - name: EXTERNAL_GW
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 0
+      ipcalc: first
   - name: MGMT_GW
-    type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/1/gateway
-    headers:
-      - name: Metadata-Flavor
-        value: Google
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 1
+      ipcalc: first
 bigip_ready_enabled: []
 extension_packages:
   install_operations:
@@ -100,14 +105,9 @@ extension_services:
                 role: admin
             password: '{{{BIGIP_PASSWORD}}}'
             shell: bash
-          app_route:
-            class: Route
-            gw: '10.0.1.1'
-            network: '10.0.2.0/24'
-            mtu: 1500
           default:
             class: Route
-            gw: '{{{DEFAULT_GW}}}'
+            gw: '{{{EXTERNAL_GW}}}'
             network: default
             mtu: 1500
           defaultManagementRoute:
@@ -124,7 +124,7 @@ extension_services:
                 tagged: false
           external-self:
             class: SelfIp
-            address: '{{{SELF_IP_EXTERNAL}}}'
+            address: '{{{SELF_IP_EXTERNAL}}}/24'
             vlan: external
             allowService: none
             trafficGroup: traffic-group-local-only
