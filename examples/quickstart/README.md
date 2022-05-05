@@ -80,8 +80,8 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Important Configuration Notes
 
-- By default, this solution creates a username **quickstart** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
-***IMPORTANT**: You should change this temporary password immediately following deployment. Alternately, you may remove the quickstart user class from the runtime-init configuration prior to deployment to prevent this user account from being created. See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.*
+- By default, this solution creates a username **admin** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
+***IMPORTANT**: You should change this temporary password immediately following deployment.*
 
 - This solution requires Internet access for:
 
@@ -392,7 +392,7 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 
 - **SSH Password authentication**:
   ```bash
-  ssh quickstart@${IP_ADDRESS_FROM_OUTPUT}
+  ssh admin@${IP_ADDRESS_FROM_OUTPUT}
   ```
   At prompt, enter the default password **Instance ID** of the BIG-IP VM instance.
 

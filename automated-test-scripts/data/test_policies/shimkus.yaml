@@ -43,7 +43,7 @@ gdm-autoscale-payg-existing-test:
 gdm-failover-byol-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters1.yaml"
@@ -52,7 +52,7 @@ gdm-failover-byol-example-test:
 gdm-failover-byol-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prepub_parameters1.yaml"
@@ -61,7 +61,7 @@ gdm-failover-byol-existing-test:
 gdm-failover-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters1.yaml"
@@ -70,7 +70,7 @@ gdm-failover-payg-example-test:
 gdm-failover-payg-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prepub_parameters1.yaml"

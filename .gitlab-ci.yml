@@ -127,6 +127,7 @@ verify_outputs_match_style_guide:
 # Module: GDM Network Template
 gdm_network_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -159,6 +160,7 @@ gdm_network_module_test_job:
 # Module: GDM Application Template
 gdm_application_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -191,6 +193,7 @@ gdm_application_module_test_job:
 # Module: GDM Bastion Template
 gdm_bastion_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -223,6 +226,7 @@ gdm_bastion_module_test_job:
 # Module: GDM BIGIP Autoscale Template
 gdm_bigip_autoscale_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -255,6 +259,7 @@ gdm_bigip_autoscale_module_test_job:
 # Module: GDM BIGIP standalone Template
 gdm_bigip_standalone_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -287,6 +292,7 @@ gdm_bigip_standalone_module_test_job:
 # Module: GDM DAG Template
 gdm_dag_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -319,6 +325,7 @@ gdm_dag_module_test_job:
 # Module: GDM Function Template
 gdm_function_module_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -351,6 +358,7 @@ gdm_function_module_test_job:
 # Module: GDM Autoscale BIGIQ Template
 gdm_autoscale_bigiq_example_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -389,6 +397,7 @@ gdm_autoscale_bigiq_example_test_job:
 
 gdm_autoscale_bigiq_existing_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -429,6 +438,7 @@ gdm_autoscale_bigiq_existing_test_job:
 # Module: GDM Autoscale PAYG Template
 gdm_autoscale_payg_example_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -462,6 +472,7 @@ gdm_autoscale_payg_example_test_job:
 
 gdm_autoscale_bigiq_existing_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -496,6 +507,7 @@ gdm_autoscale_bigiq_existing_test_job:
 # Module: GDM Failover Template
 gdm_failover_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -535,6 +547,7 @@ gdm_failover_test_job:
 # Module: GDM Failover Existing Network Template
 gdm_failover_existing_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -571,6 +584,7 @@ gdm_failover_existing_test_job:
 # Module: GDM Quickstart Template
 gdm_quickstart_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:
@@ -609,6 +623,7 @@ gdm_quickstart_test_job:
 # Module: GDM Quickstart Existing Network Template
 gdm_quickstart_existing_test_job:
   stage: sprinkle-tests
+  when: manual
   tags:
     - docker-executor
   only:

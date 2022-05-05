@@ -24,18 +24,18 @@ if [[ <PROVISION PUBLIC IP> == True ]]; then
     IP=$(get_mgmt_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> public)
     echo "IP: ${IP}"
     ssh-keygen -R $IP 2>/dev/null
-    PASSWORD_RESPONSE=$(curl -skvvu quickstart:${PASSWORD} https://${IP}:${MGMT_PORT}/mgmt/tm/auth/user/quickstart | jq -r .description)
+    PASSWORD_RESPONSE=$(curl -skvvu admin:${PASSWORD} https://${IP}:${MGMT_PORT}/mgmt/tm/auth/user/admin | jq -r .description)
 else
     BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE>)
     IP=$(get_mgmt_ip <UNIQUESTRING>-bigip1 <AVAILABILITY ZONE> private)
     echo "BASTION_IP: ${BASTION_IP}"
     echo "IP: ${IP}"
     ssh-keygen -R $BASTION_IP 2>/dev/null
-    PASSWORD_RESPONSE=$(ssh -o "StrictHostKeyChecking=no" -o ConnectTimeout=7 -i /etc/ssl/private/dewpt_private.pem dewpt@"$BASTION_IP" "curl -skvvu quickstart:${PASSWORD} https://${IP}:${MGMT_PORT}/mgmt/tm/auth/user/quickstart")
+    PASSWORD_RESPONSE=$(ssh -o "StrictHostKeyChecking=no" -o ConnectTimeout=7 -i /etc/ssl/private/dewpt_private.pem dewpt@"$BASTION_IP" "curl -skvvu admin:${PASSWORD} https://${IP}:${MGMT_PORT}/mgmt/tm/auth/user/admin")
 fi
 echo "PASSWORD_RESPONSE: ${PASSWORD_RESPONSE}"
 
-if echo ${PASSWORD_RESPONSE} | grep -q "quickstart"; then
+if echo ${PASSWORD_RESPONSE} | grep -q "Admin User"; then
     echo 'Succeeded'
 else
     echo 'Failed'
