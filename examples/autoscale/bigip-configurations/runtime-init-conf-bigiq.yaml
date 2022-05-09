@@ -39,7 +39,7 @@ runtime_parameters:
       type: SecretsManager
       environment: gcp
       version: latest
-      secretId: my-secret-id-02
+      secretId: mySecretId
 bigip_ready_enabled: []
 extension_packages:
   install_operations:

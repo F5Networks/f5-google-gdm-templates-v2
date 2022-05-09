@@ -28,30 +28,32 @@ This Google Deployment Manager template creates a bastion host used for accessin
 
 ### Template Input Parameters
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| application | No | Application label. |
-| autoscalers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers). |
-| cost | No | Cost Center label. |
-| environment | No | Environment label. |
-| group | No | Group label. |
-| instanceGroupManagers | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers). |
-| instances | No | Required when provisioning a single instance. List of declaration of settings used for provisioning instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instances). |
-| instanceTemplates | No | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates). |
-| instanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
-| instanceType | Yes | App instance type. For example: `n1-standard-1` |
-| osImage | No | Self link for OS Image.  |
-| owner | No | Owner label. |
-| uniqueString | Yes | Unique String used when creating object names or Tags. For example: `my-deployment` |
-| zone | Yes | Name of the availability zone where the application will be placed. |
+**Required** means user input is required because there is no default value or an empty string is not allowed. If no value is provided, the template will fail to launch. In some cases, the default value may only work on the first deployment due to creating a resource in a global namespace and customization is recommended. See the Description for more details.
+
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| application | No | f5app | string | Application label. |
+| autoscalers | No |  | array | Required when provisioning autoscale group. List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers). |
+| cost | No | f5cost | string | Cost Center label. |
+| environment | No | f5env | string | Environment label. |
+| group | No | f5group | string | Group label. |
+| instanceGroupManagers | No |  | array | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceGroupManagers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers). |
+| instances | No |  | f5group | Required when provisioning a single instance. List of declaration of settings used for provisioning instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instances). |
+| instanceTemplates | No |  | array | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates). |
+| instanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
+| instanceType | Yes | n1-standard-1 | string | App instance type. For example: `n1-standard-1` |
+| osImage | No | 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts' | string | Self link for OS Image.  |
+| owner | No | f5owner | string | Owner label. |
+| uniqueString | Yes |  | string | Unique String used when creating object names or Tags. For example: `my-deployment` |
+| zone | Yes |  | string | Name of the availability zone where the application will be placed. |
 
 ### Template Outputs
 
-| Name | Description | Required Resource | Type |
+| Name | Required Resource | Type | Description |
 | --- | --- | --- | --- |
-| bastionName | Bastion resource name. | Bastion | string |
-| bastionIp | Network IP for Bastion resource. | Bastion | string |
-| bastionInstanceGroupName | Instance group resource name. | Bastion | string |
+| bastionName | Bastion | string | Bastion resource name. |
+| bastionIp | Bastion | string | Network IP for Bastion resource. |
+| bastionInstanceGroupName | Bastion | string | Instance group resource name. |
 
 ## Resource Creation Flow Chart
 
