@@ -27,15 +27,17 @@ This Google Deployment Manager template creates cloud resources intended for pro
 
 ### Template Input Parameters
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| functions | No | List of declaration of settings used for provisioning cloud functions. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions)| 
-| jobs | No | List of declaration of settings used for provisioning scheduled jobs. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/scheduler/docs/reference/rest/v1/projects.locations.jobs)  | 
-| topics | No | List of declaration of settings used for provisioning PubSub topics. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics)  | 
-| uniqueString | Yes | Unique String used when creating object names or Tags. |
+**Required** means user input is required because there is no default value or an empty string is not allowed. If no value is provided, the template will fail to launch. In some cases, the default value may only work on the first deployment due to creating a resource in a global namespace and customization is recommended. See the Description for more details.
+
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| functions | No |  | array | List of declaration of settings used for provisioning cloud functions. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/functions/docs/reference/rest/v1/projects.locations.functions).| 
+| jobs | No |  | array | List of declaration of settings used for provisioning scheduled jobs. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/scheduler/docs/reference/rest/v1/projects.locations.jobs).  | 
+| topics | No |  | array | List of declaration of settings used for provisioning PubSub topics. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/pubsub/docs/reference/rest/v1/projects.topics).  | 
+| uniqueString | Yes |  | string | Unique String used when creating object names or Tags. |
 
 ### Template Outputs
 
-| Name | Description | Required Resource | Type |
+| Name | Required Resource | Type | Description |
 | --- | --- | --- | --- |
-| deploymentName | deployment name | None | String |
+| deploymentName | None | string | Deployment name |
