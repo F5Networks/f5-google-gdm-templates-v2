@@ -15,14 +15,18 @@ curl -k file://$PWD/examples/modules/bastion/sample_bastion_autoscale.yaml -o /t
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
-subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
-
+if echo "<TEMPLATE URL>" | grep "autoscale"; then
+    networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network-network" '.[] | select(.name | contains($n)) | .selfLink')
+    subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-mgmt-subnet" '.[] | select(.name | contains($n)) | .selfLink')
+else
+    networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
+    subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
+fi
 
 if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
-    # Run GDM Dag template
+    # Run GDM bastion template
     if [ "<AUTOSCALE>" == "False" ]; then
-        cp /tmp/sample_application.yaml <DEWPOINT JOB ID>.yaml
+        cp /tmp/sample_bastion.yaml <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].name = \"bastion\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].type = \"/tmp/bastion.py\"" -i <DEWPOINT JOB ID>.yaml
@@ -35,7 +39,7 @@ if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
         /usr/bin/yq e ".resources[0].properties.osImage = \"<OS IMAGE>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
     else
-        cp /tmp/sample_application_autoscale.yaml <DEWPOINT JOB ID>.yaml
+        cp /tmp/sample_bastion_autoscale.yaml <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].name = \"bastion\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].type = \"/tmp/bastion.py\"" -i <DEWPOINT JOB ID>.yaml

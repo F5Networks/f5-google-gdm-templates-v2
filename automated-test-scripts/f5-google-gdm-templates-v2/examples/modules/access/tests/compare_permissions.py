@@ -11,32 +11,24 @@ with open('foundPermissions.json') as data_file:
 if sys.argv[1] in ['standard', 'secret', 'storage',
                    'remoteLogging', 'failover']:
     included_permissions = [
-        'compute.instances.create',
         'compute.instances.get',
         'compute.instances.list',
         'compute.targetInstances.get',
         'compute.targetInstances.list',
-        'compute.targetInstances.use',
-        'compute.routes.get',
-        'compute.routes.list',
-        'compute.routes.create',
-        'compute.routes.delete',
         'compute.forwardingRules.get',
-        'compute.forwardingRules.list',
-        'compute.forwardingRules.setTarget',
-        'compute.instances.updateNetworkInterface',
-        'compute.networks.updatePolicy',
+        'compute.forwardingRules.list',          
         'compute.globalOperations.get',
         'logging.logEntries.create',
-        'monitoring.timeSeries.create'
+        'monitoring.timeSeries.create',
+        'monitoring.metricDescriptors.create',
+        'monitoring.metricDescriptors.get',
+        'monitoring.metricDescriptors.list',
+        'monitoring.monitoredResourceDescriptors.get',
+        'monitoring.monitoredResourceDescriptors.list',
+        'resourcemanager.projects.get'
     ]
-if sys.argv[1] in ['secret', 'remoteLogging', 'failover']:
+if sys.argv[1] in ['secret', 'failover']:
     included_permissions = included_permissions + [
-        'resourcemanager.projects.get',
-        'secretmanager.versions.add',
-        'secretmanager.versions.destroy',
-        'secretmanager.versions.disable',
-        'secretmanager.versions.enable',
         'secretmanager.versions.get',
         'secretmanager.versions.list',
         'secretmanager.versions.access'
@@ -49,10 +41,19 @@ if sys.argv[1] in ['storage', 'remoteLogging', 'failover']:
         'storage.objects.list',
         'storage.objects.delete',
         'storage.buckets.get',
-        'storage.buckets.create',
         'storage.buckets.update',
-        'storage.buckets.delete',
         'storage.buckets.list'
+    ]
+if sys.argv[1] in ['failover']:
+    included_permissions = included_permissions + [
+        'compute.routes.get',
+        'compute.routes.list',
+        'compute.routes.create',
+        'compute.routes.delete',
+        'compute.targetInstances.use',
+        'compute.forwardingRules.setTarget',
+        'compute.instances.updateNetworkInterface',
+        'compute.networks.updatePolicy'
     ]
 if sys.argv[1] in ['custom']:
     included_permissions = [

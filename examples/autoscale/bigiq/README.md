@@ -68,14 +68,25 @@ This solution leverages traditional Autoscale configuration management practices
 
 ## Prerequisites
 
-  - This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
-      ```bash
-      gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
-      ```
-  - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
-  - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
-    - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-payg-25mbps)
-  - This solution creates service accounts, custom IAM roles, and service account bindings. The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed. For more information about this account, see the Google-managed service account [documentation](https://cloud.google.com/iam/docs/maintain-custom-roles-deployment-manager)
+- This solution requires a **secret** stored in Google Cloud [Secrets Manager](
+https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
+ containing the BIG-IQ password used to obtain a license from the BIG-IQ. For example, to create a secret using the GCLOUD CLI: 
+  ```bash
+  # Use an editor of your choice to create file called password.txt. Ensure there is no newline at the end of the file.
+  $ gcloud secrets create mySecretId --data-file="password.txt"
+  ```
+  - *NOTE:*
+    - By default, the secret name used is `mySecretId`. To change this, see [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
+
+- This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
+    ```bash
+    gcloud deployment-manager deployments create ${DEPLOYMENT_NAME} --config ${CONFIG_FILE}
+    ```
+- This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
+- This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
+- This solution creates service accounts, custom IAM roles, and service account bindings. The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed. For more information about this account, see the Google-managed service account [documentation](https://cloud.google.com/iam/docs/maintain-custom-roles-deployment-manager)
+  - By default, this solution uses [F5 Advanced WAF with LTM, IPI and TC (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-awf-plus-payg-25mbps)
+
 
 
 ## Important Configuration Notes
@@ -109,59 +120,61 @@ This solution leverages traditional Autoscale configuration management practices
 
 ### Template Input Parameters
 
+**Required** means user input is required because there is no default value or an empty string is not allowed. If no value is provided, the template will fail to launch. In some cases, the default value may only work on the first deployment due to creating a resource in a global namespace and customization is recommended. See the Description for more details.
 Note: These are specified in the configuration file. See sample_autoscale.yaml
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| appContainerName | No | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
-| application | No | Application label. |
-| bigIpCoolDownPeriodSec | No | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
-| bigIpImageName | No | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-0-0-0-19-payg-best-25mbps-210623021328`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
-| bigIpInstanceTemplateVersion | No | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
-| bigIpInstanceType | No | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpIpCidrRange | No | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
-| bigIpRuntimeInitConfig | No | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | Supply a URL to the bigip-runtime-init package. |
-| bigIpScaleOutCpuThreshold | No | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
-| bigIpScalingMaxSize | No | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
-| bigIpScalingMinSize | No | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
-| cost | No | Cost Center label. |
-| environment | No | Environment label. |
-| group | No | Group Tag. |
-| owner | No | Owner label. |
-| provisionPublicIp | No | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
-| region | No | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
-| uniqueString | No | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| update | No | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
-| zone | No | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
+| application | No | f5app | string | Application label. |
+| bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
+| bigIpImageName | No | f5-bigip-16-1-2-1-0-0-10-byol-all-modules-2boot-loc-1222211103 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-1-0-0-10-payg-best-25mbps-211222203736`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceTemplateVersion | No |  1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
+| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpIpCidrRange | No | 10.0.0.0/24 | string | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.1.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
+| bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
+| bigIpScalingMinSize | No | 1 | integer | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
+| cost | No | f5cost | string | Cost Center label. |
+| environment | No | f5env | string | Environment label. |
+| group | No | f5group | string | Group Tag. |
+| owner | No | f5owner | string | Owner label. |
+| provisionPublicIp | No | true | boolean | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
+| region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
+| restrictedSrcAddressApp | Yes | | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | Yes | | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| update | No | false | boolean This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
+| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
 #### Existing Network Parameters
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| networkName | Yes | Network name |
-| subnets | Yes | Subnet object which provides names for mgmt and app subnets |
-| subnets.mgmtSubnetName | Yes | Management subnet name | 
-| subnets.appSubnetName | Yes | Application subnet name |
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| networkName | Yes | bigip-network | string | Network name |
+| subnets | Yes |  | object | Subnet object which provides names for mgmt and app subnets |
+| subnets.mgmtSubnetName | Yes |  | string | Management subnet name | 
+| subnets.appSubnetName | Yes |  | string | Application subnet name |
 
 ### Template Outputs
 
-| Name | Description | Type |
-| ---- | ----------- | ---- |
-| appInstanceGroupName | Application instance group name. | string |
-| appInstanceGroupSelfLink | Application instance group self link. | string |
-| bastionInstanceGroupName | Bastion instance group name. | string |
-| bastionInstanceGroupSelfLink | Bastion instance group self link. | string |
-| bigIpInstanceGroupName | BIG-IP instance group name. | string |
-| bigIpInstanceGroupSelfLink | BIG-IP instance group self link. | string |
-| deploymentName | Autoscale WAF deployment name. | string |
-| networkName | Network name. | string |
-| networkSelfLink | Network self link. | string |
-| wafExternalHttpsUrl | WAF external HTTP URL. | string |
-| wafInternalHttpsUrl | WAF external HTTPS URL. | string |
-| wafPublicIp | WAF public IP. | string |
+| Name | Required Resource | Type | Description | 
+| ---- | --- | --- | --- |
+| appInstanceGroupName |   | string | Application instance group name. |
+| appInstanceGroupSelfLink |   | string | Application instance group self link. |
+| bastionInstanceGroupName |   | string | Bastion instance group name. |
+| bastionInstanceGroupSelfLink |   | string | Bastion instance group self link. |
+| bigIpInstanceGroupName |   | string | BIG-IP instance group name. |
+| bigIpInstanceGroupSelfLink |   | string | BIG-IP instance group self link. |
+| deploymentName |   | string | Autoscale WAF deployment name. |
+| networkName |   | string | Network name. |
+| networkSelfLink |   | string | Network self link. |
+| wafExternalHttpsUrl |   | string | WAF external HTTP URL. |
+| wafInternalHttpsUrl |   |string | WAF external HTTPS URL. |
+| wafPublicIp |   | string | WAF public IP. |
+
 
 
 ## Deploying this Solution
@@ -192,7 +205,7 @@ You will most likely want or need to change the BIG-IP configuration. This gener
 Example from sample_autoscale.yaml
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.0.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.1.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-bigiq.yaml
 ```
 
 ***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*
@@ -621,7 +634,7 @@ These templates have only been explicitly tested and validated with the followin
 
 | Google Cloud BIG-IP Image Version | BIG-IP Version |
 | --- | --- |
-| 16.1.000000 | 16.1.0.0 Build 0.0.19 |
+| 16.1.200000 | 16.1.2.1 Build 0.0.10 |
 | 14.1.400000 | 14.1.4.4 Build 0.0.4* |
 
 These templates leverage Runtime-Init, which requires BIG-IP Versions 14.1.2.6 and up, and are assumed compatible to work. 

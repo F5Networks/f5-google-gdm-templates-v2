@@ -5,6 +5,7 @@
 
 
 # set vars
+src_ip=$(curl ifconfig.me)/32
 config_file='/tmp/examples/autoscale/<LICENSE TYPE>/<DEWPOINT JOB ID>-config.yaml'
 runtime_file='<RUNTIME INIT>'
 runtime_update_file='<RUNTIME INIT UPDATE>'
@@ -61,8 +62,8 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceType = \"<INSTANCE TYPE>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"<RESTRICTED SRC ADDRESS APP>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.update = False" -i $config_file
 

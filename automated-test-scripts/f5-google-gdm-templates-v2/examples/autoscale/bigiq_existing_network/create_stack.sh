@@ -7,6 +7,11 @@
 
 # set vars
 TMP_DIR='/tmp/<DEWPOINT JOB ID>'
+if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
+    src_ip_mgmt=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-mgmt-subnet" '.[] | select(.name | contains($n)) | .ipCidrRange')
+else
+    src_ip_mgmt=$(curl ifconfig.me)/32
+fi
 config_file='/tmp/examples/autoscale/<LICENSE TYPE>/<DEWPOINT JOB ID>-config.yaml'
 runtime_file='<RUNTIME INIT>'
 runtime_update_file='<RUNTIME INIT UPDATE>'
@@ -89,7 +94,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-subnet0-subnet\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-subnet2-subnet\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"<RESTRICTED SRC ADDRESS>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip_mgmt}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.update = False" -i $config_file
 

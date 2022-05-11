@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.0.0.0
+# Version 2.1.0.0
 
 
 """Creates full stack for POC"""
@@ -37,7 +37,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
             }
-            network_ip = context.properties['bigIpExternalSelfIp' + str(instance_number)]
+            network_ip = context.properties['bigIpExternalSelfIp0' + str(instance_number)]
         elif nics == 1:
             net_name = context.properties['networks']['mgmtNetworkName']
             subnet_name = context.properties['subnets']['mgmtSubnetName']
@@ -48,13 +48,13 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 }
             else:
                 access_config = {'accessConfigs': []}
-            network_ip = context.properties['bigIpMgmtSelfIp' + str(instance_number)]
+            network_ip = context.properties['bigIpMgmtAddress0' + str(instance_number)]
         else:
             net_name = context.properties['networks']['internalNetworkName']
             subnet_name = context.properties['subnets']['internalSubnetName']
             interface_description = 'Interface used for internal traffic'
             if nics == 2:
-                network_ip = context.properties['bigIpInternalSelfIp' + str(instance_number)]
+                network_ip = context.properties['bigIpInternalSelfIp0' + str(instance_number)]
 
         net_ref = COMPUTE_URL_BASE + 'projects/' + \
                   context.env['project'] + '/global/networks/' + net_name
@@ -173,20 +173,24 @@ def create_dag_deployment(context, num_nics):
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 22, mgmt_port , 443 ]
+                            'ports': [ 22, mgmt_port, 443 ]
                         }
                     ],
                     'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
                     'name': context.properties['uniqueString'] + '-mgmt-fw',
                     'network': mgmt_net_ref,
-                    'sourceRanges': [ context.properties['restrictedSrcAddressMgmt'] ],
+                    'sourceRanges': [ 
+                        context.properties['restrictedSrcAddressMgmt'], 
+                        context.properties['bigIpMgmtAddress01'], 
+                        context.properties['bigIpMgmtAddress02'] 
+                    ],
                     'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
                 },
                 {
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 80 , 443 ]
+                            'ports': [ 80, 443 ]
                         }
                     ],
                     'description': 'Allow web traffic to internal app network',
@@ -215,7 +219,7 @@ def create_dag_deployment(context, num_nics):
                     'allowed': [
                         {
                             'IPProtocol': 'TCP',
-                            'ports': [ 4353 ]
+                            'ports': [ 4353, 443 ]
                         },
                         {   'IPProtocol': 'UDP',
                             'ports': [ 1026 ]
@@ -296,8 +300,8 @@ def generate_config(context):
     prefix = context.properties['uniqueString']
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
-    bigip_instance_name= generate_name(prefix, 'bigip1')
-    bigip_instance_name2= generate_name(prefix, 'bigip2')
+    bigip_instance_name = generate_name(prefix, 'bigip1')
+    bigip_instance_name2 = generate_name(prefix, 'bigip2')
     fw_rule_name = generate_name(prefix, 'fwrule1')
 
     resources = create_access_deployment(context) + \
