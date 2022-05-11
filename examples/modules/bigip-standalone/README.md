@@ -34,30 +34,32 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 
 ### Template Input Parameters
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| bigIpRuntimeInitPackageUrl | Yes | URL for BIG-IP Runtime Init package. | 
-| bigIpRuntimeInitConfig | Yes | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpPeerAddr | No | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
-| imageName | Yes | BIG-IP image name.|
-| instanceType | Yes | Instance type assigned to the application. For example: `n1-standard-1`.|
-| name | Yes | Name used for instance.| 
-| networkInterfaces | Yes | Array of interface configurations for Instance. A minimum of one is required.|
-| networkInterfaces.accessConfigs | No | Used to define ONE_TO_ONE_NATS (external public address) for interface.|
-| networkInterfaces.aliasIpRanges | No | Used to define additional alias addresses to interface.|
-| networkInterfaces.network | Yes | Defines network attached to interface.|
-| networkInterfaces.networkIP | No | Defines static IP attached to interface.|
-| networkInterfaces.subnetwork | Yes | Defines subnetwork attached to interface.|
-| region | Yes | Enter the region where you want to deploy the application. For example: `us-west1`.|
-| tags.items | No | An array of tags used to match traffic against network interfaces.|
-| targetInstances | Yes | List of settings for provisioning target instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances). |
-| uniqueString | Yes | Unique String used when creating object names or Tags.|
-| zone | Yes | Enter the zone where you want to deploy the application. For example: `us-west1-a`.|
+**Required** means user input is required because there is no default value or an empty string is not allowed. If no value is provided, the template will fail to launch. In some cases, the default value may only work on the first deployment due to creating a resource in a global namespace and customization is recommended. See the Description for more details.
+
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| bigIpRuntimeInitPackageUrl | Yes |  | string | URL for BIG-IP Runtime Init package. | 
+| bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| imageName | Yes |  | string | BIG-IP image name.|
+| instanceType | Yes |  | string | Instance type assigned to the application. For example: `n1-standard-1`.|
+| name | Yes |  | string | Name used for instance.| 
+| networkInterfaces | Yes |  | array | Array of interface configurations for Instance. A minimum of one is required.|
+| networkInterfaces.accessConfigs | No |  | string | Used to define ONE_TO_ONE_NATS (external public address) for interface.|
+| networkInterfaces.aliasIpRanges | No |  | string | Used to define additional alias addresses to interface.|
+| networkInterfaces.network | Yes |  | string | Defines network attached to interface.|
+| networkInterfaces.networkIP | No |  | string | Defines static IP attached to interface.|
+| networkInterfaces.subnetwork | Yes |  | string | Defines subnetwork attached to interface.|
+| region | Yes |  | string | Enter the region where you want to deploy the application. For example: `us-west1`.|
+| storageBuckets | Yes |  | string | Creates storage buckets.| 
+| tags.items | No |  | array | An array of tags used to match traffic against network interfaces.|
+| targetInstances | Yes |  | array | List of settings for provisioning target instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances). |
+| uniqueString | Yes |  | string | Unique String used when creating object names or Tags.|
+| zone | Yes |  | string | Enter the zone where you want to deploy the application. For example: `us-west1-a`.|
 
 
 ### Template Outputs
 
-| Name | Description | Required Resource | Type |
+| Name | Required Resource | Type | Description |
 | --- | --- | --- | --- |
-| instanceName | BIG-IP instance resource name |  All resources |  String |
-| targetInstanceSelfLink | BIG-IP target instance self link |  All resources |  String |
+| instanceName |  All resources |  string | BIG-IP instance resource name. |
+| targetInstanceSelfLink |  All resources |  string | BIG-IP target instance self link. |

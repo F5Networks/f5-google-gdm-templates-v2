@@ -28,17 +28,19 @@ This Google Deployment Manager template creates various cloud resources to get t
 
 ### Template Input Parameters
 
-| Parameter | Required | Description |
-| --- | --- | --- |
-| firewalls | No | List of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/firewalls). |
-| forwardingRules | No | List of declaration of settings used for provisioning ForwardingRule, which represents the frontend configuration of GCP load balancers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/forwardingRules). |
-| backendServices | No | List of declaration of settings used for provisioning RegionBackendServices, which defines how GCP load balancers distribute traffic. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/regionBackendServices). |
-| healthChecks | No | List of declaration of settings used for provisioning HealthChecks, which defines health checks used by other cloud resources. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks). |
-| uniqueString | Yes | Unique String used when creating object names or Tags. |
+**Required** means user input is required because there is no default value or an empty string is not allowed. If no value is provided, the template will fail to launch. In some cases, the default value may only work on the first deployment due to creating a resource in a global namespace and customization is recommended. See the Description for more details.
+
+| Parameter | Required | Default | Type | Description |
+| --- | --- | --- | --- | --- |
+| firewalls | No |  | array | List of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/firewalls). |
+| forwardingRules | No |  | array | List of declaration of settings used for provisioning ForwardingRule, which represents the frontend configuration of GCP load balancers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/forwardingRules). |
+| backendServices | No |  | array | List of declaration of settings used for provisioning RegionBackendServices, which defines how GCP load balancers distribute traffic. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/regionBackendServices). |
+| healthChecks | No |  | array | List of declaration of settings used for provisioning HealthChecks, which defines health checks used by other cloud resources. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks). |
+| uniqueString | Yes |  | string | Unique String used when creating object names or Tags. |
 
 ### Template Outputs
 
-| Name | Description | Required Resource | Type |
+| Name | Required Resource | Type | Description |
 | --- | --- | --- | --- |
-| dagName | deployment name | None | String |
-| backendService | Self link to Backend Service | Backend Service | URL |
+| dagName | None | String | Deployment name. |
+| backendService | Backend Service | URL | Self link to Backend Service. |

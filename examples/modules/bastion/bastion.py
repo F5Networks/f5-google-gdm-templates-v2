@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.0.0.0
+# Version 2.1.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -100,7 +100,7 @@ def create_instance(context, instance):
             'name': instance_name,
             'networkInterfaces': create_nics(instance),
             'tags': {
-                'items': [generate_name(prefix, 'mgmt-fw'), generate_name(prefix, 'vip-fw')]
+                'items': [generate_name(prefix, 'bastion-fw'), generate_name(prefix, 'vip-fw')]
             },
             'zone': instance['zone']
     })
@@ -185,7 +185,7 @@ def create_instance_template(context, instance_templates):
                 'owner': owner
             },
             'tags': {
-                'items': [generate_name(prefix, 'mgmt-fw'), generate_name(prefix, 'vip-fw')]
+                'items': [generate_name(prefix, 'bastion-fw'), generate_name(prefix, 'vip-fw')]
             },
             'machineType': context.properties['instanceType'],
             'disks': [{
