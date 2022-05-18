@@ -41,7 +41,7 @@ properties:
     description: Minimum number of BIG-IP instances you want available in the Auto Scale Group.
     type: integer
   bigIpImageName:
-    default: f5-bigip-16-1-2-1-0-0-10-byol-all-modules-2boot-loc-1222211103
+    default: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
     description: BIG-IP image name
     type: string
   bigIpInstanceTemplateVersion:
