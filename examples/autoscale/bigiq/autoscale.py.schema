@@ -46,7 +46,7 @@ properties:
     description: Minimum number of BIG-IP instances you want available in the Auto Scale Group.
     type: integer
   bigIpImageName:
-    default: f5-bigip-16-1-2-1-0-0-10-byol-all-modules-2boot-loc-1222211103
+    default: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
     description: BIG-IP image name
     type: string
   bigIpInstanceTemplateVersion:
@@ -66,7 +66,7 @@ properties:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.2/dist/f5-bigip-runtime-init-1.4.2-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
   cost:

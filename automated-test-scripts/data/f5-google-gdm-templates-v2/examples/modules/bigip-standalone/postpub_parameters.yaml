@@ -9,14 +9,14 @@ AUTOFILL EVAL LICENSE KEY: null
 AUTOSCALE: false
 AVAILABILITY ZONE: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/dd-<DEWPOINT JOB ID>-bigip-standalone-bucket/bigip-configurations/dd-<DEWPOINT JOB ID>-bigip-standalone-config.yaml
-BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
-BIGIP VERSION: 16-1-2-1-0-0-10
+BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.2/dist/f5-bigip-runtime-init-1.4.2-1.gz.run
+BIGIP VERSION: 16-1-2-2-0-0-28
 DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/dag/dag.py
 DESCRIPTION: network-<DEWPOINT JOB ID>
 HOST NAME: test.example.com
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '1222211103'
+IMAGE SUFFIX: '0505081937'
 IMAGE TYPE: all-modules-2boot-loc
 INSTANCE NAME: bigip1
 INSTANCE TYPE: n1-standard-8
