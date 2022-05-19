@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.1.0.0s
+# Version 2.2.0.0s
 #
 # NOTE: When filling out the parameter values for this deployment:
 # Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.
@@ -31,7 +31,7 @@ resources:
       bigIpInstanceType: n1-standard-4
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.1.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.2.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
