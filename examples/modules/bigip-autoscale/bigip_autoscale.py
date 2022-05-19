@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.1.0.0
+# Version 2.2.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -142,7 +142,7 @@ def create_instance_template(context, instance_template):
                                     'done',
                                     '',
                                     '# Run',
-                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.1.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
+                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.2.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
                                     'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf',
