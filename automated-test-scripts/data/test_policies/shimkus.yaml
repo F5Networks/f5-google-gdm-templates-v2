@@ -3,7 +3,7 @@
 gdm-autoscale-bigiq-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters1.yaml"
@@ -84,7 +84,7 @@ google-gdm-quickstart-test-byol:
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters.yaml"
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters1.yaml"
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters2.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters3_v14.yaml"
+      # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters3_v14.yaml"
 
 google-gdm-quickstart-existing-network-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
@@ -103,7 +103,7 @@ google-gdm-quickstart-test-payg:
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters.yaml"
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters1.yaml"
       - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters2.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters3_v14.yaml"
+      # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters3_v14.yaml"
 
 google-gdm-quickstart-existing-network-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"

@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.2.0.0
+# Version 2.3.0.0
 #
 # NOTE: When filling out the parameter values for this deployment:
 # Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.
@@ -39,19 +39,19 @@ resources:
       ### (OPTIONAL) Management interface private IP address for bigip2.
       bigIpMgmtAddress02: 10.0.0.12
       ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
-      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-25mbps-220505074742
+      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
       ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
       bigIpInstanceType: n1-standard-4
       ### (OPTIONAL) Static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device.
       bigIpPeerAddr: 10.0.1.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig01: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.2.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
       bigIpRuntimeInitConfig02: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.2.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
-        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.1/dist/f5-bigip-runtime-init-1.4.1-1.gz.run
+        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
       ### (OPTIONAL) Cloud Failover deployment tag value.
       cfeTag: bigip_high_availability_solution
       ### (OPTIONAL) Cloud Failover storage bucket value.
