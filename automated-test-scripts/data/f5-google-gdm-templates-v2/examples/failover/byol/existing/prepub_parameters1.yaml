@@ -7,7 +7,6 @@ AVAILABILITY ZONE: <REGION>-b
 BIGIP IP CIDR RANGE: 10.0.24.0/24
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
-BIGIP RUNTIME INIT PACKAGEURL: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.2/dist/f5-bigip-runtime-init-1.4.2-1.gz.run
 BIGIP VERSION: 16-1-2-2-0-0-28
 DESCRIPTION: ''
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>

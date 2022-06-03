@@ -3,7 +3,6 @@ APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 AVAILABILITY ZONE: <REGION>-b
 AZ SHORT NAME: us-w2
 BIGIP IP CIDR RANGE: 10.0.12.0/24
-BIGIP RUNTIME INIT PACKAGEURL: 'https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.4.2/dist/f5-bigip-runtime-init-1.4.2-1.gz.run'
 BIGIP VERSION: 16-1-2-2-0-0-28
 BIGIQ LICENSE POOL: production
 ENABLE FLOW LOGS: ''

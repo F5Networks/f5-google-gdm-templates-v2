@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.2.0.0
+# Version 2.3.0.0
 
 
 """Creates full stack for POC"""
@@ -291,7 +291,7 @@ def create_dag_deployment(context):
         'description': 'Allow ssh and ' + str(mgmt_port) + ' to bastion',
         'name': context.properties['uniqueString'] + '-bastion-fw',
         'network': '$(ref.' + mgmt_net_name + '.selfLink)',
-        'sourceRanges': [ 
+        'sourceRanges': [
             context.properties['restrictedSrcAddressMgmt']
         ],
         'targetTags': [ generate_name(prefix, 'bastion-fw') ]
@@ -369,7 +369,7 @@ def generate_config(context):
     name = context.properties.get('name') or \
            context.env['name']
     prefix = context.properties['uniqueString']
-    
+
     deployment_name = generate_name(context.properties['uniqueString'], name)
     application_instance_name= generate_name(prefix, 'application')
     bastion_instance_name= generate_name(prefix, 'bastion')

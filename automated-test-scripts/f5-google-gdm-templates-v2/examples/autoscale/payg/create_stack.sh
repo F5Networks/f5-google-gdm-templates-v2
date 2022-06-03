@@ -18,6 +18,8 @@ cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.password = \"<SECRET VALUE>\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.shell = \"bash\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.admin.userType = \"regular\"" -i $runtime_file
+# Disable AutoPhoneHome
+/usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_System.autoPhonehome = false" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.enforcementMode = \"blocking\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://cdn.f5.com/product/cloudsolutions/solution-scripts/Rapid_Deployment_Policy_13_1.xml\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[2].value.My_Remote_Logs_Namespace.My_Google_Cloud_Logs.logId = \"<LOG ID>\"" -i $runtime_file
@@ -51,7 +53,6 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"${config_url}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpScalingMinSize = <SCALING MIN>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpScalingMaxSize = <SCALING MAX>" -i $config_file
