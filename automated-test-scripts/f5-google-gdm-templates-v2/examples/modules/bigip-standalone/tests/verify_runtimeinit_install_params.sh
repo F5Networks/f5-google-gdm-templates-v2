@@ -14,7 +14,7 @@ IP=$(cat ${STATE_FILE} | jq -r '.mgmtAddress')
 IP2=$(cat ${STATE_FILE} | jq -r '.mgmtAddress2')
 BASTION_IP=$(cat ${STATE_FILE} | jq -r '.proxyAddress')
 PASSWORD=$(gcloud compute instances describe <UNIQUESTRING>-<INSTANCE NAME> --zone=<AVAILABILITY ZONE> --format json | jq -r .id)
-response=$(sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no quickstart@${IP} "bash -c 'cat /config/cloud/telemetry_install_params.tmp'")
+response=$(sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no admin@${IP} "bash -c 'cat /config/cloud/telemetry_install_params.tmp'")
 
 if echo $response  | grep "/examples/modules/bigip-standalone/bigip_standalone.py"; then
     echo "SUCCESS"

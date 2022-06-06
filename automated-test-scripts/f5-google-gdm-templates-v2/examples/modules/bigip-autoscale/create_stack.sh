@@ -40,7 +40,6 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].name = \"<UNIQUESTRING>-external-hc\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.imageName = \"<IMAGE NAME>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.instanceGroupManagers[0].zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.instanceGroupManagers[0].name = \"bigip\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.instanceTemplates[0].hostname = \"<HOST NAME>\"" -i <DEWPOINT JOB ID>.yaml

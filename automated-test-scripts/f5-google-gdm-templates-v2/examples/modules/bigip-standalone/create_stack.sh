@@ -35,7 +35,6 @@ until [ $i -gt $c ]; do
         /usr/bin/yq e ".resources[0].name = \"bigip\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i <DEWPOINT JOB ID>.yaml
-        /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.imageName = \"<IMAGE NAME>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.name = \"<INSTANCE NAME>\"" -i <DEWPOINT JOB ID>.yaml
