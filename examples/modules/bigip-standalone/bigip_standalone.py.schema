@@ -10,13 +10,12 @@ info:
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/instances
       - https://cloud.google.com/storage/docs/json_api/v1/buckets
-  version: 2.2.0.0
+  version: 2.3.0.0
 imports:
   - path: bigip_standalone.py
 
 required:
   - bigIpRuntimeInitConfig
-  - bigIpRuntimeInitPackageUrl
   - imageName
   - instanceType
   - name
@@ -31,6 +30,7 @@ properties:
     type: string
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
     type: string
   imageName:
     description: BIG-IP image name

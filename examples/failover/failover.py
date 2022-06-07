@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.2.0.0
+# Version 2.3.0.0
 
 
 """Creates full stack for POC"""
@@ -284,10 +284,10 @@ def create_dag_deployment(context, num_nics):
             'description': 'Allow ssh and ' + str(mgmt_port) + ' to management',
             'name': context.properties['uniqueString'] + '-mgmt-fw',
             'network': '$(ref.' + mgmt_net_name + '.selfLink)',
-            'sourceRanges': [ 
-                context.properties['restrictedSrcAddressMgmt'] if context.properties['provisionPublicIp'] else '$(ref.' + bastion_instance_name + '.networkInterfaces[0].networkIP)', 
-                context.properties['bigIpMgmtAddress01'], 
-                context.properties['bigIpMgmtAddress02'] 
+            'sourceRanges': [
+                context.properties['restrictedSrcAddressMgmt'] if context.properties['provisionPublicIp'] else '$(ref.' + bastion_instance_name + '.networkInterfaces[0].networkIP)',
+                context.properties['bigIpMgmtAddress01'],
+                context.properties['bigIpMgmtAddress02']
             ],
             'targetTags': [ generate_name(prefix, 'mgmt-fw') ]
         },
@@ -347,7 +347,7 @@ def create_dag_deployment(context, num_nics):
         'description': 'Allow ssh and ' + str(mgmt_port) + ' to bastion',
         'name': context.properties['uniqueString'] + '-bastion-fw',
         'network': '$(ref.' + mgmt_net_name + '.selfLink)',
-        'sourceRanges': [ 
+        'sourceRanges': [
             context.properties['restrictedSrcAddressMgmt']
         ],
         'targetTags': [ generate_name(prefix, 'bastion-fw') ]

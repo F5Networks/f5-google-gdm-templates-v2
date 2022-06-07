@@ -27,7 +27,6 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.owner = \"f5owner\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitPackageUrl = \"<BIGIP RUNTIME INIT PACKAGEURL>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"${config_update_url}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpScalingMinSize = <SCALING MIN>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpScalingMaxSize = <SCALING MAX>" -i $config_file
