@@ -14,7 +14,7 @@ IP=$(cat ${STATE_FILE} | jq -r '.mgmtAddress')
 IP2=$(cat ${STATE_FILE} | jq -r '.mgmtAddress2')
 BASTION_IP=$(cat ${STATE_FILE} | jq -r '.proxyAddress')
 PASSWORD=$(gcloud compute instances describe <UNIQUESTRING>-<INSTANCE NAME> --zone=<AVAILABILITY ZONE> --format json | jq -r .id)
-response=$(sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no quickstart@${IP} "bash -c 'cat /var/log/cloud/bigIpRuntimeInit.log | grep \"All operations finished successfully\"'")
+response=$(sshpass -p $PASSWORD ssh -o StrictHostKeyChecking=no admin@${IP} "bash -c 'cat /var/log/cloud/bigIpRuntimeInit.log | grep \"All operations finished successfully\"'")
 if echo $response  | grep -Eq "All operations finished successfully"; then
     echo "IP ADDRESS: ${IP} is onboarded. Incrementing test counter..."
     ((count=count+1))
