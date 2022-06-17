@@ -1,3 +1,28 @@
+# Quickstart example
+google-quickstart-example-test-quickstart-full:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
+  run: "random"
+  random-num-of-tests: 2
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters2.yaml"
+
+google-quickstart-example-test-quickstart-existing:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
+  run: "random"
+  random-num-of-tests: 2
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prepub_parameters2.yaml"
+
+# Failover existing
+gdm-failover-payg-existing-test:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prepub_parameters.yaml"
+
 # Network module
 google-gdm-network-module-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/daily_test.yaml"
@@ -103,7 +128,7 @@ google-quickstart-example-test:
 google-autoscale-bigiq-existing-network-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters2a.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/prepub_parameters2b.yaml"
