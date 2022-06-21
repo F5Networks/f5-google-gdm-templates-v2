@@ -1,0 +1,36 @@
+# ---
+AVAILABILITY ZONE: <REGION>-b
+BIGIP IP CIDR RANGE: 10.0.21.0/24
+BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
+BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
+BIGIP VERSION: 16-1-2-2-0-0-28
+IMAGE NAME: f5-bigip-<BIGIP VERSION>-payg-<IMAGE TYPE>-<IMAGE SUFFIX>
+IMAGE SUFFIX: '220505081153'
+IMAGE TYPE: best-plus-1gbps
+INSTANCE NAME: <UNIQUESTRING>-bigip1
+INSTANCE NAME2: <UNIQUESTRING>-bigip2
+INSTANCE TYPE: n1-standard-8
+INTERFACE NAME: Interface
+APPLICATION STACK NAME: <UNIQUESTRING>-application
+APPLICATION TEMPLATE URL: 'file://$PWD/examples/modules/application/application.py'
+BASTION STACK NAME: <UNIQUESTRING>-bastion
+BASTION TEMPLATE URL: 'file://$PWD/examples/modules/bastion/bastion.py'
+DAG STACK NAME: <UNIQUESTRING>-bastion-dag
+DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
+NETWORK STACK NAME: <UNIQUESTRING>-network
+NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
+LICENSE TYPE: payg
+NUMBER NETWORKS: 3
+PROVISION PUBLIC IP: true
+PROVISION DEMO APP: true
+REGION: us-west1
+SECONDARY IP CIDR RANGE 1: ''
+SECONDARY RANGE NAME 1: ''
+PRIVATE IP GOOGLE ACCESS: ''
+RESTRICTED SRC ADDRESS: '0.0.0.0/0'
+RESTRICTED SRC ADDRESS APP: '0.0.0.0/0'
+STACK NAME: failover-<LICENSE TYPE>-<DEWPOINT JOB ID>
+TEMPLATE NAME: failover-existing-network.py
+TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/failover/failover-existing-network.py
+UNIQUESTRING: dd-<DEWPOINT JOB ID>
+USE DEFAULT PARAMETERS: 'Yes'

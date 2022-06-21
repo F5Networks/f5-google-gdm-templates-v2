@@ -1,0 +1,34 @@
+---
+name: Google Examples - Autoscale BIGIQ
+onStart:
+- ../../../common/helper_init.sh
+- ../../../common/find_bigiq.sh
+- ../../../common/create_secret_bigiq.sh
+- ../../../common/create_storage.sh
+- ../../../common/verify_create_storage.sh
+- ./create_stack.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_login.sh
+- ../common/verify_waf_blocking.sh
+- ./update_stack.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../../sleep/5_minutes.sh
+- ../common/verify_telemetry.sh
+- ../common/verify_waf_transparent.sh
+- ../common/scale_down.sh
+- ../common/verify_scale_down.sh
+- ../common/verify_waf_logging.sh
+- ./update_stack_for_delete.sh
+- ../../../common/verify_create_autoscale.sh
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_stack_autoscale.sh
+- ../../../common/verify_delete_autoscale.sh
+- ../../../common/delete_secret.sh
+onFail:
+- ../../../common/delete_storage.sh
+- ../../../common/verify_delete_storage.sh
+- ../../../common/delete_stack_autoscale.sh
+- ../../../common/verify_delete_autoscale.sh
+- ../../../common/delete_secret.sh

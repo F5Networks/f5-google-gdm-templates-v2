@@ -17,14 +17,14 @@
 # Use the Troubleshooting section at the bottom of this .yaml to understand if the template and BIG-IP deployed correctly.
 
 imports:
-  - path: autoscale.py
+  - path: autoscale-existing-network.py
   - path: ../../modules/access/access.py
   - path: ../../modules/application/application.py
   - path: ../../modules/bigip-autoscale/bigip_autoscale.py
   - path: ../../modules/dag/dag.py
   - path: ../../modules/network/network.py
 resources:
-  - name: autoscale-py
+  - name: autoscale-existing-network-py
     type: autoscale.py
     properties:
       ### (OPTIONAL) Application label.

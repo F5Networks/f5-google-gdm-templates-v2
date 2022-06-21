@@ -5,7 +5,5 @@ google-autoscale-bigiq-example-test:
   run: "random"
   random-num-of-tests: 1
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters1.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters2.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prod_app.yaml"

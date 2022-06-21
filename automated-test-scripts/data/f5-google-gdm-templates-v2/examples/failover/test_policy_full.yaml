@@ -5,13 +5,17 @@ google-gdm-failover-example-test-byol:
     run: "random"
     random-num-of-tests: 1
     parameters-files:
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters.yaml"
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo_app.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod_app.yaml"
 
 google-gdm-failover-example-test-payg:
     test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
     run: "random"
     random-num-of-tests: 1
     parameters-files:
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters.yaml"
-        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters1.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo_app.yaml"
+        - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod_app.yaml"

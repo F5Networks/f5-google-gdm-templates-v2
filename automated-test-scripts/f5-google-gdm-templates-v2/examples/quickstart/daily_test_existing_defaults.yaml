@@ -1,0 +1,17 @@
+---
+name: Google Examples - bigip-quickstart-existing-network
+onStart:
+  - ../../common/helper_init.sh
+  - ../../common/create_network_stack.sh
+  - ../../common/verify_create_network.sh
+  - ./create_stack_defaults.sh
+  - ../../common/verify_create.sh
+  - ../../common/delete_stack.sh
+  - ../../common/verify_delete_stack.sh
+  - ../../common/delete_network_stack.sh
+  - ../../common/verify_delete_network.sh
+onFail:
+  - ../../common/delete_stack.sh
+  - ../../common/verify_delete_stack.sh
+  - ../../common/delete_network_stack.sh
+  - ../../common/verify_delete_network.sh
