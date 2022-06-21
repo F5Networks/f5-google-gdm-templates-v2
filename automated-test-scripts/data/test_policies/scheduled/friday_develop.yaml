@@ -1,118 +1,132 @@
 # parent tests
-# Autoscale BIG-IQ example
-gdm-autoscale-bigiq-example-test:
+# Autoscale Example Test
+google-autoscale-bigiq-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters1.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters2.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prepub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prod_app.yaml"
 
-# Autoscale BIG-IQ existing
-gdm-autoscale-bigiq-existing-test:
+# Autoscale Existing Network BIG-IQ Example Test
+google-autoscale-bigiq-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prepub_parameters1.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prepub_parameters2.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prepub_parameters3.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prod.yaml"
 
 # Autoscale PAYG example
-gdm-autoscale-payg-example-test:
+google-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
   random-num-of-tests: 1
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prod_app.yaml"
 
 # Autoscale PAYG existing
-gdm-autoscale-payg-existing-test:
+google-autoscale-payg-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prod.yaml"
 
-# Failover example
-gdm-failover-byol-example-test:
+# BIGIP Failover Tests - Example
+google-gdm-failover-example-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod_app.yaml"
 
-# Failover existing
-gdm-failover-byol-existing-test:
-  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
-  run: "random"
-  random-num-of-tests: 0
-  parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prepub_parameters1.yaml"
-
-# Failover example
-gdm-failover-payg-example-test:
+google-gdm-failover-example-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod_app.yaml"
 
-# Failover existing
-gdm-failover-payg-existing-test:
+# BIGIP Failover Existing Network Tests
+google-gdm-failover-existing-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prepub_parameters.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prepub_parameters1.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prod.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prod_app.yaml"
 
-# BIGIP Quickstart Tests
+google-gdm-failover-existing-test-payg:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/demo.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prod.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/demo_app.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prod_app.yaml"
+
+# BIGIP Quickstart Tests - Latest
 google-gdm-quickstart-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters1.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters2.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prepub_parameters3_v14.yaml"
-
-google-gdm-quickstart-existing-network-test-byol:
-  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
-  run: "random"
-  random-num-of-tests: 0
-  parameters-files:
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prepub_parameters.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prepub_parameters1.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_3nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic_v14.yaml"
 
 google-gdm-quickstart-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters1.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters2.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prepub_parameters3_v14.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic_v14.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_3nic.yaml"
+
+google-gdm-quickstart-existing-network-test-byol:
+  test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
+  run: "random"
+  random-num-of-tests: 0
+  parameters-files:
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_3nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_3nic.yaml"
 
 google-gdm-quickstart-existing-network-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
   run: "random"
   random-num-of-tests: 0
   parameters-files:
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prepub_parameters.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prepub_parameters1.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prepub_parameters2.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_3nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_1nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_2nic.yaml"
+    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_3nic.yaml"
 
 # module tests
 gdm-application-mod-test:
