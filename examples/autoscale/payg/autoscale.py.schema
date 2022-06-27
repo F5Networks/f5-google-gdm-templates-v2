@@ -80,6 +80,10 @@ properties:
     default: f5owner
     description: Owner label.
     type: string
+  logId:
+    default: f5-waf-logs
+    description: Name of the Google Cloud log for WAF events.
+    type: string
   provisionPublicIp:
     default: true
     description: Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.

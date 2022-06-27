@@ -50,6 +50,7 @@ This Google Deployment Manager template creates an autoscale group of BIG-IP ins
 | instanceTemplateVersion | No | 1 |  | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | instanceType | Yes |  | string | Instance type assigned to the application. For example: `n1-standard-1`. | 
 | instanceTemplates | Yes |  | array | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates). |
+| logId | No | f5-waf-logs | string | Enter the name of the Google Cloud log that will receive WAF events. This parameter is required if your bigipRuntimInitConfig contains a telemetry services configuration for Google Cloud logging. |
 | networkSelfLink | Yes |  | string | Self Link of the network to use to deploy the application.  | 
 | owner | No | f5owner | string | Owner label. |
 | provisionPublicIp | No | true | boolean | Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s). |

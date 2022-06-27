@@ -156,6 +156,10 @@ def create_instance_template(context, instance_template):
             {
                 'key': 'region',
                 'value': context.properties['region']
+            },
+            {
+                'key': 'log-id',
+                'value': context.properties['logId']
             }]
         }
     })

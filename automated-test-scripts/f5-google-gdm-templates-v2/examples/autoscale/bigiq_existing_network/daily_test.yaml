@@ -6,7 +6,7 @@ onStart:
 - ../../../common/create_secret_bigiq.sh
 - ../../../common/create_storage.sh
 - ../../../common/verify_create_storage.sh
-- ../../../common/create_network_stack.sh
+- ./tests/create_network_stack.sh
 - ../../../common/verify_create_network.sh
 - ../../../common/create_bastion_dag_stack.sh
 - ../../../common/verify_create_dag.sh

@@ -57,6 +57,8 @@ resources:
       owner: f5owner
       ### (OPTIONAL) Group label.
       group: f5group
+      ### (OPTIONAL) Enter the name of the Google Cloud log that will receive WAF events.
+      logId: f5-waf-logs
       ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to false. If set to false, the solution will deploy a bastion host instead in order to provide access.
       provisionPublicIp: false
       ### (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.

@@ -141,6 +141,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | environment | No | f5env | string | Environment label. |
 | group | No | f5group | string | Group Tag. |
 | owner | No | f5owner | string | Owner label. |
+| logId | No | f5-waf-logs | string | Enter the name of the Google Cloud log that will receive WAF events. |
 | provisionPublicIp | No | true | boolean | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
 | restrictedSrcAddressApp | Yes | | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
@@ -312,7 +313,7 @@ To test the WAF service, perform the following steps:
 ### Viewing WAF Logs
 
 - This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends WAF logs to the Google Cloud Logging service.
-- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for logId in the F5 BIG-IP Runtime Init My_Remote_Logs_Namespace configuration. The default value is ***f5-waf-logs***.
+- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for the logId input parameter. The default value is ***f5-waf-logs***.
 
 ### Accessing the BIG-IP
 
