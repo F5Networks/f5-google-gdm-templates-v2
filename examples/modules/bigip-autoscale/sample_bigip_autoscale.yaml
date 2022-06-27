@@ -55,6 +55,7 @@ resources:
           type: HTTP
       imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
       instanceType: n1-standard-8
+      logId: f5-waf-logs
       networkSelfLink: <URL>
       project: project-id
       targetPools:

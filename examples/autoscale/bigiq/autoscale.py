@@ -214,6 +214,7 @@ def create_bigip_deployment(context):
           }],
           'instanceTemplateVersion': context.properties['bigIpInstanceTemplateVersion'],
           'instanceType': context.properties['bigIpInstanceType'],
+          'logId': context.properties['logId'],
           'networkSelfLink': net_ref,
           'owner': context.properties['owner'],
           'project': context.env['project'],

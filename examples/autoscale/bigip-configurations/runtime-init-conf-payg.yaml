@@ -15,6 +15,12 @@ runtime_parameters:
     headers:
       - name: Metadata-Flavor
         value: Google
+  - name: LOG_ID
+    type: url
+    value: 'http://metadata.google.internal/computeMetadata/v1/instance/attributes/log-id'
+    headers:
+      - name: Metadata-Flavor
+        value: Google
   - name: REGION
     type: url
     value: 'http://metadata.google.internal/computeMetadata/v1/instance/attributes/region'
@@ -100,7 +106,7 @@ extension_services:
             type: Google_Cloud_Logging
             logScope: projects
             logScopeId: '{{{PROJECT_ID}}}'
-            logId: f5-waf-logs
+            logId: '{{{LOG_ID}}}'
             serviceEmail: '{{{UNIQUE_STRING}}}-admin@{{{PROJECT_ID}}}.iam.gserviceaccount.com'
             useServiceAccountToken: true
 post_onboard_enabled: []
