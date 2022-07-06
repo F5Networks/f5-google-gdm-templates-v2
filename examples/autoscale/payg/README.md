@@ -193,61 +193,65 @@ You will most likely want or need to change the BIG-IP configuration. This gener
 Example from sample_autoscale.yaml
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
 ```
 
 ***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*
 
 F5 has provided the following example configuration files in the `examples/autoscale/bigip-configurations` folder:
 
-- `runtime-init-conf-bigiq.yaml` - This configuration file installs packages and creates WAF-protected services for a BIG-IQ licensed deployment based on the Automation Toolchain declaration URLs listed above.
-- `runtime-init-conf-payg.yaml` - This inline configuration file installs packages and creates WAF-protected services for a PAYG licensed deployment.
+- `runtime-init-conf-bigiq-with-app.yaml` - This configuration file installs packages and creates WAF-protected services for a BIG-IQ licensed deployment based on the Automation Toolchain declaration URLs listed above.
+- `runtime-init-conf-payg-with-app.yaml` - This inline configuration file installs packages and creates WAF-protected services for a PAYG licensed deployment.
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples. 
- 
-By default, this solution deploys the `runtime-init-conf-payg.yaml` configuration. 
 
-This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+**IMPORTANT**: 
+By default, this solution references the `runtime-init-conf-payg-with-app.yaml` example BIG-IP config file.
+  - The **Full Stack** (autoscale.py) can use this file as is. This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+  - The **Existing Network Stack** (autoscale-existing-network.py) always **requires** customizing this file (with a Virtual Service configuration pointing at your own application) and republished before deploying.
 
-The example AS3 declaration in this config uses [Service Discovery](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/service-discovery.html#using-service-discovery-with-as3) to populate the pool with the private IP addresses of application servers in a instance group. By default, the fields for the service discovery configuration are rendered similarly from Google Cloud metadata. If the application instance group requires different values or configuration, you would need to customize them in the runtime-init config being downloaded. 
 
-To change the Pool configuration:
+**Example Customization 1:**
 
-  1. Edit/modify the AS3 Declaration (AS3) declaration in a corresponding runtime-init config file with the new `Pool` values. 
+To change the Virtual Service configuration:
 
-Example:
-```yaml
-           Shared_Pool:
-              class: Pool
-              remark: Service 1 shared pool
-              members:
-                - addressDiscovery: gce
-                  addressRealm: private
-                  tagKey: <YOUR_TAG_KEY>
-                  tagValue: <YOUR_TAG_VALUE>
-                  region: '{{{REGION}}}'
-                  servicePort: 80
-                  updateInterval: 60
-              monitors:
-                - http
-```
+  1. Edit/modify the Application Services 3 (AS3) declaration in the example runtime-init config file ` [runtime-init-conf-payg-with-app.yaml](../bigip-configurations/runtime-init-conf-payg-with-app.yaml) to point at your own application.  See AS3 [documentation](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html) for more details and examples.
 
-  - *NOTE:* 
-    - The managed identity assigned to the BIG-IP VE instance(s) must have read permissions on the managed instance group resource.
-    - The Service Discovery configuration listed above targets a specific managed instance group ID to reduce the number of requests made to the Google Cloud API endpoints. When choosing capacity for the BIG-IP VE and application instance group, it is possible to exceed the API request limits. Consult the Google Compute Engine API rate limits [documentation](https://cloud.google.com/compute/docs/api-rate-limits) for more information.
+      Example: At a minimum, update the Pool class:
+      ```yaml
+                Shared_Pool:
+                    class: Pool
+                    remark: Service 1 shared pool
+                    members:
+                      - addressDiscovery: gce
+                        addressRealm: private
+                        tagKey: <YOUR_TAG_KEY>
+                        tagValue: <YOUR_TAG_VALUE>
+                        region: '{{{REGION}}}'
+                        servicePort: 80
+                        updateInterval: 60
+                    monitors:
+                      - http
+      ```
 
-  - You can also use another pool configuration entirely. For example, using the [FQDN](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/discovery.html#using-an-fqdn-pool-to-identify-pool-members) Service Discovery instead to point to a DNS name.
+      *NOTE:* 
+      - The example AS3 declaration in this config uses [Service Discovery](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/service-discovery.html#using-service-discovery-with-as3) to populate the pool with the private IP addresses of application servers in a instance group. By default, the fields for the service discovery configuration are rendered similarly from Google Cloud metadata. If the application instance group requires different values or configuration, you would need to customize them in the runtime-init config being downloaded.  
+      - The managed identity assigned to the BIG-IP VE instance(s) must have read permissions on the managed instance group resource.
+      - The Service Discovery configuration listed above targets a specific managed instance group ID to reduce the number of requests made to the Google Cloud API endpoints. When choosing capacity for the BIG-IP VE and application instance group, it is possible to exceed the API request limits. Consult the Google Compute Engine API rate limits [documentation](https://cloud.google.com/compute/docs/api-rate-limits) for more information.
 
-```yaml
-              class: Pool
-              remark: Service 1 shared pool
-              members:
-              - addressDiscovery: fqdn
-                autoPopulate: true
-                hostname: <WWW.YOURSITE.COM>
-                servicePort: 80
-```
+  - Or even with another pool configuration entirely. For example, using the [FQDN](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/declarations/discovery.html#using-an-fqdn-pool-to-identify-pool-members) Service Discovery instead to point to a DNS name.
+
+    Example:
+    ```yaml
+                  class: Pool
+                  remark: Service 1 shared pool
+                  members:
+                  - addressDiscovery: fqdn
+                    autoPopulate: true
+                    hostname: <WWW.YOURSITE.COM>
+                    servicePort: 80
+    ```
 
   2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.).
   3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration.
@@ -453,11 +457,11 @@ By default, Rolling Upgrades are configured to upgrade in batches of 20% with ze
 1. Modify the **bigIpRuntimeInitConfig** parameter value to reference a new URL to trigger a model update. Example:
   - If using tags for versions, change from `v1.2.0.0`
     ```yaml
-        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
+        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.2.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml"
     ```
     to `v1.3.1.0`
     ```yaml
-        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg.yaml"
+        "bigIpRuntimeInitConfig": "https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v1.3.1.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml"
 
     ```
 2. Modify the **update** parameter to True. This removes dependencies that are required for the initial deployment only.
