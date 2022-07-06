@@ -95,6 +95,8 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 
 - By default, this solution modifies the username **admin** with a password set to value of the Google Secrets Manager secret which is provided in the BIGIP_PASSWORD parameter of the BIG-IP Runtime Init runtime_parameters configuration.
 
+- When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+
 - This solution requires Internet access for:
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
   - Contacting native cloud services for various cloud integrations:
@@ -333,30 +335,33 @@ By default, this solution deploys 3NIC BIG-IP instances using these examples:
   - `runtime-init-conf-3nic-payg-instance01.yaml`
   - `runtime-init-conf-3nic-payg-instance02.yaml`
 
-- When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+**IMPORTANT**: 
+By default, this solution deploys 3-NIC PAYG BIG-IPs:
+  - The **Full Stack** (failover.py) references the `runtime-init-conf-3nic-payg-instanceXX-with-app.yaml` BIG-IP config files, which include an example virtual service, and can be used as is. These example configurations do not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+  - The **Existing Network Stack** (failover-existing-network.py) references the `runtime-init-conf-3nic-payg-instanceXX.yaml` BIG-IP config files, which only provide basic system onboarding and do not **NOT** include an example virtual service, and can be used as is.
 
-However, most changes require modifying the configurations themselves. For example:
+However, most other changes require modifying the configurations themselves. For example:
 
 To deploy a **BYOL** instance:
 
 1. Edit/modify the Declarative Onboarding (DO) declaration in the corresponding `byol` runtime-init config files with the new `regKey` value.
 
-Example:
+    Example:
 
-```yaml
-My_License:
-  class: License
-  licenseType: regKey
-  regKey: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
-```
+    ```yaml
+    My_License:
+      class: License
+      licenseType: regKey
+      regKey: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
+    ```
 
 2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example: github, Google Storage, etc.)
 3. Update the **bigIpRuntimeInitConfig01** and **bigIpRuntimeInitConfig02** input parameters to reference the new URLs of the updated configurations.
 4. Update the **bigIpImageName** input parameter to use `byol` image.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").
-   Example:
-   ```yaml
-   bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
-   ```
+      Example:
+      ```yaml
+      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
+      ```
 
 In order deploy additional **virtual services**:
 

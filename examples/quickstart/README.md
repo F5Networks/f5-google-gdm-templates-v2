@@ -83,6 +83,8 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 - By default, this solution creates a username **admin** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
 ***IMPORTANT**: You should change this temporary password immediately following deployment.*
 
+- When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+
 - This solution requires Internet access for:
 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
@@ -281,7 +283,10 @@ F5 has provided the following example configuration files in the `examples/quick
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
 
-By default, this solution deploys a 3NIC BIG-IP using the example `runtime-init-conf-3nic-payg.yaml`.
+**IMPORTANT**: 
+By default, this solution deploys a 3-NIC PAYG BIG-IP:
+  - The **Full Stack** (quickstart.py) references the `runtime-init-conf-3nic-payg-with-app.yaml` BIG-IP config file, which includes an example virtual service, and can be used as is. This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+  - The **Existing Network Stack** (quickstart-existing-network.py) references the `runtime-init-conf-3nic-payg.yaml` BIG-IP config file, which only provides basic system onboarding and does not **NOT** include an example virtual service, and can be used as is.
 
 To deploy a **1NIC** instance:
 
@@ -293,9 +298,7 @@ To deploy a **2NIC** instance:
 1. Update the **bigIpRuntimeInitConfig** input parameter to reference a corresponding `2nic` config file (for example, runtime-init-conf-2nic-payg.yaml).
 2. Update the **numNics** input parameter to **2**.
 
-- When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
-
-However, most changes require modifying the configurations themselves. For example:
+Other changes require customizing the example configuration files. For example:
 
 To deploy a **BYOL** instance:
 
