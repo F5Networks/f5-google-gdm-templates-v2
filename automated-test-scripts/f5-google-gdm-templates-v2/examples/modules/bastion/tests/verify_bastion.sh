@@ -10,7 +10,7 @@ STATE_FILE=${TMP_DIR}/state.json
 source ${TMP_DIR}/test_functions.sh
 if [ "<AUTOSCALE>" == "False" ]; then
     echo "DO STANDALONE"
-    BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)
+    BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion-vm-01 <AVAILABILITY ZONE> public)
 else
     echo "DO AUTOSCALE"
     INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bastion-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance | cut -d'/' -f11)

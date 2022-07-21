@@ -15,13 +15,13 @@ curl -k <NETWORK TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 /usr/bin/yq e ".resources[0].name = \"network\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"network.py\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.name = \"network\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.name = \"network-network\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnets[0].name = \"mgmt\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnets[0].name = \"mgmt-subnet\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnets[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnets[0].ipCidrRange = \"10.0.0.0/24\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnets[1].name = \"app\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnets[1].name = \"app-subnet\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnets[1].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.subnets[1].ipCidrRange = \"10.0.1.0/24\"" -i <DEWPOINT JOB ID>.yaml
 

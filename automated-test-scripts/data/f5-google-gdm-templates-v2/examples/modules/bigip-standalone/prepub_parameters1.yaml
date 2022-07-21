@@ -17,7 +17,7 @@ HOST NAME: test.example.com
 IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
 IMAGE SUFFIX: '0505081937'
 IMAGE TYPE: all-modules-2boot-loc
-INSTANCE NAME: bigip1
+INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface
 LICENSE TYPE: byol

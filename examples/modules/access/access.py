@@ -138,7 +138,7 @@ def create_binding(context, service_account_name, role_name):
         'member': 'serviceAccount:$(ref.' + service_account_name + '.email)'
     })
     binding = {
-        'name': ''.join([context.properties['uniqueString'], '-bigip-bind-iam-policy']),
+        'name': ''.join([context.properties['uniqueString'], '-bigip-iam-bind']),
         'type': 'gcp-types/cloudresourcemanager-v1:virtual.projects.iamMemberBinding',
         'properties': properties
     }

@@ -10,7 +10,7 @@ STATE_FILE=${TMP_DIR}/state.json
 source ${TMP_DIR}/test_functions.sh
 if [ "<AUTOSCALE>" == "False" ]; then
     echo "DO STANDALONE"
-    APP_IP=$(gcloud compute instances describe <UNIQUESTRING>-application --zone=<AVAILABILITY ZONE> --format json | jq -r .networkInterfaces[].accessConfigs[].natIP)
+    APP_IP=$(gcloud compute instances describe <UNIQUESTRING>-application-vm-01 --zone=<AVAILABILITY ZONE> --format json | jq -r .networkInterfaces[].accessConfigs[].natIP)
 else
     echo "DO AUTOSCALE"
     INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-application-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance | cut -d'/' -f11)

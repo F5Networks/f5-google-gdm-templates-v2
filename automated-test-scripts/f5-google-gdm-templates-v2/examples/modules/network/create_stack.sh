@@ -20,9 +20,9 @@ until [ $i -gt $c ]; do
     /usr/bin/yq e ".resources[${i}].name = \"network${i}\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].type = \"network.py\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
-    /usr/bin/yq e ".resources[${i}].properties.name = \"network${i}\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[${i}].properties.name = \"network${i}-network\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i <DEWPOINT JOB ID>.yaml
-    /usr/bin/yq e ".resources[${i}].properties.subnets[0].name = \"subnet${i}\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[${i}].properties.subnets[0].name = \"subnet${i}-subnet\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[${i}].properties.subnets[0].ipCidrRange = \"10.0.${i}.0/24\"" -i <DEWPOINT JOB ID>.yaml
     ((i=i+1))

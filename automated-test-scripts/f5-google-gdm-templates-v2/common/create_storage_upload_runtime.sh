@@ -31,6 +31,7 @@ gsutil label ch -l delete:true gs://<STACK NAME>-bucket
 gsutil acl -r ch -u AllUsers:R gs://<STACK NAME>-bucket/bigip-configurations
 # Remove modified file from local files
 rm $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml
+rm $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
 if [ $? -eq 0 ]; then
     echo "completed successfully"
 fi

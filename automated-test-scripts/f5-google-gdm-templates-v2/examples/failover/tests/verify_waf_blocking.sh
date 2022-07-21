@@ -10,7 +10,7 @@ if [[ <PROVISION PUBLIC IP> == True ]]; then
     # source test functions
     source ${TMP_DIR}/test_functions.sh
 
-    APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
+    APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fwd-rule-01 <REGION>)
     echo "APP_ADDRESS: ${APP_ADDRESS}"
 
     # confirm app is available

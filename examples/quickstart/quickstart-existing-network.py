@@ -64,14 +64,14 @@ def create_bigip_deployment(context):
         depends_on_array.append(subnet_name)
         interface_config_array.append(interface_config)
     bigip_config = [{
-        'name': 'bigip-standalone',
+        'name': 'bigip-quickstart',
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
-            'name': 'bigip1',
+            'name': 'bigip-vm-01',
             'networkInterfaces': interface_config_array,
             'region': context.properties['region'],
             'tags': {
@@ -83,7 +83,7 @@ def create_bigip_deployment(context):
                 ]
             },
             'targetInstances': [{
-                'name': 'bigip'
+                'name': 'bigip-vm-01'
             }],
             'uniqueString': context.properties['uniqueString'],
             'zone': context.properties['zone']
@@ -126,7 +126,7 @@ def create_dag_deployment(context):
         depends_on_array.append(int_net_name)
     if context.properties['numNics'] > 3:
         depends_on_array.append(ext_net_name)
-    target_instance_name = generate_name(prefix, 'bigip-ti')
+    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
     depends_on_array.append(target_instance_name)
     dag_configuration = [{
       'name': 'dag',
@@ -178,7 +178,7 @@ def create_dag_deployment(context):
             ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwrule1',
+                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
                     'region': context.properties['region'],
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
@@ -189,7 +189,7 @@ def create_dag_deployment(context):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my tcp healthcheck',
-                    'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                    'name': context.properties['uniqueString'] + '-tcp-hc',
                     'tcpHealthCheck': {
                         'port': 44000
                     },
@@ -199,7 +199,7 @@ def create_dag_deployment(context):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my http healthcheck',
-                    'name': context.properties['uniqueString'] + '-http-healthcheck',
+                    'name': context.properties['uniqueString'] + '-http-hc',
                     'httpHealthCheck': {
                         'port': 80
                     },
@@ -209,7 +209,7 @@ def create_dag_deployment(context):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my https healthcheck',
-                    'name': context.properties['uniqueString'] + '-https-healthcheck',
+                    'name': context.properties['uniqueString'] + '-https-hc',
                     'httpsHealthCheck': {
                         'port': 443
                     },
@@ -233,8 +233,8 @@ def generate_config(context):
     prefix = context.properties['uniqueString']
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
-    bigip_instance_name= generate_name(prefix, 'bigip1')
-    fw_rule_name = generate_name(prefix, 'fwrule1')
+    bigip_instance_name= generate_name(prefix, 'bigip-vm-01')
+    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
 
     resources = create_bigip_deployment(context) + create_dag_deployment(context)
     outputs = []

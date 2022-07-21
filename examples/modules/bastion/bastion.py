@@ -166,7 +166,7 @@ def create_instance_template(context, instance_templates):
     # Setup Variables
     prefix = context.properties['uniqueString']
     name = instance_templates.get('name') or context.env['name'] if 'name' in instance_templates or 'name' in context.env else 'demo'
-    instance_template_name = generate_name(prefix, name + '-v' + str(context.properties['instanceTemplateVersion']))
+    instance_template_name = generate_name(prefix, name + '-tmpl-v' + str(context.properties['instanceTemplateVersion']))
     application = context.properties['application'] if 'application' in context.properties else 'demo'
     cost = context.properties['cost'] if 'cost' in context.properties else 'demo'
     environment =  context.properties['environment'] if 'environment' in context.properties else 'demo'
@@ -243,7 +243,7 @@ def create_instance_group(context, instance_group_managers):
     prefix = context.properties['uniqueString']
     name = instance_group_managers.get('name') or context.env['name'] if 'name' in instance_group_managers or 'name' in context.env else 'demo'
     base_instance_name = generate_name(prefix, name + '-vm')
-    instance_template_name = generate_name(prefix, name + '-v' + str(context.properties['instanceTemplateVersion']))
+    instance_template_name = generate_name(prefix, name + '-tmpl-v' + str(context.properties['instanceTemplateVersion']))
     instance_group_manager_name = generate_name(prefix, name + '-igm')
     properties = {}
 

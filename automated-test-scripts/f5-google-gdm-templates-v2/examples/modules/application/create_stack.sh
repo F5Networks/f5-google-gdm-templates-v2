@@ -26,6 +26,7 @@ if [ "<AUTOSCALE>" == "False" ]; then
     /usr/bin/yq e ".resources[0].type = \"/tmp/application.py\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.appContainerName = \"<APP CONTAINER NAME>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.instances[0].name = \"application-vm-01\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].accessConfigs[0].name = \"External NAT\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].accessConfigs[0].type = \"ONE_TO_ONE_NAT\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].network = \"$networkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
