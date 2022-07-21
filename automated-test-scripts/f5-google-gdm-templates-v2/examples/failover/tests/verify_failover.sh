@@ -24,10 +24,10 @@ if [[ <PROVISION PUBLIC IP> == False ]]; then
 
     case $active in
     active)
-      echo "Current State: $active , nothing to do, grab bigip2 status"
+      echo "Current State: $active , nothing to do, grab bigip-vm-02 status"
       result=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p dewpt@${BASTION_IP}" admin@${IP2} "tmsh show sys failover")  ;;
     *)
-      echo "Current State: $active , setting system to standby on BIGIP2"
+      echo "Current State: $active , setting system to standby on bigip-vm-02"
       sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p dewpt@${BASTION_IP}" admin@${IP2} "tmsh run sys failover standby"
       result=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" -o ProxyCommand="ssh -o 'StrictHostKeyChecking no' -i /etc/ssl/private/dewpt_private.pem -W %h:%p dewpt@${BASTION_IP}" admin@${IP2} "tmsh show sys failover")  ;;
     esac
@@ -40,10 +40,10 @@ else
 
     case $active in
     active)
-      echo "Current State: $active , nothing to do, grab bigip2 status"
+      echo "Current State: $active , nothing to do, grab bigip-vm-02 status"
       result=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" admin@${IP2} "tmsh show sys failover")  ;;
     *)
-      echo "Current State: $active , setting system to standby on BIGIP2"
+      echo "Current State: $active , setting system to standby on bigip-vm-02"
       sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" admin@${IP2} "tmsh run sys failover standby"
       result=$(sshpass -p ${PASSWORD} ssh -o "StrictHostKeyChecking no" admin@${IP2} "tmsh show sys failover")  ;;
     esac

@@ -29,7 +29,6 @@ def populate_properties(context, required_properties, optional_properties):
     )
     return properties
 
-
 def create_storage_bucket(context, storage_bucket):
     """ Create storage bucket. """
     # Build instance property lists
@@ -71,7 +70,6 @@ def create_storage_bucket(context, storage_bucket):
         'properties': properties
     }
     return storage
-
 
 def create_instance(context):
     """ Create standalone instance """
@@ -118,11 +116,12 @@ def create_instance(context):
                     ])
                 }
             }],
-            'hostname': ''.join([instance_name,
-            '.c.', context.env['project'], '.internal']),
-            'machineType': ''.join([COMPUTE_URL_BASE, 'projects/', context.env['project'],
-            '/zones/', context.properties['zone'], '/machineTypes/',
-            context.properties['instanceType']]),
+            'hostname': ''.join([instance_name, '.c.',
+                context.env['project'], '.internal']),
+            'machineType': ''.join([COMPUTE_URL_BASE, 'projects/',
+                context.env['project'], '/zones/',
+                context.properties['zone'], '/machineTypes/',
+                context.properties['instanceType']]),
             'metadata': metadata(context),
             'name': instance_name,
             'networkInterfaces': create_nics(context)

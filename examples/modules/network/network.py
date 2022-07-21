@@ -17,7 +17,7 @@ def generate_config(context):
 
     name = context.properties.get('name') or \
         context.env['name']
-    net_name = generate_name(context.properties['uniqueString'], name + '-network')
+    net_name = generate_name(context.properties['uniqueString'], name)
     network_self_link = '$(ref.{}.selfLink)'.format(net_name)
     auto_create_subnetworks = context.properties.get(
         'autoCreateSubnets',
@@ -52,7 +52,7 @@ def generate_config(context):
     nats = []
     for subnet in context.properties.get('subnets', []):
         subnet['network'] = network_self_link
-        subnet_name = generate_name(context.properties['uniqueString'], subnet['name'] + '-subnet')
+        subnet_name = generate_name(context.properties['uniqueString'], subnet['name'])
 
         # Setup properties
         properties = {p: subnet[p] for p in required_properties}

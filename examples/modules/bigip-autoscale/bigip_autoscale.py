@@ -12,7 +12,6 @@ def generate_name(prefix, suffix):
     """Generate unique name."""
     return prefix + "-" + suffix
 
-
 def populate_properties(context, required_properties, optional_properties):
     properties = {}
     properties.update(
@@ -30,7 +29,6 @@ def populate_properties(context, required_properties, optional_properties):
         }
     )
     return properties
-
 
 def create_instance_template(context, instance_template):
     """Create autoscale instance template."""
@@ -60,7 +58,7 @@ def create_instance_template(context, instance_template):
     # Setup Variables
     prefix = context.properties['uniqueString']
     name = instance_template.get('name') or context.env['name'] if 'name' in instance_template or 'name' in context.env else 'template'
-    instance_template_name = generate_name(prefix, name + '-v' + str(context.properties['instanceTemplateVersion']))
+    instance_template_name = generate_name(prefix, name + '-tmpl-v' + str(context.properties['instanceTemplateVersion']))
     application = context.properties['application'] if 'application' in context.properties else 'f5app'
     cost = context.properties['cost'] if 'cost' in context.properties else 'f5cost'
     environment =  context.properties['environment'] if 'environment' in context.properties else 'f5env'
@@ -182,7 +180,6 @@ def create_instance_template(context, instance_template):
     }
     return instance_template_config
 
-
 def create_instance_group(context, instance_group_manager):
     """Create autoscale instance group."""
     # Build instance property lists
@@ -205,7 +202,7 @@ def create_instance_group(context, instance_group_manager):
     prefix = context.properties['uniqueString']
     name = instance_group_manager.get('name') or context.env['name'] if 'name' in instance_group_manager or 'name' in context.env else 'bigip'
     base_instance_name = generate_name(prefix, name + '-vm')
-    instance_template_name = generate_name(prefix, name + '-v' + str(context.properties['instanceTemplateVersion']))
+    instance_template_name = generate_name(prefix, name + '-tmpl-v' + str(context.properties['instanceTemplateVersion']))
     instance_group_manager_name = generate_name(prefix, name + '-igm')
     target_pool_name = generate_name(prefix, name + '-tp')
     properties = {}
@@ -230,7 +227,6 @@ def create_instance_group(context, instance_group_manager):
         'properties': properties
     }
     return instance_group_manager_config
-
 
 def create_autoscaler(context, autoscaler):
     """Create autoscaler."""
@@ -269,7 +265,6 @@ def create_autoscaler(context, autoscaler):
         'properties': properties
     }
     return autoscaler_config
-
 
 def create_health_check(context, health_check, source):
     """Create health check."""
@@ -320,7 +315,6 @@ def create_health_check(context, health_check, source):
 
     return health_check_config
 
-
 def create_target_pool(context, target_pool):
     """Create target pool."""
     # Build instance property lists
@@ -353,7 +347,6 @@ def create_target_pool(context, target_pool):
     }
     return target_pool_config
 
-
 def create_target_pool_outputs(context, target_pool):
     """Create target pool outputs."""
     prefix = context.properties['uniqueString']
@@ -366,7 +359,6 @@ def create_target_pool_outputs(context, target_pool):
     }
     return target_pool
 
-
 def create_instance_group_output(context, instance_group_manager):
     """Create instance group output."""
     prefix = context.properties['uniqueString']
@@ -377,7 +369,6 @@ def create_instance_group_output(context, instance_group_manager):
         'value': instance_group_manager_name
     }
     return instance_group
-
 
 def generate_config(context):
     """Entry point for the deployment resources."""

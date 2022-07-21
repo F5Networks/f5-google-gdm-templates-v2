@@ -13,8 +13,8 @@ source ${TMP_DIR}/test_functions.sh
 if [[ "<PROVISION DEMO APP>" == "False" ]]; then
     echo "Successful Traffic Test"
 else
-    FW_RULE1=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
-    FW_RULE2=$(get_fr_ip <UNIQUESTRING>-fwrule2 <REGION>)
+    FW_RULE1=$(get_fr_ip <UNIQUESTRING>-fwd-rule-01 <REGION>)
+    FW_RULE2=$(get_fr_ip <UNIQUESTRING>-fwd-rule-02 <REGION>)
 
     # echo "Application IP: $APP_IP"
     echo "Forwarding Rule 1 IP: $FW_RULE1"

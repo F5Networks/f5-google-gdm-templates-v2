@@ -81,7 +81,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
     else:
         storage_config = []
     bigip_config = [{
-        'name': 'bigip-failover' + str(instance_number),
+        'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
@@ -89,7 +89,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             'bigIpPeerAddr': context.properties['bigIpPeerAddr'] if instance_number == 2 else None,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
-            'name': 'bigip' + str(instance_number),
+            'name': 'bigip-vm-0' + str(instance_number),
             'networkInterfaces': interface_config_array,
             'storageBuckets': storage_config,
             'region': context.properties['region'],
@@ -117,7 +117,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 ]
             },
             'targetInstances': [{
-                'name': 'bigip' + str(instance_number)
+                'name': 'bigip-vm-0' + str(instance_number)
             }],
             'uniqueString': context.properties['uniqueString'],
             'zone': context.properties['zone']
@@ -160,8 +160,8 @@ def create_dag_deployment(context, num_nics):
         depends_on_array.append(int_net_name)
     if num_nics > 3:
         depends_on_array.append(app_net_name)
-    target_instance_name = generate_name(prefix, 'bigip1-ti')
-    target_instance_name2 = generate_name(prefix, 'bigip2-ti')
+    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
     depends_on_array.append(target_instance_name)
     depends_on_array.append(target_instance_name2)
     dag_configuration = [{
@@ -234,7 +234,7 @@ def create_dag_deployment(context, num_nics):
             ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwrule1',
+                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
                     'region': context.properties['region'],
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
@@ -242,7 +242,7 @@ def create_dag_deployment(context, num_nics):
                     'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
                 },
                 {
-                    'name': context.properties['uniqueString'] + '-fwrule2',
+                    'name': context.properties['uniqueString'] + '-fwd-rule-02',
                     'region': context.properties['region'],
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name2 + '.selfLink)',
@@ -254,7 +254,7 @@ def create_dag_deployment(context, num_nics):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my tcp healthcheck',
-                    'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                    'name': context.properties['uniqueString'] + '-tcp-hc',
                     'tcpHealthCheck': {
                         'port': 44000
                     },
@@ -264,7 +264,7 @@ def create_dag_deployment(context, num_nics):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my http healthcheck',
-                    'name': context.properties['uniqueString'] + '-http-healthcheck',
+                    'name': context.properties['uniqueString'] + '-http-hc',
                     'httpHealthCheck': {
                         'port': 80
                     },
@@ -274,7 +274,7 @@ def create_dag_deployment(context, num_nics):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my https healthcheck',
-                    'name': context.properties['uniqueString'] + '-https-healthcheck',
+                    'name': context.properties['uniqueString'] + '-https-hc',
                     'httpsHealthCheck': {
                         'port': 443
                     },
@@ -290,7 +290,6 @@ def create_dag_deployment(context, num_nics):
     }]
     return dag_configuration
 
-
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
@@ -300,9 +299,9 @@ def generate_config(context):
     prefix = context.properties['uniqueString']
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
-    bigip_instance_name = generate_name(prefix, 'bigip1')
-    bigip_instance_name2 = generate_name(prefix, 'bigip2')
-    fw_rule_name = generate_name(prefix, 'fwrule1')
+    bigip_instance_name = generate_name(prefix, 'bigip-vm-01')
+    bigip_instance_name2 = generate_name(prefix, 'bigip-vm-02')
+    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
 
     resources = create_access_deployment(context) + \
         create_bigip_deployment(context, num_nics, 1) + \

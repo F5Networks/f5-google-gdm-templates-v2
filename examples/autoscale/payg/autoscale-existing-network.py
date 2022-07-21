@@ -36,7 +36,7 @@ def create_bigip_deployment(context):
           '/subnetworks/' + subnet_name
     depends_on_array = []
     deployment = {
-        'name': 'bigip',
+        'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
           'application': context.properties['application'],
@@ -149,7 +149,7 @@ def create_dag_deployment(context):
         ],
         'forwardingRules': [
             {
-                'name': context.properties['uniqueString'] + '-fwrule1',
+                'name': context.properties['uniqueString'] + '-fwd-rule-01',
                 'region': context.properties['region'],
                 'IPProtocol': 'TCP',
                 'target': '$(ref.' + target_pool_name + '.selfLink)',
@@ -165,7 +165,7 @@ def create_dag_deployment(context):
                 ],
                 'description': 'Backend service used for internal LB',
                 'healthChecks': [
-                    '$(ref.' + context.properties['uniqueString'] + '-tcp-healthcheck.selfLink)'
+                    '$(ref.' + context.properties['uniqueString'] + '-tcp-hc.selfLink)'
                 ],
                 'loadBalancingScheme': 'INTERNAL',
                 'name': context.properties['uniqueString'] + '-bes',
@@ -179,7 +179,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my tcp healthcheck',
-                'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                'name': context.properties['uniqueString'] + '-tcp-hc',
                 'tcpHealthCheck': {
                     'port': 44000
                 },
@@ -189,7 +189,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my http healthcheck',
-                'name': context.properties['uniqueString'] + '-http-healthcheck',
+                'name': context.properties['uniqueString'] + '-http-hc',
                 'httpHealthCheck': {
                     'port': 80
                 },
@@ -199,7 +199,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my https healthcheck',
-                'name': context.properties['uniqueString'] + '-https-healthcheck',
+                'name': context.properties['uniqueString'] + '-https-hc',
                 'httpsHealthCheck': {
                     'port': 443
                 },
@@ -224,7 +224,7 @@ def generate_config(context):
 
     deployment_name = generate_name(prefix, name)
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
-    fw_rule_name = generate_name(prefix, 'fwrule1')
+    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
 
     resources = [create_access_deployment(context)] + \
                 [create_bigip_deployment(context)] + \

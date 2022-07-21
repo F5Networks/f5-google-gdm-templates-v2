@@ -144,7 +144,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpPeerAddr | No | 10.0.1.11 | string | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -176,7 +176,7 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | bigIpPeerAddr | No | 10.0.1.11 | string | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
 | bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml | --- | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run| string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run| string | Supply a URL to the bigip-runtime-init package. |
 | cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -550,7 +550,7 @@ To test the WAF service (if deploying using runtime-init-conf-*-with-app.yaml), 
       ```
 
 Verify the Virtual Service (**vip1PublicIp**) is remapped to the peer BIG-IP target instance after failover. 
-  - **Console**: Navigate to  **Network Services > Load Balancing > Go to the Advanced view by clicking on "load balancing components view" link > *fwrule1* > Target**
+  - **Console**: Navigate to  **Network Services > Load Balancing > Go to the Advanced view by clicking on "load balancing components view" link > *fwd-rule-01* > Target**
   - **gcloud CLI** 
       ```bash 
       gcloud compute forwarding-rules list
@@ -621,7 +621,7 @@ If all deployments completed "successfully" but maybe the BIG-IP or Service is n
     - _/var/log/restnoded/restnoded.log_: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - _GENERAL LOG TIP_: Search most critical error level errors first (for example, egrep -i err /var/log/<Logname>).
 
-If you are unable to login to the BIG-IP instance(s), you can navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Serial port 1 (console)** to investigate any potential details from the serial console.
+If you are unable to login to the BIG-IP instance(s), you can navigate to **Compute Engine > VM Instances > _uniqueString_-bigip-vm-01 > Serial port 1 (console)** to investigate any potential details from the serial console.
 
 ## Security
 

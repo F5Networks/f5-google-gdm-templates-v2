@@ -6,7 +6,7 @@ onStart:
 - ../../../common/verify_create_network.sh
 - ../../../common/create_instance_groups.sh
 - ../../../common/create_target_pool.sh
-- ../../../common/create_dag_stack.sh
+- ../../../common/create_bastion_dag_stack.sh
 - ../../../common/verify_create_dag.sh
 - ./create_stack.sh
 - ../../../common/verify_create.sh

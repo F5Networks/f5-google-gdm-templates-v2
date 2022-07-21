@@ -39,7 +39,7 @@ resources:
         https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
-        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
+        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.
@@ -65,6 +65,8 @@ resources:
       # NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
       # IMPORTANT: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
       # Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet.
+      # restrictedSrcAddressMgmt:*
+      # 0.0.0.0/0**
       restrictedSrcAddressMgmt:
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr

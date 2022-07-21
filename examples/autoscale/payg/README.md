@@ -119,7 +119,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | bigIpInstanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
 | bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
 | bigIpScalingMinSize | No | 1 | integer | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
@@ -378,7 +378,7 @@ From Parent Template Outputs:
 
 - Login in via WebUI:
   - As mentioned above, no password is configured by default. If you would like or need to login to the GUI for debugging or inspection, you can create a custom username/password by logging in to admin account via SSH (per above) and use tmsh to create one:
-    At the TMSH prompt ```admin@(bigip1))(cfg-sync Standalone)(Active)(/Common)(tmos)#```:
+    At the TMSH prompt ```admin@())(cfg-sync Standalone)(Active)(/Common)(tmos)#```:
       ```shell
       create auth user <YOUR_WEBUI_USERNAME> password <YOUR_STRONG_PASSWORD> partition-access add { all-partitions { role admin } }
 
