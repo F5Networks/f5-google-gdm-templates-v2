@@ -95,7 +95,7 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-t
 /usr/bin/yq e ".resources[0].properties.firewalls[2].targetTags[0] = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 
 # Adding Forwarding Rule
-/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fwd-rule-01\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fr-01\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].target = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml

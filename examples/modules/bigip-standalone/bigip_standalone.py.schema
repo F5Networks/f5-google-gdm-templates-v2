@@ -25,6 +25,9 @@ required:
   - zone
 
 properties:
+  additionalMetadataTags:
+    description: Object containing key value pairs to add as Tags in Metadata
+    type: object
   bigIpRuntimeInitConfig:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string

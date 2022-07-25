@@ -7,6 +7,11 @@ imports:
 resources:
   - name: dag-py
     properties:
+      computeAddresses:
+        - name: my-public-ip-01
+          region: us-west1
+        - name: my-public-ip-02
+          region: us-west1
       firewalls:
         - allowed:
             - IPProtocol: TCP
@@ -32,7 +37,7 @@ resources:
           targetTags:
             - appfw
       forwardingRules:
-        - name: my-unique-fwd-rule-01
+        - name: my-unique-fr-01
           region: us-west1
           IPProtocol: TCP
           target: >-

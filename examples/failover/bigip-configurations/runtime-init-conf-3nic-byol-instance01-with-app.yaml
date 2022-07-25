@@ -145,8 +145,7 @@ extension_services:
               ignoreChanges: false
             Service_Address_01:
               class: Service_Address
-              virtualAddress: 0.0.0.0
-              trafficGroup: none
+              virtualAddress: '{{{SERVICE_ADDRESS_01}}}'
           HTTP_Service_01:
             class: Application
             template: http
@@ -335,6 +334,12 @@ runtime_parameters:
   - name: UNIQUE
     type: url
     value: http://169.254.169.254/computeMetadata/v1/instance/attributes/unique-string
+    headers:
+      - name: Metadata-Flavor
+        value: Google
+  - name: SERVICE_ADDRESS_01
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/attributes/service-address-01-public-ip
     headers:
       - name: Metadata-Flavor
         value: Google

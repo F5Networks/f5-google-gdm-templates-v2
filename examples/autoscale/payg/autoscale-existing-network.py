@@ -149,7 +149,7 @@ def create_dag_deployment(context):
         ],
         'forwardingRules': [
             {
-                'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                'name': context.properties['uniqueString'] + '-fr-01',
                 'region': context.properties['region'],
                 'IPProtocol': 'TCP',
                 'target': '$(ref.' + target_pool_name + '.selfLink)',
@@ -224,7 +224,7 @@ def generate_config(context):
 
     deployment_name = generate_name(prefix, name)
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
 
     resources = [create_access_deployment(context)] + \
                 [create_bigip_deployment(context)] + \
@@ -246,15 +246,15 @@ def generate_config(context):
         },
         {
             'name': 'wafExternalHttpUrl',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafExternalHttpsUrl',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafPublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         }
     ]
 

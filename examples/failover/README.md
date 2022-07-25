@@ -66,7 +66,7 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Diagram
 
-![Configuration Example](diagram.png)
+![Configuration Example](diagram.gif)
 
 For information about this type of deployment, see the F5 Cloud Failover Extension [documentation](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html).
 
@@ -76,11 +76,13 @@ For information about this type of deployment, see the F5 Cloud Failover Extensi
 https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
  containing the password used to cluster and access the failover Pair. For example, to create a secret using the GCLOUD CLI: 
   ```bash
-  # Use an editor of your choice to create file called password.txt. Ensure there is no newline at the end of the file.
+  # Use an editor of your choice to create file called password.txt. 
+  # IMPORANT: Ensure there is no newline at the end of the file.
   $ gcloud secrets create mySecretId --data-file="password.txt"
   ```
   - *NOTE:*
     - By default, the secret name used is `mySecretId`. To change this, see [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
+    - Ensure there is no newline at the end of the file. For example: `echo -n 'YourStrongPassword' > password.txt` where using "-n" option to avoid newlines. Otherwise, use an editor to not have in bash history.
 - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) uploaded the project for access to the BIG-IP instances.
 - You must have installed the [Google Cloud SDK](https://cloud.google.com/sdk/downloads).
 - This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
@@ -94,8 +96,6 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 ## Important Configuration Notes
 
 - By default, this solution modifies the username **admin** with a password set to value of the Google Secrets Manager secret which is provided in the BIGIP_PASSWORD parameter of the BIG-IP Runtime Init runtime_parameters configuration.
-
-- When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
 - This solution requires Internet access for:
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
@@ -335,10 +335,7 @@ By default, this solution deploys 3NIC BIG-IP instances using these examples:
   - `runtime-init-conf-3nic-payg-instance01.yaml`
   - `runtime-init-conf-3nic-payg-instance02.yaml`
 
-**IMPORTANT**: 
-By default, this solution deploys 3-NIC PAYG BIG-IPs:
-  - The **Full Stack** (failover.py) references the `runtime-init-conf-3nic-payg-instanceXX-with-app.yaml` BIG-IP config files, which include an example virtual service, and can be used as is. These example configurations do not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
-  - The **Existing Network Stack** (failover-existing-network.py) references the `runtime-init-conf-3nic-payg-instanceXX.yaml` BIG-IP config files, which only provide basic system onboarding and do not **NOT** include an example virtual service, and can be used as is.
+- When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
 However, most other changes require modifying the configurations themselves. For example:
 
@@ -346,8 +343,7 @@ To deploy a **BYOL** instance:
 
 1. Edit/modify the Declarative Onboarding (DO) declaration in the corresponding `byol` runtime-init config files with the new `regKey` value.
 
-    Example:
-
+    Example: 
     ```yaml
     My_License:
       class: License
@@ -514,7 +510,7 @@ To test the WAF service (if deploying using runtime-init-conf-*-with-app.yaml), 
   - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs  > vip1PublicIp1**.
   - **Google CLI**: 
       ```bash
-      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("vip1PublicIp1")).finalValue'
+      gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("vip1PublicIp")).finalValue'
       ```
 
 - Verify the application is responding:
@@ -550,7 +546,7 @@ To test the WAF service (if deploying using runtime-init-conf-*-with-app.yaml), 
       ```
 
 Verify the Virtual Service (**vip1PublicIp**) is remapped to the peer BIG-IP target instance after failover. 
-  - **Console**: Navigate to  **Network Services > Load Balancing > Go to the Advanced view by clicking on "load balancing components view" link > *fwd-rule-01* > Target**
+  - **Console**: Navigate to  **Network Services > Load Balancing > Go to the Advanced view by clicking on "load balancing components view" link > *fr-01* > Target**
   - **gcloud CLI** 
       ```bash 
       gcloud compute forwarding-rules list

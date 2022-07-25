@@ -108,7 +108,7 @@ fi
 if echo "$use_forwarding_rule" | grep -q "False"; then
     echo "Not using forwarding rule"
 else
-    /usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fwd-rule-01\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fr-01\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.forwardingRules[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.forwardingRules[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.forwardingRules[0].target = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml

@@ -80,13 +80,25 @@ def create_bigip_deployment(context, num_nics, instance_number):
             }]
     else:
         storage_config = []
+
+    # Populate Metadata Tags
+    additionalMetadataTags = {}
+
+    # Populate Failover Peer
+    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if instance_number == 2 else None
+
+    # Populate Example VIPs
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    depends_on_array.append(public_ip_name)
+    additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
+
     bigip_config = [{
         'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
+            'additionalMetadataTags': additionalMetadataTags,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-            'bigIpPeerAddr': context.properties['bigIpPeerAddr'] if instance_number == 2 else None,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
             'name': 'bigip-vm-0' + str(instance_number),
@@ -149,10 +161,16 @@ def create_dag_deployment(context, num_nics):
                        context.env['project'] + '/global/networks/' + ext_net_name
     internal_net_ref = COMPUTE_URL_BASE + 'projects/' + \
                        context.env['project'] + '/global/networks/' + int_net_name
+
     int_net_cidr = '10.0.' + str(num_nics - 1) + '.0/24'
+    mgmt_port = 8443
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
+
+    # Depends On Config
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
-    mgmt_port = 8443
     if num_nics > 1:
         depends_on_array.append(ext_net_name)
         mgmt_port = 443
@@ -160,10 +178,13 @@ def create_dag_deployment(context, num_nics):
         depends_on_array.append(int_net_name)
     if num_nics > 3:
         depends_on_array.append(app_net_name)
-    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
-    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
     depends_on_array.append(target_instance_name)
     depends_on_array.append(target_instance_name2)
+
+    fr_depends_on_array = []
+    fr_depends_on_array.append(target_instance_name)
+    fr_depends_on_array.append(target_instance_name2)
+
     dag_configuration = [{
       'name': 'dag',
       'type': '../modules/dag/dag.py',
@@ -232,22 +253,24 @@ def create_dag_deployment(context, num_nics):
                     'targetTags': [ generate_name(prefix, 'ha-fw') ]
                 }
             ],
+            'computeAddresses': [
+                {
+                  'name': public_ip_name,
+                  'region': context.properties['region'],
+                }
+            ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                    'name': context.properties['uniqueString'] + '-fr-01',
                     'region': context.properties['region'],
+                    'IPAddress': '$(ref.' + public_ip_name + '.selfLink)',
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
-                },
-                {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-02',
-                    'region': context.properties['region'],
-                    'IPProtocol': 'TCP',
-                    'target': '$(ref.' + target_instance_name2 + '.selfLink)',
-                    'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
+                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}',
+                    'metadata': {
+                      'dependsOn': fr_depends_on_array
+                    }
                 }
             ],
             'healthChecks': [
@@ -301,13 +324,14 @@ def generate_config(context):
     deployment_name = generate_name(context.properties['uniqueString'], name)
     bigip_instance_name = generate_name(prefix, 'bigip-vm-01')
     bigip_instance_name2 = generate_name(prefix, 'bigip-vm-02')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
 
     resources = create_access_deployment(context) + \
         create_bigip_deployment(context, num_nics, 1) + \
         create_bigip_deployment(context, num_nics, 2) + \
         create_dag_deployment(context, num_nics)
     outputs = []
+
     mgmt_nic_index = '0' if num_nics == 1 else '1'
     mgmt_port = '8443' if num_nics == 1 else '443'
 
@@ -406,15 +430,15 @@ def generate_config(context):
         },
         {
             'name': 'vip1PublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttp',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttps',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         }
     ]
 

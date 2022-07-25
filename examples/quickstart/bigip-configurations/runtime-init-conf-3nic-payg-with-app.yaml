@@ -55,6 +55,12 @@ runtime_parameters:
       field: ip
       index: 1
       ipcalc: first
+  - name: SERVICE_ADDRESS_01
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/attributes/service-address-01-public-ip
+    headers:
+      - name: Metadata-Flavor
+        value: Google
 bigip_ready_enabled: []
 extension_packages:
   install_operations:
@@ -185,13 +191,16 @@ extension_services:
                 https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/Rapid_Deployment_Policy_13_1.xml
               enforcementMode: blocking
               ignoreChanges: false
+            Service_Address_01:
+              class: Service_Address
+              virtualAddress: '{{{SERVICE_ADDRESS_01}}}'
           HTTP_Service:
             class: Application
             template: http
             serviceMain:
               class: Service_HTTP
               virtualAddresses:
-                - 0.0.0.0
+                - use: /Tenant_1/Shared/Service_Address_01
               snat: auto
               profileHTTP:
                 use: /Tenant_1/Shared/Custom_HTTP_Profile
@@ -204,7 +213,7 @@ extension_services:
             serviceMain:
               class: Service_HTTPS
               virtualAddresses:
-                - 0.0.0.0
+                - use: /Tenant_1/Shared/Service_Address_01
               snat: auto
               profileHTTP:
                 use: /Tenant_1/Shared/Custom_HTTP_Profile

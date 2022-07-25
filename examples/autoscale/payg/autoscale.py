@@ -315,7 +315,7 @@ def create_dag_deployment(context):
         'firewalls' : firewalls_config,
         'forwardingRules': [
             {
-                'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                'name': context.properties['uniqueString'] + '-fr-01',
                 'region': context.properties['region'],
                 'IPProtocol': 'TCP',
                 'target': '$(ref.' + target_pool_name + '.selfLink)',
@@ -392,7 +392,7 @@ def generate_config(context):
     application_igm_name= generate_name(prefix, 'f5-demo-igm')
     bastion_igm_name= generate_name(prefix, 'bastion-igm')
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
     net_name = generate_name(prefix, 'network')
 
     resources = [create_network_deployment(context)] + \
@@ -447,15 +447,15 @@ def generate_config(context):
         },
         {
             'name': 'wafExternalHttpUrl',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafExternalHttpsUrl',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafPublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         }
     ]
 

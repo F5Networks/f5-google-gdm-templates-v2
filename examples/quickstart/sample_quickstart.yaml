@@ -54,19 +54,20 @@ resources:
       provisionPublicIp: true
       ### (REQUIRED) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
       region: us-west1
-      ### (OPTIONAL) This field restricts web application access (ports 80 and 443) to a specific network or address. Enter an IP address or address range in CIDR notation. For example, '55.55.55.55/32'.
-      # The network address should be in array format.*
-      # restrictedSrcAddressApp:*
-      # 0.0.0.0/0**
+      ### (REQUIRED) This field restricts web application access (ports 80 and 443) to a specific network or address. Enter an IP address or address range in CIDR notation. For example, '55.55.55.55/32'.
+      # The network address should be in array format. For example:
+      # restrictedSrcAddressApp:
+      #   - 0.0.0.0/0
       restrictedSrcAddressApp:
       ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
       # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
-      # The network address should be in array format.
-      # NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
-      # IMPORTANT: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
       # Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet.
-      # restrictedSrcAddressMgmt:*
-      # 0.0.0.0/0**
+      # NOTE:
+      # - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
+      # - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
+      # restrictedSrcAddressMgmt:
+      #   - 10.0.0.0/24     # Bastion Host on Mgmt Network
+      #   - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
