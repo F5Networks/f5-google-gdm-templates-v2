@@ -1,7 +1,7 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0s
+# Version 2.4.0.0s
 
 imports:
   - path: bigip_autoscale.py
@@ -41,7 +41,7 @@ resources:
       healthChecks:
         - checkIntervalSec: 5
           description: my tcp healthcheck
-          name: my-unique-tcp-healthcheck
+          name: my-unique-tcp-hc
           tcpHealthCheck:
             port: 44000
           timeoutSec: 5
@@ -50,11 +50,12 @@ resources:
           description: my http healthcheck
           httpHealthCheck:
             port: 80
-          name: my-unique-http-healthcheck
+          name: my-unique-http-hc
           timeoutSec: 5
           type: HTTP
       imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
       instanceType: n1-standard-8
+      logId: f5-waf-logs
       networkSelfLink: <URL>
       project: project-id
       targetPools:

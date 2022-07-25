@@ -95,7 +95,7 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-t
 /usr/bin/yq e ".resources[0].properties.firewalls[2].targetTags[0] = \"<UNIQUESTRING>-app-vip-fw\"" -i <DEWPOINT JOB ID>.yaml
 
 # Adding Forwarding Rule
-/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fwrule1\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.forwardingRules[0].name = \"<UNIQUESTRING>-fr-01\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].IPProtocol = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.forwardingRules[0].target = \"$targetPoolSelfLink\"" -i <DEWPOINT JOB ID>.yaml
@@ -104,7 +104,7 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-t
 # Adding Backend Service
 /usr/bin/yq e ".resources[0].properties.backendServices[0].backends[0].group = \"$instanceGroupSelfLink\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.backendServices[0].description = \"Backend service used for internal LB\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.backendServices[0].healthChecks[0] = \"\$(ref.<UNIQUESTRING>-tcp-healthcheck.selfLink)\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.backendServices[0].healthChecks[0] = \"\$(ref.<UNIQUESTRING>-tcp-hc.selfLink)\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.backendServices[0].loadBalancingScheme = \"INTERNAL\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.backendServices[0].name = \"<UNIQUESTRING>-bes\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.backendServices[0].network = \"$mgmtNetworkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
@@ -115,21 +115,21 @@ targetPoolSelfLink=$(gcloud compute target-pools describe <UNIQUESTRING>-bigip-t
 # Adding Health Checks
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].description = \"my tcp healthcheck\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.healthChecks[0].name = \"<UNIQUESTRING>-tcp-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[0].name = \"<UNIQUESTRING>-tcp-hc\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].tcpHealthCheck.port = 44000" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[0].type = \"TCP\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.healthChecks[1].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[1].description = \"my http healthcheck\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.healthChecks[1].name = \"<UNIQUESTRING>-http-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[1].name = \"<UNIQUESTRING>-http-hc\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[1].httpHealthCheck.port = 80" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[1].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[1].type = \"HTTP\"" -i <DEWPOINT JOB ID>.yaml
 
 /usr/bin/yq e ".resources[0].properties.healthChecks[2].checkIntervalSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[2].description = \"my https healthcheck\"" -i <DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.healthChecks[2].name = \"<UNIQUESTRING>-https-healthcheck\"" -i <DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.healthChecks[2].name = \"<UNIQUESTRING>-https-hc\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[2].httpsHealthCheck.port = 443" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[2].timeoutSec = 5" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.healthChecks[2].type = \"HTTPS\"" -i <DEWPOINT JOB ID>.yaml

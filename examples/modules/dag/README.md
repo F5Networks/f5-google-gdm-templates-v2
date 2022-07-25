@@ -32,6 +32,7 @@ This Google Deployment Manager template creates various cloud resources to get t
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| computeAddresses | No |  | array | List of declaration of settings used for provisioning computeAddresses. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/addresses). |
 | firewalls | No |  | array | List of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/firewalls). |
 | forwardingRules | No |  | array | List of declaration of settings used for provisioning ForwardingRule, which represents the frontend configuration of GCP load balancers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/forwardingRules). |
 | backendServices | No |  | array | List of declaration of settings used for provisioning RegionBackendServices, which defines how GCP load balancers distribute traffic. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/regionBackendServices). |

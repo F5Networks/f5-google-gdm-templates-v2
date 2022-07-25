@@ -1,7 +1,7 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0s
+# Version 2.4.0.0s
 #
 # Example of the network template usage.
 #
@@ -22,45 +22,45 @@ imports:
 resources:
   - name: mgmt
     properties:
-      name: mgmt
+      name: mgmt-network
       provisionPublicIp: true
       subnets:
         - description: Subnetwork used for management
           ipCidrRange: 10.0.0.0/24
-          name: mgmt1
+          name: mgmt1-subnet
           region: us-west1
       uniqueString: myapp
     type: network.py
   - name: external
     properties:
-      name: external
+      name: external-network
       provisionPublicIp: true
       subnets:
         - description: Subnetwork used for public traffic
           ipCidrRange: 10.0.1.0/24
-          name: external1
+          name: external1-subnet
           region: us-west1
       uniqueString: myapp
     type: network.py
   - name: internal
     properties:
-      name: internal
+      name: internal-network
       provisionPublicIp: false
       subnets:
         - description: Subnetwork used for private traffic
           ipCidrRange: 10.0.2.0/24
-          name: internal1
+          name: internal1-subnet
           region: us-west1
       uniqueString: myapp
     type: network.py
   - name: application
     properties:
-      name: application
+      name: application-network
       provisionPublicIp: false
       subnets:
         - description: Subnetwork used for application services
           ipCidrRange: 10.0.3.0/24
-          name: application1
+          name: application1-subnet
           region: us-west1
       uniqueString: myapp
     type: network.py

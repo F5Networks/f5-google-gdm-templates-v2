@@ -76,12 +76,14 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
   ```
 - This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) for access to the BIG-IP instances.
 - This solution requires you to accept any Google Cloud Marketplace "License/Terms and Conditions" for the images used in this solution.
-  - By default, this solution uses [F5 BIG-IP Virtual Edition - BEST (PAYG - 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-ip-adc-hourly-best-25mbps)
+  - By default, this solution uses [F5 BIG-IP BEST with IPI and Threat Campaigns (PAYG, 25Mbps)](https://console.cloud.google.com/marketplace/product/f5-7626-networks-public/f5-big-best-plus-payg-25mbps)
 
 ## Important Configuration Notes
 
 - By default, this solution creates a username **admin** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
 ***IMPORTANT**: You should change this temporary password immediately following deployment.*
+
+- When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
 - This solution requires Internet access for:
 
@@ -125,8 +127,8 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | application | No | f5app | string | Application Tag. |
 | bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
@@ -149,8 +151,8 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | application | No | f5app | string | Application label. |
 | bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
@@ -254,7 +256,7 @@ Example from sample_quickstart.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
@@ -281,7 +283,10 @@ F5 has provided the following example configuration files in the `examples/quick
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
 
-By default, this solution deploys a 3NIC BIG-IP using the example `runtime-init-conf-3nic-payg.yaml`.
+**IMPORTANT**: 
+By default, this solution deploys a 3-NIC PAYG BIG-IP:
+  - The **Full Stack** (quickstart.py) references the `runtime-init-conf-3nic-payg-with-app.yaml` BIG-IP config file, which includes an example virtual service, and can be used as is. This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+  - The **Existing Network Stack** (quickstart-existing-network.py) references the `runtime-init-conf-3nic-payg.yaml` BIG-IP config file, which only provides basic system onboarding and does not **NOT** include an example virtual service, and can be used as is.
 
 To deploy a **1NIC** instance:
 
@@ -293,9 +298,7 @@ To deploy a **2NIC** instance:
 1. Update the **bigIpRuntimeInitConfig** input parameter to reference a corresponding `2nic` config file (for example, runtime-init-conf-2nic-payg.yaml).
 2. Update the **numNics** input parameter to **2**.
 
-- When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
-
-However, most changes require modifying the configurations themselves. For example:
+Other changes require customizing the example configuration files. For example:
 
 To deploy a **BYOL** instance:
 
@@ -374,7 +377,7 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
     ```
 
 - Obtain the Private IP address of the BIG-IP Management Port = nic1 (select nic0 if 1NIC) :
-  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Network Interfaces > nic1 (select nic0 if 1NIC) > Primary internal IP **.
+  - **Console**: Navigate to **Compute Engine > VM Instances > _uniqueString_-bigip-vm-01 > Network Interfaces > nic1 (select nic0 if 1NIC) > Primary internal IP **.
   - **gcloud CLI**:
     ```bash
     gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPrivateIp")).finalValue'
@@ -555,7 +558,7 @@ If all deployments completed "successfully" but maybe the BIG-IP or Service is n
     - _/var/log/restnoded/restnoded.log_: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - _GENERAL LOG TIP_: Search most critical error level errors first (for example, egrep -i err /var/log/<Logname>).
 
-If you are unable to login to the BIG-IP instance(s), you can navigate to **Compute Engine > VM Instances > _uniqueString_-bigip1 > Serial port 1 (console)** to investigate any potential details from the serial console.
+If you are unable to login to the BIG-IP instance(s), you can navigate to **Compute Engine > VM Instances > _uniqueString_-bigip-vm-01 > Serial port 1 (console)** to investigate any potential details from the serial console.
 
 ## Security
 

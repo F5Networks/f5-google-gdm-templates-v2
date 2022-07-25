@@ -20,11 +20,12 @@ subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --ar
 
 # Run GDM Dag template
 if [ "<AUTOSCALE>" == "False" ]; then
-    cp /tmp/sample_application.yaml <DEWPOINT JOB ID>.yaml
+    cp /tmp/sample_bastion.yaml <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].name = \"bastion\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].type = \"/tmp/bastion.py\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.instances[0].name = \"bastion-vm-01\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].accessConfigs[0].name = \"External NAT\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].accessConfigs[0].type = \"ONE_TO_ONE_NAT\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instances[0].networkInterfaces[0].network = \"$networkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
@@ -33,7 +34,7 @@ if [ "<AUTOSCALE>" == "False" ]; then
     /usr/bin/yq e ".resources[0].properties.osImage = \"<OS IMAGE>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
 else
-    cp /tmp/sample_application_autoscale.yaml <DEWPOINT JOB ID>.yaml
+    cp /tmp/sample_bastion.yaml <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].name = \"bastion\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].type = \"/tmp/bastion.py\"" -i <DEWPOINT JOB ID>.yaml

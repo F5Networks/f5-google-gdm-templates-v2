@@ -1,12 +1,17 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0s
+# Version 2.4.0.0s
 imports:
   - path: dag.py
 resources:
   - name: dag-py
     properties:
+      computeAddresses:
+        - name: my-public-ip-01
+          region: us-west1
+        - name: my-public-ip-02
+          region: us-west1
       firewalls:
         - allowed:
             - IPProtocol: TCP
@@ -32,7 +37,7 @@ resources:
           targetTags:
             - appfw
       forwardingRules:
-        - name: my-unique-fwrule1
+        - name: my-unique-fr-01
           region: us-west1
           IPProtocol: TCP
           target: >-
@@ -44,7 +49,7 @@ resources:
                 https://www.googleapis.com/compute/v1/projects/my-project/regions/us-west1/instanceGroups/my-bigip-ig
           description: Backend service used for internal LB
           healthChecks:
-            - $(ref.my-unique-tcp-healthcheck.selfLink)
+            - $(ref.my-unique-tcp-hc.selfLink)
           loadBalancingScheme: INTERNAL
           name: myapp-bes
           network: >-
@@ -55,7 +60,7 @@ resources:
       healthChecks:
         - checkIntervalSec: 5
           description: my tcp healthcheck
-          name: my-unique-tcp-healthcheck
+          name: my-unique-tcp-hc
           tcpHealthCheck:
             port: 44000
           timeoutSec: 5
@@ -64,14 +69,14 @@ resources:
           description: my http healthcheck
           httpHealthCheck:
             port: 80
-          name: my-unique-http-healthcheck
+          name: my-unique-http-hc
           timeoutSec: 5
           type: HTTP
         - checkIntervalSec: 5
           description: my https healthcheck
           httpsHealthCheck:
             port: 443
-          name: my-unique-https-healthcheck
+          name: my-unique-https-hc
           timeoutSec: 5
           type: HTTPS
       uniqueString: my-unique

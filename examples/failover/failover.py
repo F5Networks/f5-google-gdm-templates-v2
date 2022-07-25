@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0
+# Version 2.4.0.0
 
 
 """Creates full stack for POC"""
@@ -17,16 +17,16 @@ def create_network_deployment(context, num_nics):
     network_config_array = []
     for nics in range(num_nics):
         if nics == 0:
-            net_name = 'mgmt'
-            subnet_name = 'mgmt'
+            net_name = 'mgmt-network'
+            subnet_name = 'mgmt-subnet'
             subnet_description = 'Subnetwork used for management traffic'
         elif num_nics != 1 and nics == 1:
-            net_name = 'external'
-            subnet_name = 'external'
+            net_name = 'ext-network'
+            subnet_name = 'ext-subnet'
             subnet_description = 'Subnetwork used for external traffic'
         else:
-            net_name = 'internal' + str(nics)
-            subnet_name = 'internal' + str(nics)
+            net_name = 'int-network-0' + str(nics)
+            subnet_name = 'int-subnet-0' + str(nics)
             subnet_description = 'Subnetwork used for internal traffic'
         subnet_config = [{
             'description': subnet_description,
@@ -37,13 +37,13 @@ def create_network_deployment(context, num_nics):
         if nics + 1 == num_nics:
             app_subnet_config = {
                 'description': 'Subnetwork used for POC application.',
-                'name': 'app',
+                'name': 'app-subnet',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.' + str(nics + 1) + '.0/24'
             }
             subnet_config.append(app_subnet_config)
         network_config = {
-            'name': 'network' + str(nics),
+            'name': 'network-0' + str(nics),
             'type': '../modules/network/network.py',
             'properties': {
                 'name': net_name,
@@ -72,12 +72,14 @@ def create_bigip_deployment(context, num_nics, instance_number):
     """ Create bigip-standalone module deployment """
     interface_config_array = []
     depends_on_array = []
+
     prefix = context.properties['uniqueString']
+
     for nics in range(num_nics):
         access_config = {}
         if nics == 0:
-            net_name = generate_name(prefix, 'external-network')
-            subnet_name = generate_name(prefix, 'external-subnet')
+            net_name = generate_name(prefix, 'ext-network')
+            subnet_name = generate_name(prefix, 'ext-subnet')
             interface_description = 'Interface used for external traffic'
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
@@ -95,8 +97,8 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 access_config = {'accessConfigs': []}
             network_ip = context.properties['bigIpMgmtAddress0' + str(instance_number)]
         else:
-            net_name = generate_name(prefix, 'internal' + str(nics) + '-network')
-            subnet_name = generate_name(prefix, 'internal' + str(nics) + '-subnet')
+            net_name = generate_name(prefix, 'int-network-0' + str(nics))
+            subnet_name = generate_name(prefix, 'int-subnet-0' + str(nics))
             interface_description = 'Interface used for internal traffic'
             if nics == 2:
                 network_ip = context.properties['bigIpInternalSelfIp0' + str(instance_number)]
@@ -119,16 +121,28 @@ def create_bigip_deployment(context, num_nics, instance_number):
             }]
     else:
         storage_config = []
+
+    # Populate Metadata Tags
+    additionalMetadataTags = {}
+
+    # Populate Failover Peer
+    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if instance_number == 2 else None
+
+    # Populate Example VIPs
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    depends_on_array.append(public_ip_name)
+    additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
+
     bigip_config = [{
-        'name': 'bigip-failover' + str(instance_number),
+        'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
+            'additionalMetadataTags': additionalMetadataTags,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-            'bigIpPeerAddr': context.properties['bigIpPeerAddr'] if instance_number == 2 else None,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
-            'name': 'bigip' + str(instance_number),
+            'name': 'bigip-vm-0' + str(instance_number),
             'networkInterfaces': interface_config_array,
             'storageBuckets': storage_config,
             'region': context.properties['region'],
@@ -156,7 +170,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 ]
             },
             'targetInstances': [{
-                'name': 'bigip' + str(instance_number)
+                'name': 'bigip-vm-0' + str(instance_number)
             }],
             'uniqueString': context.properties['uniqueString'],
             'zone': context.properties['zone']
@@ -174,10 +188,10 @@ def create_application_deployment(context, num_nics):
     if num_nics == 1:
         net_name = generate_name(prefix, 'mgmt-network')
     elif num_nics == 2:
-        net_name = generate_name(prefix, 'external-network')
+        net_name = generate_name(prefix, 'ext-network')
     else:
-        net_name = generate_name(prefix, 'internal' + \
-            str(num_nics - 1) + '-network')
+        net_name = generate_name(prefix, 'int-network-0' + \
+            str(num_nics - 1))
     depends_on_array = []
     depends_on_array.append(net_name)
     depends_on_array.append(subnet_name)
@@ -192,6 +206,7 @@ def create_application_deployment(context, num_nics):
         'group': context.properties['group'],
         'instanceType': 'n1-standard-1',
         'instances': [{
+            'name': 'application-vm-01',
             'description': 'F5 demo application',
             'labels': {
                 'failovergroup': context.properties['uniqueString']
@@ -234,6 +249,7 @@ def create_bastion_deployment(context):
             'owner': context.properties['owner'],
             'instanceType': 'n1-standard-1',
             'instances': [{
+                'name': 'bastion-vm-01',
                 'description': 'My bastion host',
                 'networkInterfaces': [{
                     'accessConfigs': [{
@@ -258,21 +274,27 @@ def create_dag_deployment(context, num_nics):
     """ Create dag module deployment """
     prefix = context.properties['uniqueString']
     mgmt_net_name = generate_name(prefix, 'mgmt-network')
-    ext_net_name = generate_name(prefix, 'external-network')
-    int_net_name = generate_name(prefix, 'internal2-network')
+    ext_net_name = generate_name(prefix, 'ext-network')
+    int_net_name = generate_name(prefix, 'int-network-02')
     if num_nics == 1:
         app_net_name = generate_name(prefix, 'mgmt-network')
         int_net_name = generate_name(prefix, 'mgmt-network')
     elif num_nics == 2:
-        app_net_name = generate_name(prefix, 'external-network')
-        int_net_name = generate_name(prefix, 'external-network')
+        app_net_name = generate_name(prefix, 'ext-network')
+        int_net_name = generate_name(prefix, 'ext-network')
     else:
-        app_net_name = generate_name(prefix, 'external-network')
-        int_net_name = generate_name(prefix, 'internal' + \
-            str(num_nics - 1) + '-network')
+        app_net_name = generate_name(prefix, 'ext-network')
+        int_net_name = generate_name(prefix, 'int-network-0' + \
+            str(num_nics - 1))
+
     int_net_cidr = '10.0.' + str(num_nics - 1) + '.0/24'
     mgmt_port = 8443
-    bastion_instance_name = generate_name(prefix, 'bastion')
+
+    bastion_instance_name = generate_name(prefix, 'bastion-vm-01')
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
+
     firewalls_config = [
         {
             'allowed': [
@@ -354,6 +376,8 @@ def create_dag_deployment(context, num_nics):
     }
     if not context.properties['provisionPublicIp']:
         firewalls_config.append(bastion_firewall_config)
+
+    # Depends On Config
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
     if num_nics > 1:
@@ -363,38 +387,43 @@ def create_dag_deployment(context, num_nics):
         depends_on_array.append(int_net_name)
     if num_nics > 3:
         depends_on_array.append(app_net_name)
-    target_instance_name = generate_name(prefix, 'bigip1-ti')
-    target_instance_name2 = generate_name(prefix, 'bigip2-ti')
     depends_on_array.append(target_instance_name)
     depends_on_array.append(target_instance_name2)
+
+    fr_depends_on_array = []
+    fr_depends_on_array.append(target_instance_name)
+    fr_depends_on_array.append(target_instance_name2)
+
     dag_configuration = [{
       'name': 'dag',
       'type': '../modules/dag/dag.py',
       'properties': {
             'firewalls' : firewalls_config,
+            'computeAddresses': [
+                {
+                  'name': public_ip_name,
+                  'region': context.properties['region'],
+                }
+            ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwrule1',
+                    'name': context.properties['uniqueString'] + '-fr-01',
                     'region': context.properties['region'],
+                    'IPAddress': '$(ref.' + public_ip_name + '.selfLink)',
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
-                },
-                {
-                    'name': context.properties['uniqueString'] + '-fwrule2',
-                    'region': context.properties['region'],
-                    'IPProtocol': 'TCP',
-                    'target': '$(ref.' + target_instance_name2 + '.selfLink)',
-                    'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
+                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}',
+                    'metadata': {
+                      'dependsOn': fr_depends_on_array
+                    }
                 }
             ],
             'healthChecks': [
                 {
                     'checkIntervalSec': 5,
                     'description': 'my tcp healthcheck',
-                    'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                    'name': context.properties['uniqueString'] + '-tcp-hc',
                     'tcpHealthCheck': {
                         'port': 44000
                     },
@@ -404,7 +433,7 @@ def create_dag_deployment(context, num_nics):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my http healthcheck',
-                    'name': context.properties['uniqueString'] + '-http-healthcheck',
+                    'name': context.properties['uniqueString'] + '-http-hc',
                     'httpHealthCheck': {
                         'port': 80
                     },
@@ -414,7 +443,7 @@ def create_dag_deployment(context, num_nics):
                 {
                     'checkIntervalSec': 5,
                     'description': 'my https healthcheck',
-                    'name': context.properties['uniqueString'] + '-https-healthcheck',
+                    'name': context.properties['uniqueString'] + '-https-hc',
                     'httpsHealthCheck': {
                         'port': 443
                     },
@@ -430,7 +459,6 @@ def create_dag_deployment(context, num_nics):
     }]
     return dag_configuration
 
-
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
@@ -440,15 +468,15 @@ def generate_config(context):
     prefix = context.properties['uniqueString']
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
-    application_instance_name = generate_name(prefix, 'application')
-    bastion_instance_name = generate_name(prefix, 'bastion')
-    bigip_instance_name = generate_name(prefix, 'bigip1')
-    bigip_instance_name2 = generate_name(prefix, 'bigip2')
-    fw_rule_name = generate_name(prefix, 'fwrule1')
+    application_instance_name = generate_name(prefix, 'application-vm-01')
+    bastion_instance_name = generate_name(prefix, 'bastion-vm-01')
+    bigip_instance_name = generate_name(prefix, 'bigip-vm-01')
+    bigip_instance_name2 = generate_name(prefix, 'bigip-vm-02')
+    fr_name = generate_name(prefix, 'fr-01')
     mgmt_net_name = generate_name(prefix, 'mgmt-network')
-    ext_net_name = generate_name(prefix, 'external-network')
-    int_net_name = generate_name(prefix, 'internal' + \
-        str(num_nics - 1) + '-network')
+    ext_net_name = generate_name(prefix, 'ext-network')
+    int_net_name = generate_name(prefix, 'int-network-0' + \
+        str(num_nics - 1))
 
     resources = create_network_deployment(context, num_nics) + \
         create_access_deployment(context) + \
@@ -611,15 +639,15 @@ def generate_config(context):
         },
         {
             'name': 'vip1PublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttp',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttps',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'networkName0',

@@ -5,7 +5,7 @@ info:
   title: F5 Dag/Ingress
   author: F5 Networks
   description: Creates cloud resources to get traffic to BIG-IP solutions.
-  version: 2.3.0.0
+  version: 2.4.0.0
 
 
 imports:
@@ -16,6 +16,9 @@ required:
 
 
 properties:
+    computeAddresses:
+        description: list of declaration of Google Compute addresses. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/addresses
+        type: array
     firewalls:
         description: list of declaration of settings used for provisioning Firewalls rules intended to deny or allow ingress traffic to and egress traffic from your instances. More information around REST APIs is on Google Cloud Documentation https://cloud.google.com/compute/docs/reference/rest/v1/firewalls
         type: array

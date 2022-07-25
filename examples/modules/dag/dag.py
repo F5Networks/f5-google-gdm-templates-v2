@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0
+# Version 2.4.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -90,6 +90,27 @@ def create_health_check(context):
     return health_check
 
 
+def create_compute_address(context):
+    """Create forwarding rule."""
+    required_properties = [
+        'name',
+        'region'
+    ]
+    optional_properties = [
+        'address',
+        'addressType',
+        'ipVersion',
+        'networkTier'
+    ]
+    properties = populate_properties(context, required_properties, optional_properties)
+    compute_address = {
+        'name': context['name'],
+        'type': 'compute.v1.address',
+        'properties': properties
+    }
+    return compute_address
+
+
 def create_forwarding_rule(context):
     """Create forwarding rule."""
     required_properties = [
@@ -126,6 +147,10 @@ def create_forwarding_rule(context):
         'type': 'compute.v1.forwardingRule',
         'properties': properties
     }
+
+    if 'metadata' in context: 
+        forwarding_rule['metadata'] = context['metadata']
+
     return forwarding_rule
 
 
@@ -182,6 +207,14 @@ def create_firewall_rule_outputs(firewall_rule):
     return firewall_rule_target_tag_outputs
 
 
+def create_compute_address_outputs(compute_address):
+    """Create forwarding rule outputs."""
+    compute_address_outputs = {
+        'name': compute_address['name'],
+        'value': '$(ref.' + compute_address['name'] + '.IPAddress)'
+    }
+    return compute_address_outputs
+
 def create_forwarding_rule_outputs(forwarding_rule):
     """Create forwarding rule outputs."""
     forwarding_rule_outputs = {
@@ -225,6 +258,10 @@ def generate_config(context):
 
     for health_check in context.properties.get('healthChecks', []):
         resources.append(create_health_check(health_check))
+
+    for compute_address in context.properties.get('computeAddresses', []):
+        resources.append(create_compute_address(compute_address))
+ #       outputs.append(create_compute_address(compute_address))
 
     for forwarding_rule in context.properties.get('forwardingRules', []):
         resources.append(create_forwarding_rule(forwarding_rule))

@@ -38,6 +38,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| additionalMetadataTags | No |  | object | Dictionary of key value pairs to add as Metadata Tags. | 
 | bigIpRuntimeInitPackageUrl | Yes |  | string | URL for BIG-IP Runtime Init package. | 
 | bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | imageName | Yes |  | string | BIG-IP image name.|

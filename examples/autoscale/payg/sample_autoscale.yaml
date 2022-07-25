@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0s
+# Version 2.4.0.0s
 #
 # NOTE: When filling out the parameter values for this deployment:
 # Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.
@@ -35,10 +35,10 @@ resources:
       bigIpCoolDownPeriodSec: 60
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package.
       bigIpRuntimeInitPackageUrl: >-
-        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
+        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
       ### (OPTIONAL) The BIG-IP image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
       ### (OPTIONAL) Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
@@ -59,20 +59,26 @@ resources:
       owner: f5owner
       ### (OPTIONAL) Group label.
       group: f5group
+      ### (OPTIONAL) Enter the name of the Google Cloud log that will receive WAF events.
+      logId: f5-waf-logs
       ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.
       provisionPublicIp: true
       ### (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
       region: us-west1
-      ### (REQUIRED) This parameter restricts network access to the web application.
-      # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
-      # The network address should be in array format.
+      ### (REQUIRED) This field restricts web application access (ports 80 and 443) to a specific network or address. Enter an IP address or address range in CIDR notation. For example, '55.55.55.55/32'.
+      # The network address should be in array format. For example:
+      # restrictedSrcAddressApp:
+      #   - 0.0.0.0/0
       restrictedSrcAddressApp:
       ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
       # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
-      # The network address should be in array format.
-      # NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
-      # IMPORTANT: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
       # Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet.
+      # NOTE:
+      # - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
+      # - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
+      # restrictedSrcAddressMgmt:
+      #   - 10.0.0.0/24     # Bastion Host on Mgmt Network
+      #   - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
         - 10.0.0.0/8
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.

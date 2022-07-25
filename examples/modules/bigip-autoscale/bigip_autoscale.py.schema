@@ -5,7 +5,7 @@ info:
   title: F5 BIGIP Autoscale module
   author: F5 Networks
   description: Creates a BIGIP autoscale group.
-  version: 2.3.0.0
+  version: 2.4.0.0
 
 imports:
   - path: bigip_autoscale.py
@@ -34,7 +34,7 @@ properties:
     type: array
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     type: string
   bigIpRuntimeInitConfig:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
@@ -69,6 +69,10 @@ properties:
     description: Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
     type: integer
     default: 1
+  logId:
+    default: f5-waf-logs
+    description: Name of the Google Cloud log for WAF events.
+    type: string
   networkSelfLink:
     description: Self Link of the network to use to deploy the application.
     type: string

@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0
+# Version 2.4.0.0
 
 # pylint: disable=W,C,R
 
@@ -15,22 +15,22 @@ def generate_name(prefix, suffix):
 def create_network_deployment(context):
     """Create template deployment."""
     deployment = {
-        'name': 'f5',
+        'name': 'network',
         'type': '../../modules/network/network.py',
         'properties': {
-            'name': 'f5',
+            'name': 'network',
             'uniqueString': context.properties['uniqueString'],
             'provisionPublicIp': context.properties['provisionPublicIp'],
             'region': context.properties['region'],
             'subnets': [{
                 'description': 'Subnetwork used for management',
-                'name': 'mgmt',
+                'name': 'mgmt-subnet',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.0.0/24'
             },
             {
                 'description': 'Subnetwork used for application services',
-                'name': 'app',
+                'name': 'app-subnet',
                 'region': context.properties['region'],
                 'ipCidrRange': '10.0.1.0/24'
             }]
@@ -53,7 +53,7 @@ def create_access_deployment(context):
 def create_application_deployment(context):
     """Create template deployment."""
     prefix = context.properties['uniqueString']
-    net_name = generate_name(prefix, 'f5-network')
+    net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'app-subnet')
     depends_on_array = []
     if not context.properties['update']:
@@ -102,7 +102,7 @@ def create_application_deployment(context):
 def create_bastion_deployment(context):
     """Create template deployment."""
     prefix = context.properties['uniqueString']
-    net_name = generate_name(prefix, 'f5-network')
+    net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
     depends_on_array = []
     if not context.properties['update']:
@@ -148,7 +148,7 @@ def create_bastion_deployment(context):
 def create_bigip_deployment(context):
     """ Create template deployment """
     prefix = context.properties['uniqueString']
-    net_name = generate_name(prefix, 'f5-network')
+    net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
     depends_on_array = []
     if not context.properties['update']:
@@ -163,7 +163,7 @@ def create_bigip_deployment(context):
                       '/regions/' + context.properties['region'] + \
                               '/subnetworks/' + subnet_name
     deployment = {
-        'name': 'bigip',
+        'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
           'application': context.properties['application'],
@@ -214,6 +214,7 @@ def create_bigip_deployment(context):
           }],
           'instanceTemplateVersion': context.properties['bigIpInstanceTemplateVersion'],
           'instanceType': context.properties['bigIpInstanceType'],
+          'logId': context.properties['logId'],
           'networkSelfLink': net_ref,
           'owner': context.properties['owner'],
           'project': context.env['project'],
@@ -239,7 +240,7 @@ def create_bigip_deployment(context):
 def create_dag_deployment(context):
     """ Create template deployment """
     prefix = context.properties['uniqueString']
-    net_name = generate_name(prefix, 'f5-network')
+    net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
     target_pool_name = generate_name(prefix, 'bigip-tp')
     instance_group_name = generate_name(prefix, 'bigip-igm')
@@ -314,7 +315,7 @@ def create_dag_deployment(context):
         'firewalls' : firewalls_config,
         'forwardingRules': [
             {
-                'name': context.properties['uniqueString'] + '-fwrule1',
+                'name': context.properties['uniqueString'] + '-fr-01',
                 'region': context.properties['region'],
                 'IPProtocol': 'TCP',
                 'target': '$(ref.' + target_pool_name + '.selfLink)',
@@ -330,7 +331,7 @@ def create_dag_deployment(context):
                 ],
                 'description': 'Backend service used for internal LB',
                 'healthChecks': [
-                    '$(ref.' + context.properties['uniqueString'] + '-tcp-healthcheck.selfLink)'
+                    '$(ref.' + context.properties['uniqueString'] + '-tcp-hc.selfLink)'
                 ],
                 'loadBalancingScheme': 'INTERNAL',
                 'name': context.properties['uniqueString'] + '-bes',
@@ -344,7 +345,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my tcp healthcheck',
-                'name': context.properties['uniqueString'] + '-tcp-healthcheck',
+                'name': context.properties['uniqueString'] + '-tcp-hc',
                 'tcpHealthCheck': {
                     'port': 44000
                 },
@@ -354,7 +355,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my http healthcheck',
-                'name': context.properties['uniqueString'] + '-http-healthcheck',
+                'name': context.properties['uniqueString'] + '-http-hc',
                 'httpHealthCheck': {
                     'port': 80
                 },
@@ -364,7 +365,7 @@ def create_dag_deployment(context):
             {
                 'checkIntervalSec': 5,
                 'description': 'my https healthcheck',
-                'name': context.properties['uniqueString'] + '-https-healthcheck',
+                'name': context.properties['uniqueString'] + '-https-hc',
                 'httpsHealthCheck': {
                     'port': 443
                 },
@@ -391,8 +392,8 @@ def generate_config(context):
     application_igm_name= generate_name(prefix, 'f5-demo-igm')
     bastion_igm_name= generate_name(prefix, 'bastion-igm')
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
-    fw_rule_name = generate_name(prefix, 'fwrule1')
-    net_name = generate_name(prefix, 'f5-network')
+    fr_name = generate_name(prefix, 'fr-01')
+    net_name = generate_name(prefix, 'network')
 
     resources = [create_network_deployment(context)] + \
                 [create_access_deployment(context)] + \
@@ -446,15 +447,15 @@ def generate_config(context):
         },
         {
             'name': 'wafExternalHttpUrl',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafExternalHttpsUrl',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'wafPublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         }
     ]
 

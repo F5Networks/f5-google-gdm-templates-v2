@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.3.0.0
+# Version 2.4.0.0
 
 """Creates BIGIP Instance"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -28,7 +28,6 @@ def populate_properties(context, required_properties, optional_properties):
         }
     )
     return properties
-
 
 def create_storage_bucket(context, storage_bucket):
     """ Create storage bucket. """
@@ -71,7 +70,6 @@ def create_storage_bucket(context, storage_bucket):
         'properties': properties
     }
     return storage
-
 
 def create_instance(context):
     """ Create standalone instance """
@@ -118,11 +116,12 @@ def create_instance(context):
                     ])
                 }
             }],
-            'hostname': ''.join([instance_name,
-            '.c.', context.env['project'], '.internal']),
-            'machineType': ''.join([COMPUTE_URL_BASE, 'projects/', context.env['project'],
-            '/zones/', context.properties['zone'], '/machineTypes/',
-            context.properties['instanceType']]),
+            'hostname': ''.join([instance_name, '.c.',
+                context.env['project'], '.internal']),
+            'machineType': ''.join([COMPUTE_URL_BASE, 'projects/',
+                context.env['project'], '/zones/',
+                context.properties['zone'], '/machineTypes/',
+                context.properties['instanceType']]),
             'metadata': metadata(context),
             'name': instance_name,
             'networkInterfaces': create_nics(context)
@@ -186,14 +185,7 @@ def metadata(context):
     """ Create metadata for instance """
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     metadata_config = {
-                'items': [{
-                    'key': 'unique-string',
-                    'value': str(context.properties['uniqueString'])
-                },
-                {
-                    'key': 'region',
-                    'value': str(context.properties['region'])
-                },
+                'items': [
                 {
                     'key': 'startup-script',
                     'value': ('\n'.join(['#!/bin/bash',
@@ -278,7 +270,7 @@ def metadata(context):
                                     '       /usr/bin/printf \'%s\\n\' "${RUNTIME_CONFIG}" | jq .  > /config/cloud/runtime-init-conf.yaml',
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.3.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.4.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/bin/touch /config/startup_finished',
@@ -298,15 +290,27 @@ def metadata(context):
                                     'fi'
                                     ])
                     )
+                },
+                {
+                    'key': 'unique-string',
+                    'value': str(context.properties['uniqueString'])
+                },
+                {
+                    'key': 'region',
+                    'value': str(context.properties['region'])
                 }]
     }
-    if 'bigIpPeerAddr' in context.properties and context.properties['bigIpPeerAddr'] is not None:
-        metadata_config['items'].append(
+
+    if 'additionalMetadataTags' in context.properties and context.properties['additionalMetadataTags'] is not None:
+
+        for k,v in context.properties['additionalMetadataTags'].items():
+            metadata_config['items'].append(
             {
-                'key': 'bigip-peer-addr',
-                'value': str(context.properties['bigIpPeerAddr'])
+                'key': k,
+                'value': v
             }
         )
+
     return metadata_config
 
 def create_target_instance(context, target_instance, instance_name):

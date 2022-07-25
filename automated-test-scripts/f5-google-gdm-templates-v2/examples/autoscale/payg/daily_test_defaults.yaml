@@ -1,0 +1,11 @@
+---
+name: Google Examples - Autoscale PAYG
+onStart:
+- ../../../common/helper_init.sh
+- ./create_stack_defaults.sh
+- ../../../common/verify_create.sh
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh
+onFail:
+- ../../../common/delete_stack.sh
+- ../../../common/verify_delete.sh

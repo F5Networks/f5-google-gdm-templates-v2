@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a pair of bigip's HA deployment along with all required resources to support deployment.
   title: F5 failover template
-  version: 2.3.0.0
+  version: 2.4.0.0
 
 imports:
   - path: failover.py
@@ -31,27 +31,27 @@ properties:
     type: string
   bigIpExternalSelfIp01:
     default: 10.0.1.11
-    description: External interface private IP address for bigip1.
+    description: External interface private IP address for bigip-vm-01.
     type: string
   bigIpExternalSelfIp02:
     default: 10.0.1.12
-    description: External interface private IP address for bigip2.
+    description: External interface private IP address for bigip-vm-02.
     type: string
   bigIpInternalSelfIp01:
     default: 10.0.2.11
-    description: Internal interface private IP address for bigip1.
+    description: Internal interface private IP address for bigip-vm-01.
     type: string
   bigIpInternalSelfIp02:
     default: 10.0.2.12
-    description: Internal interface private IP address for bigip2.
+    description: Internal interface private IP address for bigip-vm-02.
     type: string
   bigIpMgmtAddress01:
     default: 10.0.0.11
-    description: Management interface private IP address for bigip1.
+    description: Management interface private IP address for bigip-vm-01.
     type: string
   bigIpMgmtAddress02:
     default: 10.0.0.12
-    description: Management interface private IP address for bigip2.
+    description: Management interface private IP address for bigip-vm-02.
     type: string
   bigIpImageName:
     default: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
@@ -66,15 +66,15 @@ properties:
     description: Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. |
     type: string
   bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitConfig02:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
   cfeTag:

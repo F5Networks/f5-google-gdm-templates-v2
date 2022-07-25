@@ -45,13 +45,12 @@ cp /tmp/examples/autoscale/bigip-configurations/runtime-init-conf-<LICENSE TYPE>
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_System.autoPhonehome = false" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.enforcementMode = \"blocking\"" -i $runtime_file
 /usr/bin/yq e ".extension_services.service_operations.[1].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://cdn.f5.com/product/cloudsolutions/solution-scripts/Rapid_Deployment_Policy_13_1.xml\"" -i $runtime_file
-/usr/bin/yq e ".extension_services.service_operations.[2].value.My_Remote_Logs_Namespace.My_Google_Cloud_Logs.logId = \"<LOG ID>\"" -i $runtime_file
 
 if [[ "<LICENSE TYPE>" == "bigiq" ]]; then
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.licensePool = \"production\"" -i $runtime_file
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.bigIqHost = \"${LICENSE_HOST}\"" -i $runtime_file
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.tenant = \"<DEWPOINT JOB ID>-{{{INSTANCE_ID}}}\"" -i $runtime_file
-    /usr/bin/yq e ".runtime_parameters[5].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $runtime_file
+    /usr/bin/yq e ".runtime_parameters[6].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $runtime_file
 fi
 
 cp $runtime_file $runtime_update_file
@@ -90,10 +89,11 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceTemplateVersion = <INSTANCE TEMPLATE VERSION>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceType = \"<INSTANCE TYPE>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.logId = \"<LOG ID>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i $config_file
-/usr/bin/yq e ".resources[0].properties.networkName = \"<UNIQUESTRING>-network0-network\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-subnet0-subnet\"" -i $config_file
-/usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-subnet2-subnet\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.networkName = \"<UNIQUESTRING>-network-network\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-mgmt-subnet\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-app-subnet\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip_mgmt}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file

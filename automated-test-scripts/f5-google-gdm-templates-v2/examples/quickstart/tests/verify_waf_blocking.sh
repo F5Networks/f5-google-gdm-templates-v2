@@ -9,15 +9,13 @@ TMP_DIR=/tmp/<DEWPOINT JOB ID>
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fwrule1 <REGION>)
+APP_ADDRESS=$(get_fr_ip <UNIQUESTRING>-fr-01 <REGION>)
 echo "APP_ADDRESS: ${APP_ADDRESS}"
 
 if [[ "<PROVISION DEMO APP>" == "True" ]]; then
-        # confirm app is available
-        ACCEPTED_RESPONSE=$(curl -vv http://${APP_ADDRESS})
-        echo "ACCEPTED_RESPONSE: ${ACCEPTED_RESPONSE}"
-
-
+    # confirm app is available
+    ACCEPTED_RESPONSE=$(curl -vv http://${APP_ADDRESS})
+    echo "ACCEPTED_RESPONSE: ${ACCEPTED_RESPONSE}"
 
     # try something illegal (enforcement mode should be set to blocking by default)
     REJECTED_RESPONSE=$(curl -vv -X DELETE http://${APP_ADDRESS})
