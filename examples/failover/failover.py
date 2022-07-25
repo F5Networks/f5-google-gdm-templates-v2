@@ -72,7 +72,9 @@ def create_bigip_deployment(context, num_nics, instance_number):
     """ Create bigip-standalone module deployment """
     interface_config_array = []
     depends_on_array = []
+
     prefix = context.properties['uniqueString']
+
     for nics in range(num_nics):
         access_config = {}
         if nics == 0:
@@ -119,13 +121,25 @@ def create_bigip_deployment(context, num_nics, instance_number):
             }]
     else:
         storage_config = []
+
+    # Populate Metadata Tags
+    additionalMetadataTags = {}
+
+    # Populate Failover Peer
+    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if instance_number == 2 else None
+
+    # Populate Example VIPs
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    depends_on_array.append(public_ip_name)
+    additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
+
     bigip_config = [{
         'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
+            'additionalMetadataTags': additionalMetadataTags,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
-            'bigIpPeerAddr': context.properties['bigIpPeerAddr'] if instance_number == 2 else None,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
             'name': 'bigip-vm-0' + str(instance_number),
@@ -272,9 +286,15 @@ def create_dag_deployment(context, num_nics):
         app_net_name = generate_name(prefix, 'ext-network')
         int_net_name = generate_name(prefix, 'int-network-0' + \
             str(num_nics - 1))
+
     int_net_cidr = '10.0.' + str(num_nics - 1) + '.0/24'
     mgmt_port = 8443
+
     bastion_instance_name = generate_name(prefix, 'bastion-vm-01')
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
+
     firewalls_config = [
         {
             'allowed': [
@@ -356,6 +376,8 @@ def create_dag_deployment(context, num_nics):
     }
     if not context.properties['provisionPublicIp']:
         firewalls_config.append(bastion_firewall_config)
+
+    # Depends On Config
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
     if num_nics > 1:
@@ -365,31 +387,36 @@ def create_dag_deployment(context, num_nics):
         depends_on_array.append(int_net_name)
     if num_nics > 3:
         depends_on_array.append(app_net_name)
-    target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
-    target_instance_name2 = generate_name(prefix, 'bigip-vm-02-ti')
     depends_on_array.append(target_instance_name)
     depends_on_array.append(target_instance_name2)
+
+    fr_depends_on_array = []
+    fr_depends_on_array.append(target_instance_name)
+    fr_depends_on_array.append(target_instance_name2)
+
     dag_configuration = [{
       'name': 'dag',
       'type': '../modules/dag/dag.py',
       'properties': {
             'firewalls' : firewalls_config,
+            'computeAddresses': [
+                {
+                  'name': public_ip_name,
+                  'region': context.properties['region'],
+                }
+            ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                    'name': context.properties['uniqueString'] + '-fr-01',
                     'region': context.properties['region'],
+                    'IPAddress': '$(ref.' + public_ip_name + '.selfLink)',
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
-                },
-                {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-02',
-                    'region': context.properties['region'],
-                    'IPProtocol': 'TCP',
-                    'target': '$(ref.' + target_instance_name2 + '.selfLink)',
-                    'loadBalancingScheme': 'EXTERNAL',
-                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}'
+                    'description': 'f5_cloud_failover_labels={\"f5_cloud_failover_label\":\"' + context.properties['cfeTag'] + '\",\"f5_target_instance_pair\":\"' + target_instance_name + ',' + target_instance_name2 + '\"}',
+                    'metadata': {
+                      'dependsOn': fr_depends_on_array
+                    }
                 }
             ],
             'healthChecks': [
@@ -445,7 +472,7 @@ def generate_config(context):
     bastion_instance_name = generate_name(prefix, 'bastion-vm-01')
     bigip_instance_name = generate_name(prefix, 'bigip-vm-01')
     bigip_instance_name2 = generate_name(prefix, 'bigip-vm-02')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
     mgmt_net_name = generate_name(prefix, 'mgmt-network')
     ext_net_name = generate_name(prefix, 'ext-network')
     int_net_name = generate_name(prefix, 'int-network-0' + \
@@ -612,15 +639,15 @@ def generate_config(context):
         },
         {
             'name': 'vip1PublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttp',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttps',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'networkName0',

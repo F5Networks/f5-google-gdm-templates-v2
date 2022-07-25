@@ -185,14 +185,7 @@ def metadata(context):
     """ Create metadata for instance """
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     metadata_config = {
-                'items': [{
-                    'key': 'unique-string',
-                    'value': str(context.properties['uniqueString'])
-                },
-                {
-                    'key': 'region',
-                    'value': str(context.properties['region'])
-                },
+                'items': [
                 {
                     'key': 'startup-script',
                     'value': ('\n'.join(['#!/bin/bash',
@@ -297,15 +290,27 @@ def metadata(context):
                                     'fi'
                                     ])
                     )
+                },
+                {
+                    'key': 'unique-string',
+                    'value': str(context.properties['uniqueString'])
+                },
+                {
+                    'key': 'region',
+                    'value': str(context.properties['region'])
                 }]
     }
-    if 'bigIpPeerAddr' in context.properties and context.properties['bigIpPeerAddr'] is not None:
-        metadata_config['items'].append(
+
+    if 'additionalMetadataTags' in context.properties and context.properties['additionalMetadataTags'] is not None:
+
+        for k,v in context.properties['additionalMetadataTags'].items():
+            metadata_config['items'].append(
             {
-                'key': 'bigip-peer-addr',
-                'value': str(context.properties['bigIpPeerAddr'])
+                'key': k,
+                'value': v
             }
         )
+
     return metadata_config
 
 def create_target_instance(context, target_instance, instance_name):

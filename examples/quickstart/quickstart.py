@@ -103,10 +103,20 @@ def create_bigip_deployment(context):
         depends_on_array.append(net_name)
         depends_on_array.append(subnet_name)
         interface_config_array.append(interface_config)
+
+    # Populate Metadata Tags
+    additionalMetadataTags = {}
+
+    # Populate Example VIPs
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    depends_on_array.append(public_ip_name)
+    additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
+
     bigip_config = [{
         'name': 'bigip-quickstart',
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
+            'additionalMetadataTags': additionalMetadataTags,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
             'imageName': context.properties['bigIpImageName'],
@@ -310,16 +320,25 @@ def create_dag_deployment(context):
     if context.properties['numNics'] > 3:
         depends_on_array.append(app_net_name)
     target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+
     depends_on_array.append(target_instance_name)
     dag_configuration = [{
       'name': 'dag',
       'type': '../modules/dag/dag.py',
       'properties': {
             'firewalls' : firewalls_config,
+            'computeAddresses': [
+                {
+                  'name': public_ip_name,
+                  'region': context.properties['region'],
+                }
+            ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                    'name': context.properties['uniqueString'] + '-fr-01',
                     'region': context.properties['region'],
+                    'IPAddress': '$(ref.' + public_ip_name + '.selfLink)',
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL'
@@ -376,7 +395,7 @@ def generate_config(context):
     application_instance_name= generate_name(prefix, 'application-vm-01')
     bastion_instance_name= generate_name(prefix, 'bastion-vm-01')
     bigip_instance_name= generate_name(prefix, 'bigip-vm-01')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
     mgmt_net_name = generate_name(prefix, 'mgmt-network')
     ext_net_name = generate_name(prefix, 'ext-network')
     int_net_name = generate_name(prefix, 'int-network-0' + \
@@ -499,15 +518,15 @@ def generate_config(context):
         },
         {
             'name': 'vip1PublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttp',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttps',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'networkName0',

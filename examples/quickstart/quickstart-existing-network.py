@@ -63,10 +63,20 @@ def create_bigip_deployment(context):
         depends_on_array.append(net_name)
         depends_on_array.append(subnet_name)
         interface_config_array.append(interface_config)
+
+    # Populate Metadata Tags
+    additionalMetadataTags = {}
+
+    # Populate Example VIPs
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+    depends_on_array.append(public_ip_name)
+    additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
+
     bigip_config = [{
         'name': 'bigip-quickstart',
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
+            'additionalMetadataTags': additionalMetadataTags,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
             'imageName': context.properties['bigIpImageName'],
@@ -127,6 +137,8 @@ def create_dag_deployment(context):
     if context.properties['numNics'] > 3:
         depends_on_array.append(ext_net_name)
     target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
+    public_ip_name = generate_name(prefix, 'public-ip-01')
+
     depends_on_array.append(target_instance_name)
     dag_configuration = [{
       'name': 'dag',
@@ -176,10 +188,17 @@ def create_dag_deployment(context):
                     'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
                 }
             ],
+            'computeAddresses': [
+                {
+                  'name': public_ip_name,
+                  'region': context.properties['region'],
+                }
+            ],
             'forwardingRules': [
                 {
-                    'name': context.properties['uniqueString'] + '-fwd-rule-01',
+                    'name': context.properties['uniqueString'] + '-fr-01',
                     'region': context.properties['region'],
+                    'IPAddress': '$(ref.' + public_ip_name + '.selfLink)',
                     'IPProtocol': 'TCP',
                     'target': '$(ref.' + target_instance_name + '.selfLink)',
                     'loadBalancingScheme': 'EXTERNAL'
@@ -234,7 +253,7 @@ def generate_config(context):
 
     deployment_name = generate_name(context.properties['uniqueString'], name)
     bigip_instance_name= generate_name(prefix, 'bigip-vm-01')
-    fw_rule_name = generate_name(prefix, 'fwd-rule-01')
+    fr_name = generate_name(prefix, 'fr-01')
 
     resources = create_bigip_deployment(context) + create_dag_deployment(context)
     outputs = []
@@ -296,15 +315,15 @@ def generate_config(context):
         },
         {
             'name': 'vip1PublicIp',
-            'value': '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttp',
-            'value': 'http://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'http://' + '$(ref.' + fr_name + '.IPAddress)'
         },
         {
             'name': 'vip1PublicUrlHttps',
-            'value': 'https://' + '$(ref.' + fw_rule_name + '.IPAddress)'
+            'value': 'https://' + '$(ref.' + fr_name + '.IPAddress)'
         }
     ]
 

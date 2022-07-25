@@ -33,6 +33,9 @@ imports:
 resources:
   - name: bigip_standalone.py
     properties:
+      additionalMetadataTags:
+        bigip-peer-addr: 10.0.0.1
+        service-address-01-public-ip: 100.100.100.100
       bigIpRuntimeInitConfig: https://myConfigUrl
       bigIpRuntimeInitPackageUrl: https://myPackageUrl
       imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
