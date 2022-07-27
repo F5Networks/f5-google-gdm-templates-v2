@@ -5,7 +5,7 @@ info:
   title: F5 Sample Function
   author: F5 Networks
   description: Creates a sample function module.
-  version: 2.3.0.0
+  version: 2.4.0.0
 
 imports:
   - path: function.py

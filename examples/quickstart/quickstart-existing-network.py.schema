@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a standalone bigip deployment along with all required resources to support deployment.
   title: F5 quickstart existing network template
-  version: 2.3.0.0
+  version: 2.4.0.0
 
 imports:
   - path: quickstart-existing-network.py
@@ -32,7 +32,7 @@ properties:
     description: Instance type assigned to the application, for example 'n1-standard-8'.
     type: string
   bigIpRuntimeInitConfig:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.3.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
