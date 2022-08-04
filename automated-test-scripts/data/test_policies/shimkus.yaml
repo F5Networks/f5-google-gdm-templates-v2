@@ -4,7 +4,7 @@
 google-autoscale-payg-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/demo_app.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/full/prod_app.yaml"
@@ -13,7 +13,7 @@ google-autoscale-payg-example-test:
 google-autoscale-payg-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prod.yaml"
@@ -22,7 +22,7 @@ google-autoscale-payg-existing-test:
 google-autoscale-bigiq-example-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/demo_app.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/full/prod_app.yaml"
@@ -31,7 +31,7 @@ google-autoscale-bigiq-example-test:
 google-autoscale-bigiq-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/bigiq_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/bigiq/existing/prod.yaml"
@@ -40,7 +40,7 @@ google-autoscale-bigiq-existing-test:
 google-gdm-failover-example-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod.yaml"
@@ -61,7 +61,7 @@ google-gdm-failover-example-test-payg:
 google-gdm-failover-existing-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/existing/prod.yaml"
@@ -82,7 +82,7 @@ google-gdm-failover-existing-test-payg:
 google-gdm-quickstart-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_2nic.yaml"
@@ -90,7 +90,7 @@ google-gdm-quickstart-test-byol:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic_v14.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic_v14.yaml"
 
 google-gdm-quickstart-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
@@ -100,7 +100,7 @@ google-gdm-quickstart-test-payg:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic_v14.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic_v14.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_3nic.yaml"
@@ -108,7 +108,7 @@ google-gdm-quickstart-test-payg:
 google-gdm-quickstart-existing-network-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_2nic.yaml"
@@ -133,7 +133,7 @@ google-gdm-quickstart-existing-network-test-payg:
 gdm-application-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/application/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/prepub_parameters1.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/application/prepub_parameters.yaml
@@ -141,7 +141,7 @@ gdm-application-mod-test:
 gdm-access-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/access/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/prepub_parameters1.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/access/prepub_parameters.yaml
@@ -149,7 +149,7 @@ gdm-access-mod-test:
 gdm-bastion-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bastion/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/prepub_parameters1.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bastion/prepub_parameters.yaml
@@ -157,7 +157,7 @@ gdm-bastion-mod-test:
 gdm-bigip-autoscale-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters1.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/bigip-autoscale/prepub_parameters.yaml
@@ -174,7 +174,7 @@ gdm-bigip-standalone-mod-test:
 gdm-dag-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/dag/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/prepub_parameters2.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/dag/prepub_parameters1.yaml
@@ -183,7 +183,7 @@ gdm-dag-mod-test:
 gdm-functional-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/prepub_parameters.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/prepub_parameters1.yaml
@@ -192,7 +192,7 @@ gdm-functional-mod-test:
 gdm-network-mod-test:
   test-url: 'file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/network/daily_test.yaml'
   run: random
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/prepub_parameters4.yaml
     - automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/network/prepub_parameters3.yaml

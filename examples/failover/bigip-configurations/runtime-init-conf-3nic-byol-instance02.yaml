@@ -173,7 +173,7 @@ extension_services:
             mtu: 1460
           internalIntRoute:
             class: Route
-            gw: '{{{EXTERNAL_GW}}}'
+            gw: '{{{INTERNAL_GW}}}'
             network: '{{{INTERNAL_NETWORK}}}/{{{INTERNAL_BITMASK}}}'
             mtu: 1460
           external:
