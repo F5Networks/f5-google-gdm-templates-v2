@@ -113,8 +113,9 @@ def create_bigip_deployment(context, num_nics, instance_number):
         depends_on_array.append(subnet_name)
         interface_config_array.append(interface_config)
     if instance_number == 1:
+        storage_name = context.properties['cfeBucket'] if 'cfeBucket' in context.properties else generate_name(prefix, 'cfe-storage')
         storage_config = [{
-            'name': context.properties['cfeBucket'],
+            'name': storage_name,
             'labels': {
                 'f5_cloud_failover_label': context.properties['cfeTag']
                 }

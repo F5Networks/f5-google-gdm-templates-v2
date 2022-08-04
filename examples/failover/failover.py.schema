@@ -81,10 +81,6 @@ properties:
     default: bigip_high_availability_solution
     description: Cloud Failover deployment tag value.
     type: string
-  cfeBucket:
-    default: cfe-storage
-    description: Cloud Failover storage bucket value.
-    type: string
   cost:
     default: f5cost
     description: Cost Center label.

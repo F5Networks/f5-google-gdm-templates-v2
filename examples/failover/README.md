@@ -145,7 +145,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
-| cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
+| cfeBucket | No | cfe-storage | string | Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension. If a value is not provided, a storage bucket will be created using the value of the uniqueString input parameter. For example: **myuniqstr-cfe-storage**. |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
@@ -177,7 +177,7 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml | --- | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run| string | Supply a URL to the bigip-runtime-init package. |
-| cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
+| cfeBucket | No | cfe-storage | string | Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension. If a value is not provided, a storage bucket will be created using the value of the uniqueString input parameter. For example: **myuniqstr-cfe-storage**. |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
@@ -558,7 +558,7 @@ For information on the Cloud Failover solution, see [F5 Cloud Failover Extension
 ## Deleting this Solution
 
 
-As Google Deployment Manager does not delete storage buckets that contain data, in order to delete this deployment, you will first need to manually empty and/or delete the storage bucket created for the Cloud Failover Extension (provided via *cfeBucket* parameter). Go to *Google Cloud Console -> S3* and search for *cfeBucket* bucket name, select the box associated with it and then click the "Delete" button. 
+As Google Deployment Manager does not delete storage buckets that contain data, in order to delete this deployment, you will first need to manually empty and/or delete the storage bucket created for the Cloud Failover Extension (provided via *cfeBucket* parameter or in the format **uniqueString-cfe-storage** if a value was not provided). Go to *Google Cloud Console -> S3* and search for *cfeBucket* bucket name, select the box associated with it and then click the "Delete" button. 
 
 You can now delete the deployment.
 

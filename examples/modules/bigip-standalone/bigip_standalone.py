@@ -51,10 +51,11 @@ def create_storage_bucket(context, storage_bucket):
         'versioning',
         'website'
     ]
-    name = storage_bucket.get('name') or \
-        context.env['name'] if 'name' in storage_bucket or 'name' in context.env else 'cfe-storage'
     prefix = context.properties['uniqueString']
-    storage_name = generate_name(prefix, name)
+    storage_name = storage_bucket.get('name') or \
+        context.env['name'] if 'name' in storage_bucket or \
+            'name' in context.env else \
+                generate_name(prefix, 'cfe-storage')
     properties = {}
     properties.update({
             'project': context.env['project'],
