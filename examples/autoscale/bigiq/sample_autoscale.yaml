@@ -54,6 +54,12 @@ resources:
       bigIpScalingMaxSize: 8
       ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
+      ### (OPTIONAL) BIG-IP service account email.
+      # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
+      # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.
+      # Note: If left commented and a value is not provided, a service account will be created
+      # using the value of the uniqueString input parameter and the project name. For example: **myuniqstr-admin@myproject.iam.gserviceaccount.com**.
+      # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.

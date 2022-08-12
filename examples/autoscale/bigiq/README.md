@@ -97,6 +97,8 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
   - ***IMPORTANT:** Accessing or logging into the instances themselves is for demonstration and debugging purposes only. All configuration changes should be applied by updating the model via the template instead.*
   - See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
 
+- By default, this solution creates required IAM roles, permissions, and service account. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account with applied permissions to the BIG-IP instance(s). See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources. See [IAM Permissions by Solution Type](../../modules/access/README.md#iam-permissions-by-solution-type) for a detailed list of the permissions required by this solution.
+
 - This solution requires Internet access for: 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via GitHub.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
   - Contacting native cloud services for various cloud integrations: 
@@ -139,6 +141,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
 | bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
 | bigIpScalingMinSize | No | 1 | integer | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance(s). If a value is not provided, a service account will be created. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center label. |
 | environment | No | f5env | string | Environment label. |
 | group | No | f5group | string | Group Tag. |

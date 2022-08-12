@@ -14,7 +14,7 @@ rm -f $tmpl_file
 curl -k $template_url -o $tmpl_file
 
 # Run GDM Access template
-properties="uniqueString:'<UNIQUESTRING>',solutionType:'<SOLUTION TYPE>',storageName:'<STORAGE NAME>',secretId:'<SECRET ID>'"
+properties="uniqueString:'<UNIQUESTRING>',solutionType:'<SOLUTION TYPE>'"
 echo $properties
 gcloud deployment-manager deployments create <ACCESS STACK NAME> --template $tmpl_file --labels "delete=true" --properties $properties
 

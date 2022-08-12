@@ -35,6 +35,12 @@ resources:
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
+      ### (OPTIONAL) BIG-IP service account email.
+      # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
+      # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.
+      # Note: If left commented and a value is not provided, a service account will not be assigned.
+      # using the value of the uniqueString input parameter and the project name. For example: **myuniqstr-admin@myproject.iam.gserviceaccount.com**.
+      # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.

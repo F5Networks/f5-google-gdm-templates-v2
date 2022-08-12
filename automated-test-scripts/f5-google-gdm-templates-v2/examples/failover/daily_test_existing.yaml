@@ -4,6 +4,8 @@ onStart:
   - ../../common/helper_init.sh
   - ./common/create_storage_upload_runtime.sh
   - ../../common/create_secret.sh
+  - ../../common/create_access_stack.sh
+  - ../../common/verify_create_access.sh
   - ../../common/create_network_stack.sh
   - ../../common/verify_create_network.sh
   - ../../common/create_bastion_dag_stack.sh
@@ -32,8 +34,10 @@ onStart:
   - ../../common/delete_storage.sh
   - ../../common/delete_stack.sh
   - ../../common/verify_delete_stack.sh
+  - ../../common/delete_access_stack.sh
   - ../../common/delete_bastion_stack.sh
   - ../../common/delete_application_stack.sh
+  - ../../common/verify_delete_access.sh
   - ../../common/verify_delete_bastion.sh
   - ../../common/verify_delete_application.sh
   - ../../common/delete_dag_stack.sh
@@ -46,8 +50,10 @@ onFail:
   - ../../common/delete_storage.sh
   - ../../common/delete_stack.sh
   - ../../common/verify_delete_stack.sh
+  - ../../common/delete_access_stack.sh
   - ../../common/delete_bastion_stack.sh
   - ../../common/delete_application_stack.sh
+  - ../../common/verify_delete_access.sh
   - ../../common/verify_delete_bastion.sh
   - ../../common/verify_delete_application.sh
   - ../../common/delete_dag_stack.sh
