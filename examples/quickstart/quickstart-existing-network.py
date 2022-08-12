@@ -102,6 +102,19 @@ def create_bigip_deployment(context):
             'dependsOn': depends_on_array
         }
     }]
+
+    if 'bigIpServiceAccountEmail' in context.properties:
+        bigip_config[0]['properties']['serviceAccounts'] = [
+            {
+                'email': context.properties['bigIpServiceAccountEmail'],
+                'scopes': [
+                    'https://www.googleapis.com/auth/compute',\
+                    'https://www.googleapis.com/auth/devstorage.read_write',\
+                    'https://www.googleapis.com/auth/cloud-platform'
+                ]
+            }
+        ]
+
     return bigip_config
 
 def create_dag_deployment(context):

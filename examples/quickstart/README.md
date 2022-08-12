@@ -83,6 +83,8 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 - By default, this solution creates a username **admin** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
 ***IMPORTANT**: You should change this temporary password immediately following deployment.*
 
+- By default, this solution does not create IAM resources. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account to the BIG-IP instance. See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources.
+
 - When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
 - This solution requires Internet access for:
@@ -129,6 +131,7 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
@@ -153,6 +156,7 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |

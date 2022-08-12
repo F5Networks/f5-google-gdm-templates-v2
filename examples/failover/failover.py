@@ -66,7 +66,7 @@ def create_access_deployment(context):
         'uniqueString': context.properties['uniqueString']
       }
     }
-    return [deployment]
+    return deployment
 
 def create_bigip_deployment(context, num_nics, instance_number):
     """ Create bigip-standalone module deployment """
@@ -134,6 +134,13 @@ def create_bigip_deployment(context, num_nics, instance_number):
     depends_on_array.append(public_ip_name)
     additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
 
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
+
     bigip_config = [{
         'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
@@ -152,8 +159,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             },
             'serviceAccounts': [
                 {
-                    'email': context.properties['uniqueString'] + \
-                        '-admin@' + context.env['project'] + '.iam.gserviceaccount.com',
+                    'email': service_account_email,
                     'scopes': [
                         'https://www.googleapis.com/auth/compute',\
                         'https://www.googleapis.com/auth/devstorage.read_write',\
@@ -480,12 +486,15 @@ def generate_config(context):
         str(num_nics - 1))
 
     resources = create_network_deployment(context, num_nics) + \
-        create_access_deployment(context) + \
-        create_bigip_deployment(context, num_nics, 1) + \
-        create_bigip_deployment(context, num_nics, 2) + \
-        create_application_deployment(context, num_nics) + \
-        create_dag_deployment(context, num_nics)
+                create_bigip_deployment(context, num_nics, 1) + \
+                create_bigip_deployment(context, num_nics, 2) + \
+                create_application_deployment(context, num_nics) + \
+                create_dag_deployment(context, num_nics)
     outputs = []
+
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
+
     mgmt_nic_index = '0' if num_nics == 1 else '1'
     mgmt_port = '8443' if num_nics == 1 else '443'
 

@@ -150,6 +150,12 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -220,10 +226,7 @@ def create_bigip_deployment(context):
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': context.properties['uniqueString'] + \
-              '-admin@' + \
-                  context.env['project'] + \
-                      '.iam.gserviceaccount.com',
+          'serviceAccountEmail': service_account_email,
           'subnetSelfLink': sub_ref,
           'targetPools': [{
               'name': 'bigip',
@@ -396,12 +399,13 @@ def generate_config(context):
     net_name = generate_name(prefix, 'network')
 
     resources = [create_network_deployment(context)] + \
-                [create_access_deployment(context)] + \
                 [create_application_deployment(context)] + \
                 [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
     outputs = []
 
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
 
     if not context.properties['provisionPublicIp']:
         resources = resources + [create_bastion_deployment(context)]

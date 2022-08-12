@@ -34,6 +34,12 @@ def create_bigip_deployment(context):
     sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
           '/regions/' + context.properties['region'] + \
           '/subnetworks/' + subnet_name
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
     depends_on_array = []
     deployment = {
         'name': 'bigip-autoscale',
@@ -93,10 +99,7 @@ def create_bigip_deployment(context):
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': context.properties['uniqueString'] + \
-              '-admin@' + \
-                  context.env['project'] + \
-                      '.iam.gserviceaccount.com',
+          'serviceAccountEmail': service_account_email,
           'subnetSelfLink': sub_ref,
           'targetPools': [{
               'name': 'bigip',
@@ -226,10 +229,12 @@ def generate_config(context):
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
     fr_name = generate_name(prefix, 'fr-01')
 
-    resources = [create_access_deployment(context)] + \
-                [create_bigip_deployment(context)] + \
+    resources = [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
     outputs = []
+
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
 
     outputs = outputs + [
         {

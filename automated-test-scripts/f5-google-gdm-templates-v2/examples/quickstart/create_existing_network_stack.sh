@@ -23,6 +23,7 @@ cp /tmp/examples/quickstart/sample_quickstart_existing_network.yaml ${tmpl_path}
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceType = \"<INSTANCE TYPE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpServiceAccountEmail = \"dewpt-ha-service-account@f5-7656-pdsoleng-dev.iam.gserviceaccount.com\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numNics = <NUMBER NICS>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.networks.externalNetworkName = \"<UNIQUESTRING>-network1-network\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
