@@ -152,6 +152,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             'instanceType': context.properties['bigIpInstanceType'],
             'name': 'bigip-vm-0' + str(instance_number),
             'networkInterfaces': interface_config_array,
+            'secretId': context.properties['bigIpSecretId'],
             'storageBuckets': storage_config,
             'region': context.properties['region'],
             'labels': {

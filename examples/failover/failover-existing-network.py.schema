@@ -14,6 +14,7 @@ imports:
   - path: ../modules/dag/dag.py
 
 required:
+  - bigIpSecretId
   - restrictedSrcAddressMgmt
   - networks
   - subnets
@@ -70,6 +71,9 @@ properties:
   bigIpRuntimeInitPackageUrl:
     default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
+    type: string
+  bigIpSecretId:
+    description: The ID of the Google secret manager secret where the BIG-IP password used for clustering is stored.
     type: string
   cfeTag:
     default: bigip_high_availability_solution

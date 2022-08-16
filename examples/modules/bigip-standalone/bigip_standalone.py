@@ -185,6 +185,8 @@ def create_nics(context):
 def metadata(context):
     """ Create metadata for instance """
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
+    secret_id = str(context.properties['secretId']) if \
+        'secretId' in context.properties else ''
     metadata_config = {
                 'items': [
                 {
@@ -259,9 +261,18 @@ def metadata(context):
                                     '       tmsh modify sys global-settings remote-host add { metadata.google.internal { hostname metadata.google.internal addr 169.254.169.254 } }',
                                     '       tmsh save /sys config',
                                     '   fi',
+                                    '',
+                                    '   # VARS FROM TEMPLATE',
+                                    '   PACKAGE_URL=' + str(context.properties['bigIpRuntimeInitPackageUrl']),
+                                    '',
                                     '   RUNTIME_CONFIG=' + str(context.properties['bigIpRuntimeInitConfig']),
+                                    '',
+                                    '   SECRET_ID=' + secret_id,
+                                    '',
+                                    '   echo $SECRET_ID > /config/cloud/secret_id',
+                                    '',
                                     '   for i in {1..30}; do',
-                                    '       /usr/bin/curl -fv --retry 1 --connect-timeout 5 -L ' + str(context.properties['bigIpRuntimeInitPackageUrl']) + ' -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10',
+                                    '       /usr/bin/curl -fv --retry 1 --connect-timeout 5 -L "${PACKAGE_URL}" -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10',
                                     '   done',
                                     '   if [[ ${RUNTIME_CONFIG} =~ ^http.* ]]; then',
                                     '       for i in {1..30}; do',

@@ -42,6 +42,7 @@ This Google Deployment Manager template creates an autoscale group of BIG-IP ins
 | autoscalers | Yes |  | array | List of declaration of settings used for provisioning autoscalers. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers). |
 | bigIpRuntimeInitPackageUrl | Yes |  | string | URL for BIG-IP Runtime Init package. | 
 | bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIqSecretId | No |  | string | Supply the of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ. |
 | cost | No | f5cost | string | Cost Center label. |
 | environment | No | f5env | string | Environment label. | 
 | group | No | f5group | string | Group label. |
@@ -54,6 +55,7 @@ This Google Deployment Manager template creates an autoscale group of BIG-IP ins
 | networkSelfLink | Yes |  | string | Self Link of the network to use to deploy the application.  | 
 | owner | No | f5owner | string | Owner label. |
 | provisionPublicIp | No | true | boolean | Select true if you would like to provision a public IP address for accessing the BIG-IP instance(s). |
+| secretId | No |  | string | Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc. |
 | serviceAccountEmail | Yes |  | string | Enter the Google service account to use for autoscale API calls. For example: `username@projectname.iam.serviceaccount.com`. |
 | subnetSelfLink | Yes |  | string | Self Link of the subnetwork to use to deploy the application. | 
 | targetPools | Yes |  | array | List of settings for provisioning target pools. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetPools). |

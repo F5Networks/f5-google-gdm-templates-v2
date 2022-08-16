@@ -44,8 +44,8 @@ resources:
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
       ### (OPTIONAL) Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      bigIpInstanceType: n1-standard-8
       ### (OPTIONAL) IP CIDR range used by the management network of the BIG-IP.
       bigIpIpCidrRange: 10.0.0.0/24
       ### (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
@@ -54,12 +54,18 @@ resources:
       bigIpScalingMaxSize: 8
       ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
+      ### (OPTIONAL) BIG-IP secret ID.
+      # Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.
+      # bigIpSecretId: mySecretId
       ### (OPTIONAL) BIG-IP service account email.
       # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
       # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.
       # Note: If left commented and a value is not provided, a service account will be created
       # using the value of the uniqueString input parameter and the project name. For example: **myuniqstr-admin@myproject.iam.gserviceaccount.com**.
       # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
+      ### (REQUIRED) BIG-IQ secret ID.
+      # Supply the ID of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ.
+      bigIqSecretId:
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.

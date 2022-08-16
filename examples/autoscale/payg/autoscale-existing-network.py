@@ -40,6 +40,8 @@ def create_bigip_deployment(context):
                 '-admin@' + \
                     context.env['project'] + \
                         '.iam.gserviceaccount.com'
+    secret_id = context.properties['bigIpSecretId'] if \
+        'bigIpSecretId' in context.properties else ''
     depends_on_array = []
     deployment = {
         'name': 'bigip-autoscale',
@@ -99,6 +101,7 @@ def create_bigip_deployment(context):
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
+          'secretId': secret_id,
           'serviceAccountEmail': service_account_email,
           'subnetSelfLink': sub_ref,
           'targetPools': [{

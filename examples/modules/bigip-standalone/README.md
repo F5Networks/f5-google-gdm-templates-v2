@@ -51,6 +51,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | networkInterfaces.networkIP | No |  | string | Defines static IP attached to interface.|
 | networkInterfaces.subnetwork | Yes |  | string | Defines subnetwork attached to interface.|
 | region | Yes |  | string | Enter the region where you want to deploy the application. For example: `us-west1`.|
+| secretId | No |  | string | Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc. |
 | storageBuckets | Yes |  | string | Creates storage buckets.| 
 | tags.items | No |  | array | An array of tags used to match traffic against network interfaces.|
 | targetInstances | Yes |  | array | List of settings for provisioning target instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances). |
