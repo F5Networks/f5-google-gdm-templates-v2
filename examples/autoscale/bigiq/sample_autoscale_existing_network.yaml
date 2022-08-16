@@ -41,20 +41,26 @@ resources:
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
       ### (OPTIONAL) Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      bigIpInstanceType: n1-standard-8
       ### (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
       bigIpScaleOutCpuThreshold: 0.8
       ### (OPTIONAL): Maximum number of BIG-IP instances that can be created in the Auto Scale Group.
       bigIpScalingMaxSize: 8
       ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
+      ### (OPTIONAL) BIG-IP secret ID.
+      # Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.
+      # bigIpSecretId: mySecretId
       ### (OPTIONAL) BIG-IP service account email.
       # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
       # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.
       # Note: If left commented and a value is not provided, a service account will be created
       # using the value of the uniqueString input parameter and the project name. For example: **myuniqstr-admin@myproject.iam.gserviceaccount.com**.
       # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
+      ### (REQUIRED) BIG-IQ secret ID.
+      # Supply the ID of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ.
+      bigIqSecretId:
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.
@@ -65,6 +71,8 @@ resources:
       group: f5group
       ### (OPTIONAL) Enter the name of the Google Cloud log that will receive WAF events.
       logId: f5-waf-logs
+      ### (REQUIRED) The existing network name. For example: 'myuniqstr-network'
+      networkName:
       ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to false. If set to false, the solution will deploy a bastion host instead in order to provide access.
       provisionPublicIp: false
       ### (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
@@ -86,10 +94,13 @@ resources:
       #   - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
         - 10.0.0.0/8
-      ### (REQUIRED) This parameter is used for providing management and application subnets names.
+      ### (REQUIRED) This parameter is used for providing management and application subnets names. For example,
+      # subnets:
+      #  mgmtSubnetName: myuniqstr-mgmt
+      #  appSubnetName: myuniqstr-app
       subnets:
-        mgmtSubnetName: myuniqstr-mgmt
-        appSubnetName: myuniqstr-app
+        mgmtSubnetName:
+        appSubnetName:
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
       ### (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify true when updating the deployment. See README for more details.

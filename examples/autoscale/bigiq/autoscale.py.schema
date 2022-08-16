@@ -18,6 +18,7 @@ imports:
   - path: ../../modules/network/network.py
 
 required:
+    - bigIqSecretId
     - restrictedSrcAddressMgmt
     - restrictedSrcAddressApp
 
@@ -68,6 +69,9 @@ properties:
   bigIpRuntimeInitPackageUrl:
     default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
+    type: string
+  bigIqSecretId:
+    description: The ID of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ.
     type: string
   cost:
     default: f5cost

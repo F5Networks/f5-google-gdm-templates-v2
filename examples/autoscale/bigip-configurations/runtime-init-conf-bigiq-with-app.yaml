@@ -39,13 +39,16 @@ runtime_parameters:
     headers:
       - name: Metadata-Flavor
         value: Google
+  - name: BIGIQ_SECRET_ID
+    type: url
+    value: file:///config/cloud/bigiq_secret_id
   - name: BIGIQ_PASSWORD
     type: secret
     secretProvider:
       type: SecretsManager
       environment: gcp
       version: latest
-      secretId: mySecretId
+      secretId: '{{{BIGIQ_SECRET_ID}}}'
 bigip_ready_enabled: []
 extension_packages:
   install_operations:

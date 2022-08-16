@@ -43,14 +43,17 @@ resources:
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
       ### (OPTIONAL) Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      bigIpInstanceType: n1-standard-8
       ### (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
       bigIpScaleOutCpuThreshold: 0.8
       ### (OPTIONAL): Maximum number of BIG-IP instances that can be created in the Auto Scale Group.
       bigIpScalingMaxSize: 8
       ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
+      ### (OPTIONAL) BIG-IP secret ID.
+      # Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.
+      # bigIpSecretId: mySecretId
       ### (OPTIONAL) BIG-IP service account email.
       # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
       # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.

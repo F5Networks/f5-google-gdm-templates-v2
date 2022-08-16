@@ -46,7 +46,6 @@ if [[ "<LICENSE TYPE>" == "bigiq" ]]; then
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.licensePool = \"production\"" -i $runtime_file
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.bigIqHost = \"${LICENSE_HOST}\"" -i $runtime_file
     /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.tenant = \"<DEWPOINT JOB ID>-{{{INSTANCE_ID}}}\"" -i $runtime_file
-    /usr/bin/yq e ".runtime_parameters[6].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $runtime_file
 fi
 
 cp $runtime_file $runtime_update_file
@@ -88,6 +87,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceTemplateVersion = <INSTANCE TEMPLATE VERSION>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpInstanceType = \"<INSTANCE TYPE>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.bigIpIpCidrRange = \"<BIGIP IP CIDR RANGE>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.bigIqSecretId = \"<STACK NAME>-secret\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.logId = \"<LOG ID>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i $config_file
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file

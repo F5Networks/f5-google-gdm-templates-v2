@@ -87,6 +87,8 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 - When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
+- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+
 - This solution requires Internet access for:
 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
@@ -109,9 +111,7 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 - If you would like to view all available images, run the following command from the **gcloud** command line: `$ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`
 
-- This directory contains a schema file which helps manage the required fields and set defaults to optional fields. For example, if you omit the property for bigIpRuntimeInitPackageUrl in your configuration file, we set the default URL to the latest available version.
-
-- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+- This directory contains a schema file which helps manage the required fields and set defaults to optional fields. For example, if you omit the property for **bigIpRuntimeInitPackageUrl** in your configuration file, we set the default URL to the latest available version.
 
 - This template can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5).
 
@@ -128,7 +128,7 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server(s). If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application Tag. |
 | bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
-| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
@@ -139,8 +139,8 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | owner | No | f5owner | string | Owner Tag. |
 | provisionPublicIp | No | true | string | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | The cloud region used for this deployment, for example: us-west1. |
-| restrictedSrcAddressApp | Yes |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
@@ -153,7 +153,7 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | --- | --- | --- | --- | --- |
 | application | No | f5app | string | Application label. |
 | bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
-| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
@@ -162,18 +162,18 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | group | No | f5group | string | Group Tag. |
 | numNics | No | 3 | integer | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
 | owner | No | f5owner | string | Owner Tag. |
-| networks | Yes |  | object | Networks object which provides names for mgmt and app networks |
-| networks.externalNetworkName | Yes |  | string | External network name. |
-| networks.interlanNetworkName | No |  | string | Internal network name. |  
-| networks.mgmtNetworkName | No |  | string | Management network name. | 
+| networks | **Yes** |  | object | Networks object which provides names for mgmt and app networks |
+| networks.externalNetworkName | **Yes** |  | string | External network name. |
+| networks.interlanNetworkName | **Yes** |  | string | Internal network name. |  
+| networks.mgmtNetworkName | **Yes** |  | string | Management network name. | 
 | provisionPublicIp | No | false | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | The cloud region used for this deployment, for example us-west1. |
-| restrictedSrcAddressApp | Yes |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
-| subnets | Yes |  | object | Subnet object which provides names for mgmt and app subnets |
-| subnets.appSubnetName | Yes |  | string | Management subnet name |
-| subnets.internalSubnetName | Yes |  | string | Internal subnet name |  
-| subnets.mgmtSubnetName | Yes |  | string | Management subnet name | 
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| subnets | **Yes** |  | object | Subnet object which provides names for mgmt and app subnets |
+| subnets.appSubnetName | **Yes** |  | string | Management subnet name |
+| subnets.internalSubnetName | **Yes** |  | string | Internal subnet name |  
+| subnets.mgmtSubnetName | **Yes** |  | string | Management subnet name | 
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
@@ -215,20 +215,20 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 
 | Name | Required Resource | Type | Description | 
 | --- | --- | --- | --- |
-| bigIpInstanceId | --- | string | BIG-IP instance ID. |
-| bigIpInstanceName | --- | string | BIG-IP instance name. |
-| bigIpManagementPrivateIp | --- | string | BIG-IP management private IP address. |
-| bigIpManagementPrivateUrl | --- | string | BIG-IP management private IP URL. |
-| bigIpManagementPublicIp | --- | string | BIG-IP management public IP address. |
-| bigIpManagementPublicSsh | --- | string | BIG-IP management SSH command. |
-| bigIpManagementPublicUrl | --- | string | BIG-IP management public IP URL. |
-| deploymentName | --- | string | Quickstart deployment name. |
-| vip1PrivateIp | --- | string | Virtual Server private IP address. |
-| vip1PrivateUrlHttp | --- | string | Virtual Server private HTTP URL. |
-| vip1PrivateUrlHttps | --- | string | Virtual Server private HTTPS URL. |
-| vip1PublicIp | --- | string | Virtual Server public IP address. |
-| vip1PublicUrlHttp | --- | string | Virtual Server public HTTP URL. |
-| vip1PublicUrlHttps | --- | string | Virtual Server public HTTPS URL. |
+| bigIpInstanceId |  | string | BIG-IP instance ID. |
+| bigIpInstanceName |  | string | BIG-IP instance name. |
+| bigIpManagementPrivateIp |  | string | BIG-IP management private IP address. |
+| bigIpManagementPrivateUrl |  | string | BIG-IP management private IP URL. |
+| bigIpManagementPublicIp |  | string | BIG-IP management public IP address. |
+| bigIpManagementPublicSsh |  | string | BIG-IP management SSH command. |
+| bigIpManagementPublicUrl |  | string | BIG-IP management public IP URL. |
+| deploymentName |  | string | Quickstart deployment name. |
+| vip1PrivateIp |  | string | Virtual Server private IP address. |
+| vip1PrivateUrlHttp |  | string | Virtual Server private HTTP URL. |
+| vip1PrivateUrlHttps |  | string | Virtual Server private HTTPS URL. |
+| vip1PublicIp |  | string | Virtual Server public IP address. |
+| vip1PublicUrlHttp |  | string | Virtual Server public HTTP URL. |
+| vip1PublicUrlHttps |  | string | Virtual Server public HTTPS URL. |
 
 
 

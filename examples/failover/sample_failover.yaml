@@ -45,9 +45,9 @@ resources:
       bigIpMgmtAddress02: 10.0.0.12
       ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
-      ### (OPTIONAL) Static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device.
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      bigIpInstanceType: n1-standard-8
+      ### (OPTIONAL) Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide first instance's Self IP address.
       bigIpPeerAddr: 10.0.1.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig01: >-
@@ -57,6 +57,9 @@ resources:
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
+      ### (REQUIRED) BIG-IP secret ID.
+      # Supply the ID of the Google secret manager secret where the BIG-IP password used for clustering is stored. For example: **mySecretId**.
+      bigIpSecretId:
       ### (OPTIONAL) BIG-IP service account email.
       # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
       # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.

@@ -105,7 +105,6 @@ properties:
   networkName:
     type: string
     description: network name used for hosting BIGIP instances
-    default: bigip-network
   uniqueString:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.

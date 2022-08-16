@@ -64,6 +64,10 @@ def create_instance_template(context, instance_template):
     environment =  context.properties['environment'] if 'environment' in context.properties else 'f5env'
     group = context.properties['group'] if 'group' in context.properties else 'f5group'
     owner = context.properties['owner'] if 'owner' in context.properties else 'f5owner'
+    bigiq_secret_id = str(context.properties['bigIqSecretId']) if \
+        'bigIqSecretId' in context.properties else ''
+    secret_id = str(context.properties['secretId']) if \
+        'secretId' in context.properties else ''
     properties = {}
 
     # Setup Defaults - property updated to given value when property exists in config
@@ -122,9 +126,16 @@ def create_instance_template(context, instance_template):
                                     '! grep -q \'provision asm\' /config/bigip_base.conf && echo \'sys provision asm { level nominal }\' >> /config/bigip_base.conf',
                                     '',
                                     '# VARS FROM TEMPLATE',
-                                    'PACKAGE_URL=' + context.properties['bigIpRuntimeInitPackageUrl'],
+                                    'PACKAGE_URL=' + str(context.properties['bigIpRuntimeInitPackageUrl']),
                                     '',
-                                    'RUNTIME_CONFIG=' + context.properties['bigIpRuntimeInitConfig'],
+                                    'RUNTIME_CONFIG=' + str(context.properties['bigIpRuntimeInitConfig']),
+                                    '',
+                                    'BIGIQ_SECRET_ID=' + bigiq_secret_id,
+                                    '',
+                                    'SECRET_ID=' + secret_id,
+                                    '',
+                                    'echo $BIGIQ_SECRET_ID > /config/cloud/bigiq_secret_id',
+                                    'echo $SECRET_ID > /config/cloud/secret_id',
                                     '',
                                     '# Download or render f5-bigip-runtime-init config',
                                     'if [[ "${RUNTIME_CONFIG}" =~ ^http.* ]]; then',

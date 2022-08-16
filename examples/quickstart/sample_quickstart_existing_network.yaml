@@ -47,18 +47,17 @@ resources:
       environment: f5env
       ### (OPTIONAL) Group label.
       group: f5group
+      ### (REQUIRED) This parameter is used for providing existing networks names. For example:
+      # networks:
+      #   mgmtNetworkName: myuniqstr-mgmt
+      #   externalNetworkName: myuniqstr-app
+      #   internalNetworkName: myuniqstr-internal
+      networks:
+        mgmtNetworkName:
+        externalNetworkName:
+        internalNetworkName:
       ### (OPTIONAL) Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance.
       numNics: 3
-      ### (REQUIRED) This parameter is used for providing existing networks names:
-      networks:
-        mgmtNetworkName: myuniqstr-mgmt
-        externalNetworkName: myuniqstr-app
-        internalNetworkName: myuniqstr-internal
-      ### (REQUIRED) This parameter is used for providing management and application subnets names.
-      subnets:
-        mgmtSubnetName: myuniqstr-mgmt
-        appSubnetName: myuniqstr-app
-        internalSubnetName: myuniqstr-internal
       ### (OPTIONAL) Owner label.
       owner: f5owner
       ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.
@@ -80,6 +79,15 @@ resources:
       #   - 10.0.0.0/24     # Bastion Host on Mgmt Network
       #   - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
+      ### (REQUIRED) This parameter is used for providing management and application subnets names.
+      # subnets:
+      #   mgmtSubnetName: myuniqstr-mgmt
+      #   appSubnetName: myuniqstr-app
+      #   internalSubnetName: myuniqstr-internal
+      subnets:
+        mgmtSubnetName:
+        appSubnetName:
+        internalSubnetName:
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
       ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
