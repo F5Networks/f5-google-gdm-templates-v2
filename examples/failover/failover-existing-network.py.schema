@@ -137,10 +137,12 @@ properties:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
     type: string
-  zone:
-    default: us-west1-a
-    description: Enter the zone where you want to deploy the application, for example 'us-west1-a'.
-    type: string
+  zones:
+    description: Array of Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'.
+    type: array
+    default:
+      - us-west1-a
+      - us-west1-b
 
 outputs:
   properties:

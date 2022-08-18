@@ -1,5 +1,7 @@
 ---
-AVAILABILITY ZONE: <REGION>-b
+AVAILABILITY ZONE: <AVAILABILITY ZONE BIGIP 1>
+AVAILABILITY ZONE BIGIP 1: <REGION>-c
+AVAILABILITY ZONE BIGIP 2: <REGION>-d
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
 BIGIP VERSION: 16-1-2-2-0-0-28

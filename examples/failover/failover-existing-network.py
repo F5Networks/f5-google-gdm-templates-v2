@@ -82,6 +82,8 @@ def create_bigip_deployment(context, num_nics, instance_number):
     else:
         storage_config = []
 
+    zone = context.properties['zones'][instance_number - 1]
+
     # Populate Metadata Tags
     additionalMetadataTags = {}
 
@@ -140,7 +142,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 'name': 'bigip-vm-0' + str(instance_number)
             }],
             'uniqueString': context.properties['uniqueString'],
-            'zone': context.properties['zone']
+            'zone': zone
         },
         'metadata': {
             'dependsOn': depends_on_array

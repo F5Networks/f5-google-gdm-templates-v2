@@ -36,7 +36,8 @@ cp /tmp/examples/failover/sample_failover_existing_network.yaml ${tmpl_path}<DEW
 /usr/bin/yq e ".resources[0].properties.subnets.internalSubnetName = \"<UNIQUESTRING>-subnet2-subnet\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.zones[0] = \"<AVAILABILITY ZONE BIGIP 1>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.zones[1] = \"<AVAILABILITY ZONE BIGIP 2>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"<TEMPLATE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 
 # print out config file

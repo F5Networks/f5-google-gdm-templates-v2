@@ -123,6 +123,8 @@ def create_bigip_deployment(context, num_nics, instance_number):
     else:
         storage_config = []
 
+    zone = context.properties['zones'][instance_number - 1]
+
     # Populate Metadata Tags
     additionalMetadataTags = {}
 
@@ -181,7 +183,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 'name': 'bigip-vm-0' + str(instance_number)
             }],
             'uniqueString': context.properties['uniqueString'],
-            'zone': context.properties['zone']
+            'zone': zone
         },
         'metadata': {
             'dependsOn': depends_on_array
@@ -200,6 +202,7 @@ def create_application_deployment(context, num_nics):
     else:
         net_name = generate_name(prefix, 'int-network-0' + \
             str(num_nics - 1))
+    zone = context.properties['zones'][0]
     depends_on_array = []
     depends_on_array.append(net_name)
     depends_on_array.append(subnet_name)
@@ -228,7 +231,7 @@ def create_application_deployment(context, num_nics):
                 'network': '$(ref.' + net_name + '.selfLink)',
                 'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
             }],
-            'zone': context.properties['zone']
+            'zone':zone
         }],
         'uniqueString': context.properties['uniqueString'],
       },
@@ -243,6 +246,7 @@ def create_bastion_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'mgmt-network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    zone = context.properties['zones'][0]
     depends_on_array = []
     depends_on_array.append(net_name)
     depends_on_array.append(subnet_name)
@@ -268,7 +272,7 @@ def create_bastion_deployment(context):
                     'network': '$(ref.' + net_name + '.selfLink)',
                     'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
                 }],
-                'zone': context.properties['zone']
+                'zone': zone
             }],
             'uniqueString': context.properties['uniqueString']
         },

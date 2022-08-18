@@ -163,7 +163,9 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
 | restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name | 
 
 ### Existing Network Template Input Parameters
 
@@ -205,8 +207,9 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | subnets.internalSubnetName | **Yes** |  | string | Internal subnet name |  
 | subnets.mgmtSubnetName | **Yes** |  | string | Management subnet name | 
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
-
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name | 
 
 
 ### Template Outputs

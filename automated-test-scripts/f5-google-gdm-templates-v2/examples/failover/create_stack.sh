@@ -24,7 +24,8 @@ cp /tmp/examples/failover/sample_failover.yaml ${tmpl_path}<DEWPOINT JOB ID>.yam
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.zones[0] = \"<AVAILABILITY ZONE BIGIP 1>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.zones[1] = \"<AVAILABILITY ZONE BIGIP 2>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"<TEMPLATE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 
 # print out config file
