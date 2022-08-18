@@ -162,16 +162,6 @@ extension_services:
             gw: '{{{EXTERNAL_GW}}}'
             network: default
             mtu: 1460
-          internalGwRoute:
-            class: Route
-            target: internal
-            network: '{{{INTERNAL_GW}}}/32'
-            mtu: 1460
-          internalIntRoute:
-            class: Route
-            gw: '{{{EXTERNAL_GW}}}'
-            network: '{{{INTERNAL_NETWORK}}}/{{{INTERNAL_BITMASK}}}'
-            mtu: 1460
           external:
             class: VLAN
             tag: 4094
@@ -188,21 +178,6 @@ extension_services:
               - tcp:443
               - tcp:4353
               - udp:1026
-            trafficGroup: traffic-group-local-only
-          internal:
-            class: VLAN
-            tag: 4093
-            mtu: 1460
-            interfaces:
-              - name: '1.2'
-                tagged: false
-          internal-self:
-            class: SelfIp
-            address: '{{{SELF_IP_INTERNAL}}}/32'
-            vlan: internal
-            allowService:
-              - udp:1026
-              - tcp:4353
             trafficGroup: traffic-group-local-only
           configSync:
             class: ConfigSync
@@ -264,14 +239,6 @@ runtime_parameters:
       field: ip
       index: 0
       ipcalc: address
-  - name: SELF_IP_INTERNAL
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
-      ipcalc: address
   - name: EXTERNAL_GW
     type: metadata
     metadataProvider:
@@ -279,14 +246,6 @@ runtime_parameters:
       type: network
       field: ip
       index: 0
-      ipcalc: first
-  - name: INTERNAL_GW
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
       ipcalc: first
   - name: EXTERNAL_BITMASK
     type: metadata
@@ -296,14 +255,6 @@ runtime_parameters:
       field: ip
       index: 0
       ipcalc: bitmask
-  - name: INTERNAL_BITMASK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
-      ipcalc: bitmask
   - name: EXTERNAL_NETWORK
     type: metadata
     metadataProvider:
@@ -311,13 +262,5 @@ runtime_parameters:
       type: network
       field: ip
       index: 0
-      ipcalc: base
-  - name: INTERNAL_NETWORK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
       ipcalc: base
 post_onboard_enabled: []
