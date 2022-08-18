@@ -462,7 +462,7 @@ def create_dag_deployment(context, num_nics):
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
-    num_nics = 3
+    num_nics = 2
     name = context.properties.get('name') or \
            context.env['name']
     prefix = context.properties['uniqueString']
