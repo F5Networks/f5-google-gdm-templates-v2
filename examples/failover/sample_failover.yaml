@@ -35,11 +35,11 @@ resources:
       bigIpExternalSelfIp01: 10.0.1.11
       ### (OPTIONAL) External interface private IP address for bigip2.
       bigIpExternalSelfIp02: 10.0.1.12
+      ### (OPTIONAL) Internal interface private IP address for bigip1.
+      ### bigIpInternalSelfIp01: 10.0.2.11
       ### (OPTIONAL) Internal interface private IP address for bigip2.
-      bigIpInternalSelfIp01: 10.0.2.11
-      ### (OPTIONAL) Internal interface private IP address for bigip2.
-      bigIpInternalSelfIp02: 10.0.2.12
-      ### (OPTIONAL) Management interface private IP address for bigip2.
+      ### bigIpInternalSelfIp02: 10.0.2.12
+      ### (OPTIONAL) Management interface private IP address for bigip1.
       bigIpMgmtAddress01: 10.0.0.11
       ### (OPTIONAL) Management interface private IP address for bigip2.
       bigIpMgmtAddress02: 10.0.0.12
@@ -51,9 +51,9 @@ resources:
       bigIpPeerAddr: 10.0.1.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig01: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
+        https://raw.githubusercontent.com/Dvirus89/f5-google-gdm-templates-v2/main/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml 
       bigIpRuntimeInitConfig02: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
+        https://raw.githubusercontent.com/Dvirus89/f5-google-gdm-templates-v2/main/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.0/dist/f5-bigip-runtime-init-1.5.0-1.gz.run
@@ -75,21 +75,20 @@ resources:
       region: us-west1
       ### (REQUIRED) This field restricts web application access (ports 80 and 443) to a specific network or address. Enter an IP address or address range in CIDR notation. For example, '55.55.55.55/32'.
       # The network address should be in array format. For example:
-      # restrictedSrcAddressApp:
-      #   - 0.0.0.0/0
       restrictedSrcAddressApp:
+         - 0.0.0.0/0
       ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
       # Provide a yaml list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
       # Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet.
       # NOTE:
       # - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
       # - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network as in the example below (w/ RFC 1918 block).
-      # restrictedSrcAddressMgmt:
-      #   - 10.0.0.0/24     # Bastion Host on Mgmt Network
-      #   - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
+         - 10.0.0.0/24     # Bastion Host on Mgmt Network
+         - 81.5.48.187/32  # Client to Bastion Host
+         - 20.105.187.51/32  # Client to Bastion Host
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
-      uniqueString: myuniqstr
+      uniqueString: dvirthu3
       ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
       zone: us-west1-a
     type: failover.py
