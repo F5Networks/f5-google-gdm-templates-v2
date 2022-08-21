@@ -32,7 +32,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
         access_config = {}
         if nics == 0:
             net_name = context.properties['networks']['externalNetworkName']
-            subnet_name = context.properties['subnets']['appSubnetName']
+            subnet_name = context.properties['subnets']['externalSubnetName']
             interface_description = 'Interface used for external traffic'
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
@@ -145,7 +145,6 @@ def create_dag_deployment(context, num_nics):
     prefix = context.properties['uniqueString']
     mgmt_net_name = context.properties['networks']['mgmtNetworkName']
     ext_net_name = context.properties['networks']['externalNetworkName']
-    int_net_name = context.properties['networks']['internalNetworkName']
     if num_nics == 1:
         app_net_name = context.properties['networks']['mgmtNetworkName']
         int_net_name = context.properties['networks']['mgmtNetworkName']
@@ -233,7 +232,7 @@ def create_dag_deployment(context, num_nics):
                     'description': 'Allow web traffic to public network',
                     'name': context.properties['uniqueString'] + '-app-vip-fw',
                     'network': external_net_ref,
-                    'sourceRanges': [ context.properties['restrictedSrcAddressApp'] ],
+                    'sourceRanges': ['10.0.0.0/24'],
                     'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
                 },
                 {
@@ -316,7 +315,7 @@ def create_dag_deployment(context, num_nics):
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
-    num_nics = 3
+    num_nics = 2
     name = context.properties.get('name') or \
            context.env['name']
     prefix = context.properties['uniqueString']

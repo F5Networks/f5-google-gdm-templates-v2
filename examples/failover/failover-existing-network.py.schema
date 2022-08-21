@@ -63,7 +63,7 @@ properties:
     default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
-  bigIpRuntimeInitConfig01:
+  bigIpRuntimeInitConfig02:
     default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
@@ -115,24 +115,18 @@ properties:
       externalNetworkName:
         type: string
         description: external subnet name.
-      internalNetworkName:
-        type: string
-        description: internal network name.
   subnets:
     type: object
     required:
       - mgmtSubnetName
-      - appSubnetName
+      - externalSubnetName
     properties:
       mgmtSubnetName:
         type: string
         description: management subnet name.
-      appSubnetName:
+      externalSubnetName:
         type: string
-        description: application subnet name.
-      internalSubnetName:
-        type: string
-        description: internal subnet name.
+        description: external subnet name.
   uniqueString:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
