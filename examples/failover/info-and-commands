@@ -1,3 +1,9 @@
+gcloud compute images list --project f5-7626-networks-public --filter="name~f5"i
+
+gcloud deployment-manager deployments create dvirsun1 --verbosity="debug" --config sample_failover.yaml
+
+gcloud deployment-manager deployments delete dvirthu5  --project xx-xx-xxx-xx-xx
+
 tail -f /var/log/restnoded/restnoded.log
 
 curl -su admin: -X POST -d @cfe.json http://localhost:8100/mgmt/shared/cloud-failover/declare | jq .
