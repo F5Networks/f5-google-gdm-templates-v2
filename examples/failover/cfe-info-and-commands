@@ -1,0 +1,30 @@
+tail -f /var/log/restnoded/restnoded.log
+
+curl -su admin: -X POST -d @cfe.json http://localhost:8100/mgmt/shared/cloud-failover/declare | jq .
+
+
+-- cfe.json --
+{
+    "schemaVersion": "1.0.0",
+    "class": "Cloud_Failover",
+    "environment": "gcp",
+    "controls": {
+      "class": "Controls",
+      "logLevel": "silly"
+    },
+    "externalStorage": {
+      "scopingTags": {
+        "f5_cloud_failover_label": "bigip_high_availability_solution"
+      }
+    },
+    "failoverAddresses": {
+    "enabled": true,
+    "addressGroupDefinitions": [
+      {
+        "type": "aliasAddress",
+        "scopingAddress": "172.16.2.100/32"
+      }
+    ]
+    }
+}
+-- cfe.json --

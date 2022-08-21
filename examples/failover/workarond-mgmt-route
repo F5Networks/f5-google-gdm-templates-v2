@@ -1,0 +1,19 @@
+tmsh modify sys global-settings mgmt-dhcp disabled
+tmsh delete sys management-route all
+tmsh delete sys management-ip all
+tmsh create sys management-ip 10.0.0.11/32
+tmsh create sys management-route mgmt_gw network 10.0.0.1/32 type interface
+tmsh create sys management-route mgmt_net network 10.0.0.0/24 gateway 10.0.0.1
+tmsh create sys management-route default gateway 10.0.0.1
+tmsh save sys config
+
+
+
+tmsh modify sys global-settings mgmt-dhcp disabled
+tmsh delete sys management-route all
+tmsh delete sys management-ip all
+tmsh create sys management-ip 10.0.0.12/32
+tmsh create sys management-route mgmt_gw network 10.0.0.1/32 type interface
+tmsh create sys management-route mgmt_net network 10.0.0.0/24 gateway 10.0.0.1
+tmsh create sys management-route default gateway 10.0.0.1
+tmsh save sys config
