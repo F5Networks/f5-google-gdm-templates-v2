@@ -34,3 +34,37 @@ curl -su admin: -X POST -d @cfe.json http://localhost:8100/mgmt/shared/cloud-fai
     }
 }
 -- cfe.json --
+
+
+
+poa
+
+0.1 create secret mySecretId (cat -b) echo -n 'YourStrongPassword' > password.txt; gcloud secrets create mySecretId --data-file="password.txt"
+
+0.2 license & conditions - accept
+0.3 service account  - The Google APIs Service Agent service account must be granted the Role Administrator and Project IAM Admin roles before deployment can succeed
+ 
+1. sample_failover_existing_network.yaml
+1.a bigIpExternalSelfIp01
+1.b bigIpExternalSelfIp02
+1.c bigIpMgmtAddress01
+1.d bigIpMgmtAddress02
+1.d.2 bigIpImageName ? cloud compute images list --project f5-7626-networks-public --filter="name~f5"
+1.d.3 bigIpInstanceType ? c2d-highcpu-16	 ? https://gcpinstances.doit-intl.com/
+1.e bigIpPeerAddr
+1.f bigIpRuntimeInitConfig01 (git?) 
+1.g mgmtNetworkName, externalNetworkName, mgmtSubnetName, externalSubnetName
+1.h ZONE!
+1.i uniquestring (short)
+
+2. apply workaround for routes
+
+3. create VS
+
+4. add alias to ext NIC
+
+5. config CFE
+
+6. test failover
+
+7. tune security and FW
