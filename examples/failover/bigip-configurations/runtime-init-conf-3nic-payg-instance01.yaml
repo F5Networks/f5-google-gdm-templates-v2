@@ -51,6 +51,10 @@ extension_services:
             autoPhonehome: false
             class: System
             hostname: '{{{HOST}}}'
+          My_License:
+            class: License
+            licenseType: regKey
+            regKey: REPLACE_WITH_VALID_REGKEY
           admin:
             class: User
             userType: regular
