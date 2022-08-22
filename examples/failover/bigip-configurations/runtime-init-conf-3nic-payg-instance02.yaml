@@ -146,7 +146,7 @@ extension_services:
           My_License:
             class: License
             licenseType: regKey
-            regKey: REPLACE_WITH_VALID_REGKEY
+            regKey: NWIRX-MMXTO-KVSIF-CTVPQ-BBZOVHQ 
           admin:
             class: User
             userType: regular

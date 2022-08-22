@@ -54,7 +54,7 @@ extension_services:
           My_License:
             class: License
             licenseType: regKey
-            regKey: REPLACE_WITH_VALID_REGKEY
+            regKey: QAMLZ-CNJNI-ZMBJY-PJLTT-WCZPANE 
           admin:
             class: User
             userType: regular
