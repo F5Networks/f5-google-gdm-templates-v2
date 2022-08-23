@@ -232,7 +232,7 @@ def create_dag_deployment(context, num_nics):
                     'description': 'Allow web traffic to public network',
                     'name': context.properties['uniqueString'] + '-app-vip-fw',
                     'network': external_net_ref,
-                    'sourceRanges': ['172.0.0.0/8'],
+                    'sourceRanges': ['10.0.0.0/24'],
                     'targetTags': [ generate_name(prefix, 'app-vip-fw') ]
                 },
                 {

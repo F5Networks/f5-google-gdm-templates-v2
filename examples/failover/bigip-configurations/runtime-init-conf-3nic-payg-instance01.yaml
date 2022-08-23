@@ -48,7 +48,7 @@ extension_services:
             search:
               - f5.com
           My_System:
-            autoPhonehome: false
+            autoPhonehome: true
             class: System
             hostname: '{{{HOST}}}'
           admin:
@@ -84,7 +84,6 @@ extension_services:
             vlan: external
             allowService:
               - tcp:80
-              - tcp:22
               - tcp:443
               - tcp:4353
               - udp:1026
@@ -140,7 +139,7 @@ extension_services:
             search:
               - f5.com
           My_System:
-            autoPhonehome: false
+            autoPhonehome: true
             class: System
             hostname: '{{{HOST}}}'
           admin:
@@ -176,7 +175,6 @@ extension_services:
             vlan: external
             allowService:
               - tcp:80
-              - tcp:22
               - tcp:443
               - tcp:4353
               - udp:1026
