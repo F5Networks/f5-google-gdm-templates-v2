@@ -87,6 +87,7 @@ extension_services:
             address: '{{{SELF_IP_EXTERNAL}}}/32'
             vlan: external
             allowService:
+              - tcp:22
               - tcp:80
               - tcp:443
               - tcp:4353
@@ -178,6 +179,7 @@ extension_services:
             address: '{{{SELF_IP_EXTERNAL}}}/32'
             vlan: external
             allowService:
+              - tcp:22
               - tcp:80
               - tcp:443
               - tcp:4353
