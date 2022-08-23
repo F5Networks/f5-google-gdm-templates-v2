@@ -24,7 +24,7 @@ resources:
       ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
       bigIpImageName: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536 
       ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
+      bigIpInstanceType: n1-standard-16 
       ### (OPTIONAL) Static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device.
       bigIpPeerAddr: 172.16.2.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
@@ -72,7 +72,7 @@ resources:
          - 10.0.0.0/8     # Bastion Host on Mgmt Network
          - 81.5.48.187/32  # Client to Bastion Host
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
-      uniqueString: dvir4wed
+      uniqueString: dvir5wed
       ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
       zone: us-west1-a
     type: failover-existing-network.py
