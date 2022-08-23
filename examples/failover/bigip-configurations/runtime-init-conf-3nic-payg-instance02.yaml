@@ -48,7 +48,7 @@ extension_services:
             search:
               - f5.com
           My_System:
-            autoPhonehome: true
+            autoPhonehome: false
             class: System
             hostname: '{{{HOST}}}'
           admin:
@@ -139,7 +139,7 @@ extension_services:
             search:
               - f5.com
           My_System:
-            autoPhonehome: true
+            autoPhonehome: false
             class: System
             hostname: '{{{HOST}}}'
           admin:
