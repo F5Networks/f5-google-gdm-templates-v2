@@ -54,7 +54,7 @@ extension_services:
           My_License:
             class: License
             licenseType: regKey
-            regKey: NDLVA-VSFGF-YNEAG-EFGJM-JQYJPDG  
+            regKey: MTXDJ-ZNIJF-FPMNM-CPFTV-EQPOGZC  
           admin:
             class: User
             userType: regular
