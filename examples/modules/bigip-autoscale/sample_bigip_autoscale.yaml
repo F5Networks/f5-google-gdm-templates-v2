@@ -24,7 +24,11 @@ resources:
         - description: My instance group
           name: f5-demo
           targetSize: 1
-          zone: us-west1-a
+          distributionPolicy:
+            targetShape: EVEN
+            zones:
+              - zone: zones/us-west1-a
+              - zone: zones/us-west1-b
       instanceTemplates:
         - description: My autoscale application
           hostname: test.example.com

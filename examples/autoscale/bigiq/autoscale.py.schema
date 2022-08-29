@@ -115,10 +115,12 @@ properties:
     default: false
     description: Specify true when updating the deployment
     type: boolean
-  zone:
-    default: us-west1-a
-    description: Enter the availability zone where you want to deploy the application, for example 'us-west1-a'.
-    type: string
+  zones:
+    description: Array of Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'.
+    type: array
+    default:
+      - us-west1-a
+      - us-west1-b
 
 outputs:
   properties:

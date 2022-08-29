@@ -13,7 +13,7 @@ if [ "<AUTOSCALE>" == "False" ]; then
     BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion-vm-01 <AVAILABILITY ZONE> public)
 else
     echo "DO AUTOSCALE"
-    INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bastion-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance | cut -d'/' -f11)
+    INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bastion-igm --region=<REGION> --format json | jq -r .[0].instance | cut -d'/' -f11)
     echo "INSTANCE: $INSTANCE"
     BASTION_IP=$(get_bastion_ip $INSTANCE <AVAILABILITY ZONE> public)
 fi

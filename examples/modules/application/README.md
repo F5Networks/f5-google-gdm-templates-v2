@@ -45,7 +45,7 @@ This Google Deployment Manager template creates a client application using an ex
 | instanceType | Yes | n1-standard-1 | string | App instance type. For example: `n1-standard-1` |
 | owner | No | f5owner | string | Owner label. |
 | uniqueString | Yes |  | string | Unique String used when creating object names or Tags. For example: `my-deployment` |
-| zone | Yes |  | string | Name of the availability zone where the application will be placed. |
+| zone | Yes |  | string | Name of the availability zone where the standalone application instance will be placed. |
 
 ### Template Outputs
 

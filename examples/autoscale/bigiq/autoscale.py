@@ -55,6 +55,9 @@ def create_application_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'app-subnet')
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -67,14 +70,17 @@ def create_application_deployment(context):
         'application': context.properties['application'],
         'autoscalers': [{
             'name': 'f5-demo',
-            'zone': context.properties['zone']
+            'zone': context.properties['zones'][0]
         }],
         'cost': context.properties['cost'],
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'instanceGroupManagers': [{
-          'name': 'f5-demo',
-          'zone': context.properties['zone']
+            'name': 'f5-demo',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
         }],
         'instanceTemplates': [{
             'name': 'f5-demo',
@@ -91,6 +97,7 @@ def create_application_deployment(context):
         'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
         'owner': context.properties['owner'],
+        'region': context.properties['region'],
         'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
@@ -104,6 +111,9 @@ def create_bastion_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -115,14 +125,17 @@ def create_bastion_deployment(context):
         'application': context.properties['application'],
         'autoscalers': [{
             'name': 'bastion',
-            'zone': context.properties['zone']
+            'zone': context.properties['zones'][0]
         }],
         'cost': context.properties['cost'],
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'instanceGroupManagers': [{
-          'name': 'bastion',
-          'zone': context.properties['zone']
+            'name': 'bastion',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
         }],
         'instanceTemplates': [{
             'name': 'bastion',
@@ -137,6 +150,7 @@ def create_bastion_deployment(context):
             }]
         }],
         'owner': context.properties['owner'],
+        'region': context.properties['region'],
         'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
@@ -170,18 +184,20 @@ def create_bigip_deployment(context):
         sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
                       '/regions/' + context.properties['region'] + \
                               '/subnetworks/' + subnet_name
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     deployment = {
         'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
           'application': context.properties['application'],
-          'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
           'bigIqSecretId': context.properties['bigIqSecretId'],
           'autoscalers': [{
               'name': 'bigip',
-              'zone': context.properties['zone'],
+              'zone': context.properties['zones'][0],
               'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
@@ -215,8 +231,11 @@ def create_bigip_deployment(context):
           ],
           'imageName': context.properties['bigIpImageName'],
           'instanceGroupManagers': [{
-              'name': 'bigip',
-              'zone': context.properties['zone']
+            'name': 'bigip',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
           }],
           'instanceTemplates': [{
               'name': 'bigip'
@@ -444,7 +463,7 @@ def create_function_deployment(context):
             'environmentVariables': {
               'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
               'bigipInstanceGroup': instance_group_name,
-              'zone': context.properties['zone']
+              'zone': context.properties['zones'][0]
             },
             'labels': {
                 'delete': 'true'

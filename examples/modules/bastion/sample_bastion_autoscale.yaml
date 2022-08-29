@@ -25,7 +25,11 @@ resources:
         - description: My instance group for bastion hosts
           name: f5-bastion
           targetSize: 1
-          zone: us-west1-a
+          distributionPolicy:
+            targetShape: EVEN
+            zones:
+              - zone: zones/us-west1-a
+              - zone: zones/us-west1-b
       instanceType: n1-standard-1
       instanceTemplates:
         - description: My autoscale bastion hosts
@@ -42,5 +46,6 @@ resources:
       instanceTemplateVersion: 1
       name: mybastion-deployment
       owner: myowner
+      region: us-west1
       uniqueString: myuniquestr
     type: bastion.py

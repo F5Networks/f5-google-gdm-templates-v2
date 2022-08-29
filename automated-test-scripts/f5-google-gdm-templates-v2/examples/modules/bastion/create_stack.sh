@@ -45,8 +45,9 @@ else
     /usr/bin/yq e ".resources[0].properties.instanceTemplates[0].networkInterfaces[0].network = \"$networkSelfLink\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instanceTemplates[0].networkInterfaces[0].subnetwork = \"$subnetSelfLink\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.instanceTemplates[0].zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
-    /usr/bin/yq e ".resources[0].properties.instanceGroupManagers[0].zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.instanceGroupManagers[0].distributionPolicy.zones[0].zone = \"zones/<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.autoscalers[0].zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
+    /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
     /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml
 fi
 # print out config file

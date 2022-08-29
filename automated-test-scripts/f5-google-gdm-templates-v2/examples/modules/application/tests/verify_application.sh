@@ -13,7 +13,7 @@ if [ "<AUTOSCALE>" == "False" ]; then
     APP_IP=$(gcloud compute instances describe <UNIQUESTRING>-application-vm-01 --zone=<AVAILABILITY ZONE> --format json | jq -r .networkInterfaces[].accessConfigs[].natIP)
 else
     echo "DO AUTOSCALE"
-    INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-application-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance | cut -d'/' -f11)
+    INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-application-igm --region=<REGION> --format json | jq -r .[0].instance | cut -d'/' -f11)
     echo "INSTANCE: $INSTANCE"
     APP_IP=$(gcloud compute instances describe $INSTANCE --zone=<AVAILABILITY ZONE> --format json | jq -r .networkInterfaces[].accessConfigs[].natIP)
 fi
