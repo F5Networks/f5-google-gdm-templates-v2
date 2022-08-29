@@ -42,18 +42,20 @@ def create_bigip_deployment(context):
                         '.iam.gserviceaccount.com'
     secret_id = context.properties['bigIpSecretId'] if \
         'bigIpSecretId' in context.properties else ''
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     deployment = {
         'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
           'application': context.properties['application'],
-          'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
           'autoscalers': [{
               'name': 'bigip',
-              'zone': context.properties['zone'],
+              'zone': context.properties['zones'][0],
               'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
@@ -87,8 +89,11 @@ def create_bigip_deployment(context):
           ],
           'imageName': context.properties['bigIpImageName'],
           'instanceGroupManagers': [{
-              'name': 'bigip',
-              'zone': context.properties['zone']
+            'name': 'bigip',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
           }],
           'instanceTemplates': [{
               'name': 'bigip'

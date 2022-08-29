@@ -12,11 +12,11 @@ PASSWORD='<SECRET VALUE>'
 MGMT_PORT='8443'
 SSH_PORT='22'
 
-INSTANCE1=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[0].instance)
-INSTANCE2=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --zone=<AVAILABILITY ZONE> --format json | jq -r .[1].instance)
+INSTANCE1=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --region=<REGION> --format json | jq -r .[0].instance)
+INSTANCE2=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bigip-igm --region=<REGION> --format json | jq -r .[1].instance)
 if [[ <PROVISION PUBLIC IP> == True ]]; then
-    IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE> public)
-    IP2=$(get_mgmt_ip ${INSTANCE2} <AVAILABILITY ZONE> public)
+    IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE 1> public)
+    IP2=$(get_mgmt_ip ${INSTANCE2} <AVAILABILITY ZONE 2> public)
     echo "IP1: ${IP1}"
     echo "IP2: ${IP2}"
 
@@ -28,13 +28,14 @@ else
         BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion <AVAILABILITY ZONE> public)
     else
         echo "AUTOSCALE CASE"
-        INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-bastion-igm <AVAILABILITY ZONE>)
+        # INSTANCE=$(get_instance_group_instances <UNIQUESTRING>-bastion-igm <AVAILABILITY ZONE>)
+        INSTANCE=$(gcloud compute instance-groups list-instances <UNIQUESTRING>-bastion-igm --region=<REGION> --format json | jq -r .[].instance)
         echo "INSTANCE: $INSTANCE"
         BASTION_IP=$(get_bastion_ip $INSTANCE <AVAILABILITY ZONE> public)
     fi
 
-    IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE> private)
-    IP2=$(get_mgmt_ip ${INSTANCE2} <AVAILABILITY ZONE> private)
+    IP1=$(get_mgmt_ip ${INSTANCE1} <AVAILABILITY ZONE 1> private)
+    IP2=$(get_mgmt_ip ${INSTANCE2} <AVAILABILITY ZONE 2> private)
     echo "IP1: ${IP1}"
     echo "IP2: ${IP2}"
     echo "BASTION_IP: ${BASTION_IP}"

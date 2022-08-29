@@ -45,7 +45,7 @@ This Google Deployment Manager template creates a bastion host used for accessin
 | osImage | No | 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts' | string | Self link for OS Image.  |
 | owner | No | f5owner | string | Owner label. |
 | uniqueString | Yes |  | string | Unique String used when creating object names or Tags. For example: `my-deployment` |
-| zone | Yes |  | string | Name of the availability zone where the application will be placed. |
+| zone | Yes |  | string | Name of the availability zone where the standalone bastion instance will be placed. |
 
 ### Template Outputs
 

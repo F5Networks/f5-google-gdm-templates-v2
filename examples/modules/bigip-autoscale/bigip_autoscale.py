@@ -194,12 +194,11 @@ def create_instance_template(context, instance_template):
 def create_instance_group(context, instance_group_manager):
     """Create autoscale instance group."""
     # Build instance property lists
-    required_properties = ['zone']
+    required_properties = ['distributionPolicy']
     optional_properties = [
         'autoHealingPolicies',
         'baseInstanceName',
         'description',
-        'distributionPolicy',
         'instanceTemplate',
         'namedPorts',
         'statefulPolicy',
@@ -224,17 +223,19 @@ def create_instance_group(context, instance_group_manager):
         'baseInstanceName': base_instance_name,
         'instanceTemplate': '$(ref.' + instance_template_name + '.selfLink)',
         'name': instance_group_manager_name,
+        'region': context.properties['region'],
         'targetPools': ['$(ref.' + target_pool_name + '.selfLink)'],
         'targetSize': 2,
         'updatePolicy': {
-            'minimalAction': 'REPLACE',
-            'type': 'PROACTIVE'
+            'type': 'PROACTIVE',
+            'instanceRedistributionType': 'PROACTIVE',
+            'minimalAction': 'REPLACE'
         }
     })
     properties.update(populate_properties(instance_group_manager, required_properties, optional_properties))
     instance_group_manager_config = {
         'name': instance_group_manager_name,
-        'type': 'compute.beta.instanceGroupManager',
+        'type': 'compute.beta.regionInstanceGroupManager',
         'properties': properties
     }
     return instance_group_manager_config
@@ -266,13 +267,14 @@ def create_autoscaler(context, autoscaler):
             'coolDownPeriodSec': 60
         },
         'name': autoscaler_name,
+        'region': context.properties['region'],
         'target': '$(ref.' + instance_group_manager_name + '.selfLink)',
     })
 
     properties.update(populate_properties(autoscaler, required_properties, optional_properties))
     autoscaler_config = {
         'name': autoscaler_name,
-        'type': 'compute.v1.autoscalers',
+        'type': 'compute.v1.regionAutoscalers',
         'properties': properties
     }
     return autoscaler_config

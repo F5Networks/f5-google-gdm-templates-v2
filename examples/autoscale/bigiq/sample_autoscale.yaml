@@ -101,8 +101,10 @@ resources:
       uniqueString: myuniqstr
       ### (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify true when updating the deployment. See README for more details.
       update: false
-      ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
-      zone: us-west1-a
+      ### (OPTIONAL) Enter the Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'.
+      zones:
+        - us-west1-a
+        - us-west1-b
 
 # TROUBLESHOOTING:
 # * If template did not successfully deploy, go to console.cloud.google.com Navigation Menu -> Deployment Manager -> Your Deployment Name for more details

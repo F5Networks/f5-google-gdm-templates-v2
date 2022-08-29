@@ -60,7 +60,11 @@ properties:
           instanceGroupManagers:
             - name: f5-bastion
               targetSize: 1
-              zone: us-west1-a
+              distributionPolicy: 
+                targetShape: EVEN
+                zones:
+                  - zones/us-west1-a
+                  - zones/us-west1-b
   instances:
     type: array
     description: |

@@ -122,7 +122,7 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 
 - In this solution, the BIG-IP VE has the [LTM](https://f5.com/products/big-ip/local-traffic-manager-ltm) and [ASM](https://f5.com/products/big-ip/application-security-manager-asm) modules enabled to provide advanced traffic management and web application security functionality. 
 
-- You are required to specify which Availability Zone you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
+- You are required to specify which Availability Zones you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
 
 - See [trouble shooting steps](#troubleshooting-steps) for more details.
 
@@ -160,7 +160,9 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | restrictedSrcAddressMgmt | **Yes** | | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | false | boolean This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name |
 
 #### Existing Network Parameters
 
@@ -195,8 +197,9 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | subnets.appSubnetName | **Yes** |  | string | Application subnet name |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | false | boolean This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
-
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name |
 
 
 ### Template Outputs
@@ -456,7 +459,7 @@ From Parent Template Outputs:
       - Instances (BIG-IP)
       ```
         ZONE="us-west1-a"
-        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --region=${REGION} --format json | jq -r .[].instance
       ```
 
     - Instance Group (Bastion)
@@ -467,7 +470,7 @@ From Parent Template Outputs:
           ```
     - Instances (Bastion)
       ```
-      gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+      gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --region=${REGION} --format json | jq -r .[].instance
       ```
  
     - Public IPs (BIG-IP or Bastion instance): 
