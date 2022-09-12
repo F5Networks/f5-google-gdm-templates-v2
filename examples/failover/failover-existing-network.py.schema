@@ -17,6 +17,7 @@ required:
   - restrictedSrcAddressMgmt
   - networks
   - subnets
+  - zones
 
 properties:
   application:
@@ -131,9 +132,11 @@ properties:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
     type: string
-  zone:
-    default: us-west1-a
-    description: Enter the zone where you want to deploy the application, for example 'us-west1-a'.
+  zones:
+    default: 
+      - us-west1-a
+      - us-west1-b
+    description: Enter the zones where you want to deploy the application, for example 'us-west1-a' and 'us-west1-b'.
     type: string
 
 outputs:

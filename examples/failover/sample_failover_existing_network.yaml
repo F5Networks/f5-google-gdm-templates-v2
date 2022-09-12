@@ -74,7 +74,8 @@ resources:
       ### (OPTIONAL) A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: aug28v6
       ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
-      zone: us-west1-a
+      zones: us-west1-a
+      zones: us-west1-b
     type: failover-existing-network.py
 
 # TROUBLESHOOTING:
