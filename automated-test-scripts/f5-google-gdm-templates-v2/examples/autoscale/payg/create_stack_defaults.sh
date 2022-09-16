@@ -13,6 +13,7 @@ cp f5-google-gdm-templates-v2-main/examples/autoscale/payg/sample_autoscale.yaml
 
 ## Run GDM Autoscale template
 /usr/bin/yq e ".resources[0].name = \"autoscale-py\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i $config_file
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i $config_file

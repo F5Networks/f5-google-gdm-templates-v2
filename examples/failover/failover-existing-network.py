@@ -87,14 +87,23 @@ def create_bigip_deployment(context, num_nics, instance_number):
     # Populate Metadata Tags
     additionalMetadataTags = {}
 
-    # Populate Failover Peer
-    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if instance_number == 2 else None
+    # Populate Failover Peer IP and hostname
+    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if \
+        instance_number == 2 else None
+    additionalMetadataTags.update({'bigip-peer-hostname': context.properties['bigIpHostname01'] if \
+        instance_number == 2 else context.properties['bigIpHostname02']})
 
     # Populate Example VIPs
     public_ip_name = generate_name(prefix, 'public-ip-01')
     depends_on_array.append(public_ip_name)
     additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
 
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    hostname = context.properties['bigIpHostname0' + str(instance_number)] if \
+        'bigIpHostname0' + str(instance_number) in context.properties else 'bigip0' + str(instance_number) + '.local'
+    license_key = context.properties['bigIpLicenseKey0' + str(instance_number)] if \
+        'bigIpLicenseKey0' + str(instance_number) in context.properties else ''
     service_account_email = context.properties['bigIpServiceAccountEmail'] if \
         'bigIpServiceAccountEmail' in context.properties else \
             context.properties['uniqueString'] + \
@@ -107,10 +116,13 @@ def create_bigip_deployment(context, num_nics, instance_number):
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'additionalMetadataTags': additionalMetadataTags,
+            'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
+            'licenseKey': license_key,
             'name': 'bigip-vm-0' + str(instance_number),
             'networkInterfaces': interface_config_array,
             'secretId': context.properties['bigIpSecretId'],

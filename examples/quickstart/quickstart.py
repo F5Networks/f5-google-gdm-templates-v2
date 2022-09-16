@@ -112,15 +112,25 @@ def create_bigip_deployment(context):
     depends_on_array.append(public_ip_name)
     additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
 
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    hostname = context.properties['bigIpHostname'] if \
+        'bigIpHostname' in context.properties else 'bigip01.local'
+    license_key = context.properties['bigIpLicenseKey'] if \
+        'bigIpLicenseKey' in context.properties else ''
+
     bigip_config = [{
         'name': 'bigip-quickstart',
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'additionalMetadataTags': additionalMetadataTags,
+            'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
+            'licenseKey': license_key,
             'name': 'bigip-vm-01',
             'networkInterfaces': interface_config_array,
             'region': context.properties['region'],

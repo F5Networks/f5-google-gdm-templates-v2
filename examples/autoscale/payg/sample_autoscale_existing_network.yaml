@@ -27,6 +27,8 @@ resources:
   - name: autoscale-existing-network-py
     type: autoscale.py
     properties:
+      ### (OPTIONAL) This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+      allowUsageAnalytics: true
       ### (OPTIONAL) Application label.
       application: f5app
       ### (OPTIONAL): Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.

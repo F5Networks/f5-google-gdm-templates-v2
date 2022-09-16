@@ -28,6 +28,8 @@ resources:
   - name: autoscale-py
     type: autoscale.py
     properties:
+      ### (OPTIONAL) This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+      allowUsageAnalytics: true
       ### (OPTIONAL) The docker container you like to deploy for the demo application.
       appContainerName: f5devcentral/f5-demo-app:latest
       ### (OPTIONAL) Application label.

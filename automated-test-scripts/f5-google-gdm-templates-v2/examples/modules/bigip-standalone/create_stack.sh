@@ -10,6 +10,12 @@ curl -k <TEMPLATE URL> -o $tmpl_file
 curl -k file://$PWD/examples/modules/bigip-standalone/sample_bigip_standalone.yaml -o /tmp/sample_bigip_standalone.yaml
 curl -k <TEMPLATE URL>.schema -o "${tmpl_file}.schema"
 
+# Add lic key if byol
+license_key=''
+if [[ "<LICENSE TYPE>" == "byol" ]]; then
+    license_key='<AUTOFILL EVAL LICENSE KEY>'
+fi
+
 # Run GDM bigip-standalone template
 
 # Create Config File
@@ -33,10 +39,13 @@ until [ $i -gt $c ]; do
     if [ $i = 0 ]; then
         /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].name = \"bigip\"" -i <DEWPOINT JOB ID>.yaml
+        /usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i <DEWPOINT JOB ID>.yaml
+        /usr/bin/yq e ".resources[0].properties.hostname = \"bigip01.local\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.imageName = \"<IMAGE NAME>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.instanceType = \"<INSTANCE TYPE>\"" -i <DEWPOINT JOB ID>.yaml
+        /usr/bin/yq e ".resources[0].properties.licenseKey = \"${license_key}\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.name = \"<INSTANCE NAME>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i <DEWPOINT JOB ID>.yaml
         /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i <DEWPOINT JOB ID>.yaml

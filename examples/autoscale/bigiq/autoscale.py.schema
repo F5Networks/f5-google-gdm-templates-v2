@@ -23,6 +23,10 @@ required:
     - restrictedSrcAddressApp
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   appContainerName:
     default: 'f5devcentral/f5-demo-app:latest'
     description: Enter the name of the docker container you want to run as your application

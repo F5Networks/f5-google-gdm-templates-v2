@@ -124,6 +124,9 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 
 - You are required to specify which Availability Zones you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
 
+- This deployment can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality for this deployment by supplying **false** for the value of the **allowUsageAnalytics** input parameter. To disable the BIG-IP system from also sending information, you can disable it system-wide by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
+
+
 - See [trouble shooting steps](#troubleshooting-steps) for more details.
 
 
@@ -134,6 +137,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
@@ -168,6 +172,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
 | bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
@@ -218,6 +223,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | wafExternalHttpsUrl |   | string | WAF external HTTP URL. |
 | wafInternalHttpsUrl |   |string | WAF external HTTPS URL. |
 | wafPublicIp |   | string | WAF public IP. |
+
 ### Existing Network Template Outputs
 
 | Name | Required Resource | Type | Description | 
@@ -281,22 +287,22 @@ To change the BIG-IQ Licensing configuration:
 
   1. Edit/modify the Declarative Onboarding (DO) declaration in the runtime-init config file [runtime-init-conf-bigiq-with-app.yaml](../bigip-configurations/runtime-init-conf-bigiq-with-app.yaml) with the new `License` values. 
 
-  Example:
-  ```yaml
-            My_License:
-              class: License
-              hypervisor: gce
-              licenseType: <YOUR_LICENSE_TYPE>
-              licensePool: <YOUR_LICENSE_POOL>
-              bigIqHost: <YOUR_BIG_IQ_HOST>
-              bigIqUsername: <YOUR_BIG_IQ_USERNAME>
-              bigIqPassword: '{{{BIGIQ_PASSWORD}}}'
-              tenant: <YOUR_TENANT>
-              skuKeyword1: <YOUR_SKU_KEYWORD>
-              unitOfMeasure: <YOUR_UNIT_OF_MEASURE>
-              reachable: false
-              overwrite: false
-  ```
+      Example:
+      ```yaml
+                My_License:
+                  class: License
+                  hypervisor: gce
+                  licenseType: <YOUR_LICENSE_TYPE>
+                  licensePool: <YOUR_LICENSE_POOL>
+                  bigIqHost: <YOUR_BIG_IQ_HOST>
+                  bigIqUsername: <YOUR_BIG_IQ_USERNAME>
+                  bigIqPassword: '{{{BIGIQ_PASSWORD}}}'
+                  tenant: <YOUR_TENANT>
+                  skuKeyword1: <YOUR_SKU_KEYWORD>
+                  unitOfMeasure: <YOUR_UNIT_OF_MEASURE>
+                  reachable: false
+                  overwrite: false
+      ```
   3. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.) or render/format to send as inline json.
   4. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL or inline JSON of the updated configuration.
   6. Deploy or Re-Deploy the template.

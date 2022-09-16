@@ -187,6 +187,9 @@ def metadata(context):
     multi_nic = len(context.properties.get('networkInterfaces', [])) > 1
     secret_id = str(context.properties['secretId']) if \
         'secretId' in context.properties else ''
+    license_key = str(context.properties['licenseKey']) if \
+        'licenseKey' in context.properties else ''
+    telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     metadata_config = {
                 'items': [
                 {
@@ -269,7 +272,12 @@ def metadata(context):
                                     '',
                                     '   SECRET_ID=' + secret_id,
                                     '',
+                                    '   LICENSE_KEY=' + license_key,
+                                    '',
+                                    '   TELEMETRY_FLAG=' + telemetry_flag,
+                                    '',
                                     '   echo $SECRET_ID > /config/cloud/secret_id',
+                                    '   echo $LICENSE_KEY > /config/cloud/license_key',
                                     '',
                                     '   for i in {1..30}; do',
                                     '       /usr/bin/curl -fv --retry 1 --connect-timeout 5 -L "${PACKAGE_URL}" -o "/var/config/rest/downloads/f5-bigip-runtime-init.gz.run" && break || sleep 10',
@@ -284,7 +292,7 @@ def metadata(context):
                                     '   # install and run f5-bigip-runtime-init',
                                     '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.4.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
-                                    '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml',
+                                    '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml ${TELEMETRY_FLAG}',
                                     '   /usr/bin/touch /config/startup_finished',
                                     'EOF',
                                     '   /usr/bin/chmod +x /config/nic-swap.sh',
@@ -304,12 +312,16 @@ def metadata(context):
                     )
                 },
                 {
-                    'key': 'unique-string',
-                    'value': str(context.properties['uniqueString'])
+                    'key': 'hostname',
+                    'value': str(context.properties['hostname'])
                 },
                 {
                     'key': 'region',
                     'value': str(context.properties['region'])
+                },
+                {
+                    'key': 'unique-string',
+                    'value': str(context.properties['uniqueString'])
                 }]
     }
 

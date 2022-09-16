@@ -21,6 +21,7 @@ if echo "<TEMPLATE URL>" | grep -q "existing-network"; then
 
     # Update Config File using sample_quickstart_existing_network.yaml
     /usr/bin/yq e ".resources[0].name = \"quickstart-existing-network-py\"" -i $config_file
+    /usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i $config_file
     /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.networks.externalNetworkName = \"<UNIQUESTRING>-network1-network\"" -i $config_file

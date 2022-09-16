@@ -20,6 +20,7 @@ config_update_url='https://storage.googleapis.com/<STACK NAME>-bucket/update_<DE
 
 /usr/bin/yq e ".resources[0].name = \"autoscale-existing-network-py\"" -i $config_file
 /usr/bin/yq e ".resources[0].type = \"autoscale-existing-network.py\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i $config_file
 /usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i $config_file

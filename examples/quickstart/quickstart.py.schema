@@ -20,6 +20,10 @@ required:
   - restrictedSrcAddressApp
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   appContainerName:
     default: 'f5devcentral/f5-demo-app:latest'
     description: Enter the name of the docker container you want to run as your application
@@ -27,6 +31,10 @@ properties:
   application:
     default: f5app
     description: Application label.
+    type: string
+  bigIpHostname:
+    default: bigip01.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
     type: string
   bigIpImageName:
     default: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
