@@ -6,11 +6,6 @@
 # copy local runtime config b4 making changes
 cp $PWD/examples/quickstart/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>.yaml $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml
 cp $PWD/examples/quickstart/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>-with-app.yaml $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
-# Add lic key if byol
-if [[ "<LICENSE TYPE>" == "byol" ]]; then
-    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml
-    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config-with-app.yaml
-fi
 
 # Disable AutoPhoneHome
 /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_System.autoPhonehome = false" -i $PWD/examples/quickstart/bigip-configurations/<STACK NAME>-config.yaml

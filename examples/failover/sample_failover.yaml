@@ -27,6 +27,8 @@ imports:
 resources:
   - name: failover-py
     properties:
+      ### (OPTIONAL) This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+      allowUsageAnalytics: true
       ### (OPTIONAL) The docker container you like to deploy for the demo application.
       appContainerName: f5devcentral/f5-demo-app:latest
       ### (OPTIONAL) Application label.
@@ -43,10 +45,18 @@ resources:
       bigIpMgmtAddress01: 10.0.0.11
       ### (OPTIONAL) Management interface private IP address for bigip2.
       bigIpMgmtAddress02: 10.0.0.12
+      ### (OPTIONAL) Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
+      bigIpHostname01: failover01.local
+      ### (OPTIONAL) Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
+      bigIpHostname02: failover02.local
       ### (OPTIONAL) The image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
       bigIpImageName: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
       ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
+      ### (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 01. Leave this parameter commented out if deploying the PAYG solution.
+      # bigIpLicenseKey01: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
+      ### (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 02. Leave this parameter commented out if deploying the PAYG solution.
+      # bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
       ### (OPTIONAL) Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide first instance's Self IP address.
       bigIpPeerAddr: 10.0.1.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format

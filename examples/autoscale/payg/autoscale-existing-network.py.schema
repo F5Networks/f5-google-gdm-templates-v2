@@ -20,6 +20,10 @@ required:
     - restrictedSrcAddressMgmt
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   application:
     default: f5app
     description: Application label.

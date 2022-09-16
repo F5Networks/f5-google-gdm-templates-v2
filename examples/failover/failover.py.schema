@@ -22,6 +22,10 @@ required:
   - restrictedSrcAddressApp
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   appContainerName:
     default: 'f5devcentral/f5-demo-app:latest'
     description: Enter the name of the docker container you want to run as your application
@@ -77,6 +81,14 @@ properties:
   bigIpRuntimeInitPackageUrl:
     default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
+    type: string
+  bigIpHostname01:
+    default: failover01.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
+    type: string
+  bigIpHostname02:
+    default: failover02.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
     type: string
   bigIpSecretId:
     description: The ID of the Google secret manager secret where the BIG-IP password used for clustering is stored.

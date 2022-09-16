@@ -17,11 +17,12 @@ source ${TMP_DIR}/test_functions.sh
 networkSelfLink=$(gcloud compute networks list --format json | jq -r --arg n "<UNIQUESTRING>-network0-network" '.[] | select(.name | contains($n)) | .selfLink')
 subnetSelfLink=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .selfLink')
 
-# Run GDM Dag template
+# Run GDM bigip-autoscale template
 /usr/bin/yq e -n ".imports[0].path = \"${tmpl_file}\"" > <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].name = \"bigip-autoscale-py\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].type = \"bigip_autoscale.py\"" -i <DEWPOINT JOB ID>.yaml
 
+/usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.application = \"f5app\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.cost = \"f5cost\"" -i <DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.group = \"f5group\"" -i <DEWPOINT JOB ID>.yaml

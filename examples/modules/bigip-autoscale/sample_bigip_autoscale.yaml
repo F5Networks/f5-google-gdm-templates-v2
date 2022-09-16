@@ -8,6 +8,7 @@ imports:
 resources:
   - name: bigip-autoscale-py
     properties:
+      allowUsageAnalytics: true
       autoscalers:
         - description: My autoscale application
           name: f5-demo

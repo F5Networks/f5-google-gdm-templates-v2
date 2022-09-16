@@ -11,6 +11,14 @@ if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
     src_ip_mgmt=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .ipCidrRange')
 fi
 
+# Add lic key if byol
+license_key_01=''
+license_key_02=''
+if [[ "<LICENSE TYPE>" == "byol" ]]; then
+    license_key_01='<AUTOFILL EVAL LICENSE KEY>'
+    license_key_02='<AUTOFILL EVAL LICENSE KEY 2>'
+fi
+
 # grab template and schema
 cp -r $PWD/examples /tmp
 
@@ -18,8 +26,11 @@ cp -r $PWD/examples /tmp
 cp /tmp/examples/failover/sample_failover_existing_network.yaml ${tmpl_path}<DEWPOINT JOB ID>.yaml
 # Update Config File using sample_failover_existing_network.yaml
 /usr/bin/yq e ".resources[0].name = \"failover-existing-network-py\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip_app}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip_mgmt}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpLicenseKey01 = \"${license_key_01}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpLicenseKey02 = \"${license_key_02}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig01 = \"<BIGIP RUNTIME INIT CONFIG>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig02 = \"<BIGIP RUNTIME INIT CONFIG 2>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml

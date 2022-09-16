@@ -164,14 +164,16 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    secret_id = context.properties['bigIpSecretId'] if \
+        'bigIpSecretId' in context.properties else ''
     service_account_email = context.properties['bigIpServiceAccountEmail'] if \
         'bigIpServiceAccountEmail' in context.properties else \
             context.properties['uniqueString'] + \
                 '-admin@' + \
                     context.env['project'] + \
                         '.iam.gserviceaccount.com'
-    secret_id = context.properties['bigIpSecretId'] if \
-        'bigIpSecretId' in context.properties else ''
     zones = []
     for zone in context.properties['zones']:
         zones = zones + [{'zone': 'zones/' + zone}]
@@ -191,6 +193,7 @@ def create_bigip_deployment(context):
         'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
+          'allowUsageAnalytics': allow_usage_analytics,
           'application': context.properties['application'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],

@@ -25,6 +25,10 @@ required:
   - zone
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   additionalMetadataTags:
     description: Object containing key value pairs to add as Tags in Metadata
     type: object
@@ -34,6 +38,10 @@ properties:
   bigIpRuntimeInitPackageUrl:
     description: URL for BIG-IP Runtime Init package
     default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
+    type: string
+  hostname:
+    default: bigip01.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
     type: string
   imageName:
     description: BIG-IP image name

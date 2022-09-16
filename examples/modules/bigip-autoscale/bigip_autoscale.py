@@ -68,6 +68,7 @@ def create_instance_template(context, instance_template):
         'bigIqSecretId' in context.properties else ''
     secret_id = str(context.properties['secretId']) if \
         'secretId' in context.properties else ''
+    telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     properties = {}
 
     # Setup Defaults - property updated to given value when property exists in config
@@ -134,6 +135,8 @@ def create_instance_template(context, instance_template):
                                     '',
                                     'SECRET_ID=' + secret_id,
                                     '',
+                                    'TELEMETRY_FLAG=' + telemetry_flag,
+                                    '',
                                     'echo $BIGIQ_SECRET_ID > /config/cloud/bigiq_secret_id',
                                     'echo $SECRET_ID > /config/cloud/secret_id',
                                     '',
@@ -154,7 +157,7 @@ def create_instance_template(context, instance_template):
                                     'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.4.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
-                                    'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf',
+                                    'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf ${TELEMETRY_FLAG}',
                                     'echo $(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Startup Script Finish'
                                     ])
             },

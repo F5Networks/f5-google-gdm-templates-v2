@@ -16,6 +16,7 @@ if echo "<TEMPLATE URL>" | grep -q "existing-network"; then
 
     # Update Config File using sample_failover_existing_network.yaml
     /usr/bin/yq e ".resources[0].name = \"failover-existing-network-py\"" -i $config_file
+    /usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i $config_file
     /usr/bin/yq e ".resources[0].properties.bigIpSecretId = \"<STACK NAME>-secret\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i $config_file
