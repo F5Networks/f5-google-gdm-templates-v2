@@ -63,7 +63,7 @@ This solution leverages traditional Autoscale configuration management practices
 
 ## Diagram
 
-![Configuration Example](diagram.png)
+![Configuration Example](diagrams/diagram.png)
 
 
 ## Prerequisites
@@ -141,7 +141,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No |  1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | | n1-standard-8 | string | Instance type assigned to the application, for example '| n1-standard-8'. |
 | bigIpIpCidrRange | No | 10.0.0.0/24 | string | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
@@ -175,7 +175,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No |  1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | | n1-standard-8 | string | Instance type assigned to the application, for example '| n1-standard-8'. |
 | bigIpIpCidrRange | No | 10.0.0.0/24 | string | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
@@ -702,7 +702,7 @@ If all deployments completed "successfully" but the BIG-IP or Service is not rea
     - */var/log/cloud-init-output.log*
   - runtime-init Logs:
     - */var/log/cloud/startup-script.log*: This file contains events that happen prior to execution of f5-bigip-runtime-init. If the files required by the deployment fail to download, for example, you will see those events logged here.
-    - */var/log/cloud/bigipRuntimeInit.log*: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
+    - */var/log/cloud/bigIpRuntimeInit.log*: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
   - Automation Tool Chain Logs:
     - */var/log/restnoded/restnoded.log*: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - *GENERAL LOG TIP*: Search most critical error level errors first (for example, `egrep -i err /var/log/<Logname>`).
@@ -759,8 +759,8 @@ These templates have only been explicitly tested and validated with the followin
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 16.1.202000                 | 16.1.2.2 Build 0.0.28  |
-| 14.1.406000                 | 14.1.4.6 Build 0.0.8   |
+| 16-1-3-1-0-0-11             | 16.1.3.1 Build 0.0.11  |
+| 14-1-4-6-0-0-8              | 14.1.4.6 Build 0.0.8   |
 
 These templates leverage Runtime-Init, which requires BIG-IP Versions 14.1.2.6 and up, and are assumed compatible to work. 
 
