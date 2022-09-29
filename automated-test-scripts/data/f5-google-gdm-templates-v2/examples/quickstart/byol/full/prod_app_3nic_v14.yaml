@@ -1,10 +1,7 @@
 AUTOFILL EVAL LICENSE KEY: null
 AVAILABILITY ZONE: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config-with-app.yaml
-BIGIP VERSION: 14-1-4-4-0-0-4
-IMAGE NAME: f5-bigip-<BIGIP VERSION>-byol-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '10813025013'
-IMAGE TYPE: all-modules-2boot-loc
+IMAGE NAME: f5-bigip-14-1-4-6-0-0-8-byol-all-modules-2boot-loc-20328055035
 INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface

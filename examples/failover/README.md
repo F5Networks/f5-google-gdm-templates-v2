@@ -66,7 +66,7 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Diagram
 
-![Configuration Example](diagram.gif)
+![Configuration Example](diagrams/diagram.gif)
 
 For information about this type of deployment, see the F5 Cloud Failover Extension [documentation](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html).
 
@@ -143,7 +143,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | application | No | f5app | string | Application Tag. |
 | bigIpHostname01 | No | failover01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
 | bigIpHostname02 | No | failover02.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-8'. |
 | bigIpExternalSelfIp01 | No | 10.0.1.11 | string | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpExternalSelfIp02 | No | 10.0.1.12 | string | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
@@ -184,7 +184,7 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | application | No | f5app | string | Application Tag. |
 | bigIpHostname01 | No | failover01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
 | bigIpHostname02 | No | failover02.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-8'. |
 | bigIpExternalSelfIp01 | No | 10.0.1.11 | string | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpExternalSelfIp02 | No | 10.0.1.12 | string | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
@@ -371,7 +371,7 @@ To deploy **BYOL** instances:
   1. Update the **bigIpImageName** input parameter to use `byol` images.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").
       Example:
       ```yaml
-      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
+      bigIpImageName: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536
       ```
 
   2. Update the **bigIpLicenseKey01** and **bigIpLicenseKey02** input parameters to reference the unique registration keys to use when licensing the BIG-IP instances.
@@ -663,7 +663,7 @@ If all deployments completed "successfully" but maybe the BIG-IP or Service is n
     - _/var/log/cloud-init-output.log_
   - runtime-init Logs:
     - _/var/log/cloud/startup-script.log_: This file contains events that happen prior to execution of f5-bigip-runtime-init. If the files required by the deployment fail to download, for example, you will see those events logged here.
-    - _/var/log/cloud/bigipRuntimeInit.log_: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
+    - _/var/log/cloud/bigIpRuntimeInit.log_: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
   - Automation Tool Chain Logs:
     - _/var/log/restnoded/restnoded.log_: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - _GENERAL LOG TIP_: Search most critical error level errors first (for example, egrep -i err /var/log/<Logname>).
@@ -721,8 +721,8 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 16.1.202000                 | 16.1.2.2 Build 0.0.28  |
-| 14.1.406000                 | 14.1.4.6 Build 0.0.8   |
+| 16-1-3-1-0-0-11             | 16.1.3.1 Build 0.0.11  |
+| 14-1-4-6-0-0-8              | 14.1.4.6 Build 0.0.8   |
 
 **Note**: Due to an issue (ID 1013209) with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
 

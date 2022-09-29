@@ -13,9 +13,7 @@ DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/dag/dag.py
 DESCRIPTION: network-<DEWPOINT JOB ID>
 HOST NAME: test.example.com
-IMAGE NAME: f5-bigip-<BIGIP VERSION>-payg-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '220505081010'
-IMAGE TYPE: best-plus-200mbps
+IMAGE NAME: f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
 INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface

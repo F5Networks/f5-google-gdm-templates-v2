@@ -7,11 +7,8 @@ AUTOSCALE: 'False'
 BIGIP IP CIDR RANGE: 10.0.22.0/24
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
-BIGIP VERSION: 16-1-2-2-0-0-28
 DESCRIPTION: ''
-IMAGE NAME: f5-bigip-<BIGIP VERSION>-payg-<IMAGE TYPE>-<IMAGE SUFFIX>
-IMAGE SUFFIX: '220505081153'
-IMAGE TYPE: best-plus-1gbps
+IMAGE NAME: f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
 INSTANCE NAME: <UNIQUESTRING>-bigip-vm-01
 INSTANCE NAME2: <UNIQUESTRING>-bigip-vm-02
 INSTANCE TYPE: n1-standard-16
