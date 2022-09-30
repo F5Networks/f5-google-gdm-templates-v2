@@ -364,7 +364,7 @@ For illustration purposes, this solution pre-provisions IP addresses and the run
 2. _BIG-IP_ - Creating Virtual Services that match those additional Services
    - Updating the [AS3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html) declaration with additional Virtual Services (see **virtualAddresses:**).
 
-See [diagram](diagram-multiple-vips.png) for example of adding virtual services.
+See [diagram](diagrams/diagram-multiple-vips.png) for example of adding virtual services.
 
 _NOTE: For cloud resources, templates can be customized to pre-provision and update additional resources (for example: various combinations of NICs, forwarding rules, alias addresses, IAM roles, etc.). Please see [Getting Help](#getting-help) for more information. For BIG-IP configurations, you can leverage any REST or Automation Tool Chain clients like [Ansible](https://ansible.github.io/workshops/exercises/ansible_f5/3.0-as3-intro/),[Terraform](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_as3),etc._
 
