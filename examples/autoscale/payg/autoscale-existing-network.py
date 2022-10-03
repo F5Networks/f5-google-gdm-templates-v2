@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 # pylint: disable=W,C,R
 
@@ -34,18 +34,31 @@ def create_bigip_deployment(context):
     sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
           '/regions/' + context.properties['region'] + \
           '/subnetworks/' + subnet_name
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    secret_id = context.properties['bigIpSecretId'] if \
+        'bigIpSecretId' in context.properties else ''
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     deployment = {
         'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
+          'allowUsageAnalytics': allow_usage_analytics,
           'application': context.properties['application'],
-          'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
           'autoscalers': [{
               'name': 'bigip',
-              'zone': context.properties['zone'],
+              'zone': context.properties['zones'][0],
               'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
@@ -79,8 +92,11 @@ def create_bigip_deployment(context):
           ],
           'imageName': context.properties['bigIpImageName'],
           'instanceGroupManagers': [{
-              'name': 'bigip',
-              'zone': context.properties['zone']
+            'name': 'bigip',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
           }],
           'instanceTemplates': [{
               'name': 'bigip'
@@ -93,10 +109,8 @@ def create_bigip_deployment(context):
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': context.properties['uniqueString'] + \
-              '-admin@' + \
-                  context.env['project'] + \
-                      '.iam.gserviceaccount.com',
+          'secretId': secret_id,
+          'serviceAccountEmail': service_account_email,
           'subnetSelfLink': sub_ref,
           'targetPools': [{
               'name': 'bigip',
@@ -226,10 +240,12 @@ def generate_config(context):
     bigip_igm_name= generate_name(prefix, 'bigip-igm')
     fr_name = generate_name(prefix, 'fr-01')
 
-    resources = [create_access_deployment(context)] + \
-                [create_bigip_deployment(context)] + \
+    resources = [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
     outputs = []
+
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
 
     outputs = outputs + [
         {

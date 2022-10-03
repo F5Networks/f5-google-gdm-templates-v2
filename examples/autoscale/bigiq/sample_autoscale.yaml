@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0s
+# Version 2.5.0.0s
 #
 # NOTE: When filling out the parameter values for this deployment:
 # Deployments leverage .schema files to help enforce requirements/parameter typing and defaults.
@@ -28,6 +28,8 @@ resources:
   - name: autoscale-py
     type: autoscale.py
     properties:
+      ### (OPTIONAL) This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+      allowUsageAnalytics: true
       ### (OPTIONAL) The docker container you like to deploy for the demo application.
       appContainerName: f5devcentral/f5-demo-app:latest
       ### (OPTIONAL) Application label.
@@ -36,16 +38,16 @@ resources:
       bigIpCoolDownPeriodSec: 60
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
       ### (OPTIONAL) Supply a URL for the bigip-runtime-init package.
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
       ### (OPTIONAL) The BIG-IP image name to deploy. If you would like to view all available images, run the following command from the **gcloud** command line: ```gcloud compute images list --project f5-7626-networks-public --filter="name~f5"```
-      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
+      bigIpImageName: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536
       ### (OPTIONAL) Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-4'.
-      bigIpInstanceType: n1-standard-4
+      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      bigIpInstanceType: n1-standard-8
       ### (OPTIONAL) IP CIDR range used by the management network of the BIG-IP.
       bigIpIpCidrRange: 10.0.0.0/24
       ### (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
@@ -54,6 +56,18 @@ resources:
       bigIpScalingMaxSize: 8
       ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
+      ### (OPTIONAL) BIG-IP secret ID.
+      # Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.
+      # bigIpSecretId: mySecretId
+      ### (OPTIONAL) BIG-IP service account email.
+      # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
+      # Uncomment the parameter below and replace `your-service-account@yourproject` value with your existing service account email.
+      # Note: If left commented and a value is not provided, a service account will be created
+      # using the value of the uniqueString input parameter and the project name. For example: **myuniqstr-admin@myproject.iam.gserviceaccount.com**.
+      # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
+      ### (REQUIRED) BIG-IQ secret ID.
+      # Supply the ID of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ.
+      bigIqSecretId:
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.
@@ -89,8 +103,10 @@ resources:
       uniqueString: myuniqstr
       ### (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify true when updating the deployment. See README for more details.
       update: false
-      ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance, for example 'us-west1-a'.
-      zone: us-west1-a
+      ### (OPTIONAL) Enter the Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'.
+      zones:
+        - us-west1-a
+        - us-west1-b
 
 # TROUBLESHOOTING:
 # * If template did not successfully deploy, go to console.cloud.google.com Navigation Menu -> Deployment Manager -> Your Deployment Name for more details

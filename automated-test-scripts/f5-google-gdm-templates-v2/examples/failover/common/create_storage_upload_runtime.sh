@@ -17,25 +17,11 @@ else
     do_index=2
 fi
 
-# Add secret
-/usr/bin/yq e ".runtime_parameters.[0].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-/usr/bin/yq e ".runtime_parameters.[0].secretProvider.secretId = \"<STACK NAME>-secret\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-
 # Update CFE tag
 /usr/bin/yq e ".extension_services.service_operations.[1].value.externalStorage.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
 /usr/bin/yq e ".extension_services.service_operations.[1].value.failoverAddresses.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
 /usr/bin/yq e ".extension_services.service_operations.[1].value.externalStorage.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
 /usr/bin/yq e ".extension_services.service_operations.[1].value.failoverAddresses.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-
-# Disable AutoPhoneHome
-/usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_System.autoPhonehome = false" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-/usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_System.autoPhonehome = false" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-
-# Add lic key if byol
-if [[ "<LICENSE TYPE>" == "byol" ]]; then
-    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-    /usr/bin/yq e ".extension_services.service_operations.[0].value.Common.My_License.regKey = \"<AUTOFILL EVAL LICENSE KEY 2>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-fi
 
 # Uncomment this 2 debug
 # /usr/bin/yq e ".controls.logLevel = \"silly\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml

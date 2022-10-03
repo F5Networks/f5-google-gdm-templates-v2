@@ -20,6 +20,7 @@ cp f5-google-gdm-templates-v2-main/examples/autoscale/payg/sample_autoscale_exis
 
 /usr/bin/yq e ".resources[0].name = \"autoscale-existing-network-py\"" -i $config_file
 /usr/bin/yq e ".resources[0].type = \"<TEMPLATE NAME>\"" -i $config_file
+/usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i $config_file
 /usr/bin/yq e ".resources[0].properties.networkName = \"<UNIQUESTRING>-network-network\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-mgmt-subnet\"" -i $config_file
 /usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-app-subnet\"" -i $config_file

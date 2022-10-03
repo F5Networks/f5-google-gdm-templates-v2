@@ -61,7 +61,7 @@ This solution leverages traditional Autoscale configuration management practices
 
 ## Diagram
 
-![Configuration Example](diagram.png)
+![Configuration Example](diagrams/diagram.png)
 
 
 ## Prerequisites
@@ -82,6 +82,8 @@ This solution leverages traditional Autoscale configuration management practices
   - ***IMPORTANT:** Accessing or logging into the instances themselves is for demonstration and debugging purposes only. All configuration changes should be applied by updating the model via the template instead.*
   - See [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
 
+- By default, this solution creates required IAM roles, permissions, and service account. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account with applied permissions to the BIG-IP instance(s). See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources. See [IAM Permissions by Solution Type](../../modules/access/README.md#iam-permissions-by-solution-type) for a detailed list of the permissions required by this solution.
+
 - This solution requires Internet access for: 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via GitHub.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
   - Contacting native cloud services for various cloud integrations: 
@@ -98,7 +100,10 @@ This solution leverages traditional Autoscale configuration management practices
 
 - In this solution, the BIG-IP VE has the [LTM](https://f5.com/products/big-ip/local-traffic-manager-ltm) and [ASM](https://f5.com/products/big-ip/application-security-manager-asm) modules enabled to provide advanced traffic management and web application security functionality. 
 
-- You are required to specify which Availability Zone you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
+- You are required to specify which Availability Zones you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
+
+- This deployment can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality for this deployment by supplying **false** for the value of the **allowUsageAnalytics** input parameter. To disable the BIG-IP system from also sending information, you can disable it system-wide by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
+
 
 - See [trouble shooting steps](#troubleshooting-steps) for more details.
 
@@ -112,17 +117,20 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
-| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
 | bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
 | bigIpScalingMinSize | No | 1 | integer | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
+| bigIpSecretId | No |  | string | Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.  For example: **mySecretId**. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance(s). If a value is not provided, a service account will be created. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center label. |
 | environment | No | f5env | string | Environment label. |
 | group | No | f5group | string | Group Tag. |
@@ -130,22 +138,50 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | logId | No | f5-waf-logs | string | Enter the name of the Google Cloud log that will receive WAF events. |
 | provisionPublicIp | No | true | boolean | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | false | boolean | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name |
 
 
 #### Existing Network Parameters
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| subnets | Yes | | object | Subnet object which provides names for mgmt and app subnets |
-| subnets.mgmtSubnetName | Yes | | string | Management subnet name | 
-| subnets.appSubnetName | Yes | | string | Application subnet name |
-| networkName | Yes | bigip-network | string | Network name |
-
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
+| application | No | f5app | string | Application label. |
+| bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
+| bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
+| bigIpScalingMinSize | No | 1 | integer | Minimum number of BIG-IP instances you want available in the Auto Scale Group. |
+| bigIpSecretId | No |  | string | Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc.  For example: **mySecretId**. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance(s). If a value is not provided, a service account will be created. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
+| cost | No | f5cost | string | Cost Center label. |
+| environment | No | f5env | string | Environment label. |
+| group | No | f5group | string | Group Tag. |
+| owner | No | f5owner | string | Owner label. |
+| logId | No | f5-waf-logs | string | Enter the name of the Google Cloud log that will receive WAF events. |
+| networkName | **Yes** |  | string | The existing network name. |
+| provisionPublicIp | No | true | boolean | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
+| region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| subnets | **Yes** | | object | Subnet object which provides names for mgmt and app subnets |
+| subnets.mgmtSubnetName | **Yes** | | string | Management subnet name | 
+| subnets.appSubnetName | **Yes** | | string | Application subnet name |
+| uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
+| update | No | false | boolean | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name |
 
 ### Template Outputs
 
@@ -164,6 +200,17 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | wafInternalHttpsUrl |  | string | WAF external HTTPS URL. |
 | wafPublicIp |  | string | WAF public IP. |
 
+### Existing Network Template Outputs
+
+| Name | Required Resource | Type | Description | 
+| --- | --- | --- | --- |
+
+| bigIpInstanceGroupName |  | string | BIG-IP instance group name. |
+| bigIpInstanceGroupSelfLink |  | string | BIG-IP instance group self link. |
+| deploymentName |  | string | Autoscale WAF deployment name. |
+| wafExternalHttpsUrl |  | string | WAF external HTTP URL. |
+| wafInternalHttpsUrl |  | string | WAF external HTTPS URL. |
+| wafPublicIp |  | string | WAF public IP. |
 
 ## Deploying this Solution
 
@@ -193,7 +240,7 @@ You will most likely want or need to change the BIG-IP configuration. This gener
 Example from sample_autoscale.yaml
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
 ```
 
 ***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*
@@ -257,6 +304,44 @@ To change the Virtual Service configuration:
   3. Update the **bigIpRuntimeInitConfig** input parameter to reference the new URL of the updated configuration.
   4. Deploy or Re-Deploy.
 
+**Example Customization 2:**
+
+By default, this example logs to [Google Cloud Logging](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/setting-up-consumer.html#gcl) to:
+  - logId: f5-waf-logs
+
+To log to another remote destination that may require authentication:
+  1. Edit/modify the `runtime_parameters:` in the runtime-init config file to ADD a secret. If a secret is provided via the **bigIpSecretId** parameter, it will made available on the BIG-IP via a file called `/config/cloud/secret_id`. For example: Add the section below. 
+
+      ```yaml
+        - name: SECRET_ID
+          type: url
+          value: file:///config/cloud/secret_id
+        - name: LOGGING_API_KEY
+          type: secret
+          secretProvider:
+            type: SecretsManager
+            environment: gcp
+            version: latest
+            secretId: '{{{SECRET_ID}}}'
+      ```
+  2. Edit/modify the Telemetry Streaming (TS) declaration in the example runtime-init config with the new `Telemetry_Consumer` configuration, replacing `<YOUR_HOST>` with value for your host.
+
+      ```yaml
+              My_Consumer:
+                class: Telemetry_Consumer
+                type: Splunk
+                host: <YOUR_HOST>
+                protocol: https
+                port: 8088
+                passphrase:
+                  cipherText: '{{{LOGGING_API_KEY}}}'
+                compressionType: gzip
+      ```
+  3. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example, GitHub, Google Cloud Storage, etc.).
+  4. Update the **bigIpRuntimeInitConfig** input parameter to reference the URL of the customized configuration file.
+  5. Update the **bigIpSecretId** input parameter with the Id of your logging secret. 
+     - An IAM role will be created with permissions to fetch that secret.
+
 
 ## Validation
 
@@ -304,7 +389,7 @@ To test the WAF service, perform the following steps:
 ### Viewing WAF Logs
 
 - This solution utilizes [F5 Telemetry Streaming extension](https://clouddocs.f5.com/products/extensions/f5-telemetry-streaming/latest/) which sends WAF logs to the Google Cloud Logging service.
-- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for the logId input parameter. The default value is ***f5-waf-logs***.
+- You can view the WAF logs by going to the [Google Cloud Logging Console](https://console.cloud.google.com/logs) and querying for the value used for the **logId** input parameter. The default value is ***f5-waf-logs***.
 
 ### Accessing the BIG-IP
 
@@ -331,7 +416,7 @@ From Parent Template Outputs:
       - Instances (BIG-IP)
         ```
         ZONE="us-west1-a"
-        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        gcloud compute instance-groups list-instances ${BIG_IP_INSTANCE_GROUP_NAME} --region=${REGION} --format json | jq -r .[].instance
         ```
 
     - Instance Group (Bastion)
@@ -342,7 +427,7 @@ From Parent Template Outputs:
           ```
     - Instances (Bastion)
         ```
-        gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --zone=${ZONE} --format json | jq -r .[].instance
+        gcloud compute instance-groups list-instances ${BASTION_INSTANCE_GROUP_NAME} --region=${REGION} --format json | jq -r .[].instance
         ```
  
     - Public IPs (BIG-IP or Bastion instance): 
@@ -569,7 +654,7 @@ If all deployments completed "successfully" but the BIG-IP or Service is not rea
     - */var/log/cloud-init-output.log*
   - runtime-init Logs:
     - */var/log/cloud/startup-script.log*: This file contains events that happen prior to execution of f5-bigip-runtime-init. If the files required by the deployment fail to download, for example, you will see those events logged here.
-    - */var/log/cloud/bigipRuntimeInit.log*: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
+    - */var/log/cloud/bigIpRuntimeInit.log*: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
   - Automation Tool Chain Logs:
     - */var/log/restnoded/restnoded.log*: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - *GENERAL LOG TIP*: Search most critical error level errors first (for example, `egrep -i err /var/log/<Logname>`).
@@ -626,8 +711,8 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 16.1.202000                 | 16.1.2.2 Build 0.0.28  |
-| 14.1.406000                 | 14.1.4.6 Build 0.0.8   |
+| 16-1-3-1-0-0-11             | 16.1.3.1 Build 0.0.11  |
+| 14-1-4-6-0-0-8              | 14.1.4.6 Build 0.0.8   |
 
 ***Note**: Due to an issue with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.*
 

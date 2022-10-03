@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 # pylint: disable=W,C,R
 
@@ -55,6 +55,9 @@ def create_application_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'app-subnet')
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -67,14 +70,17 @@ def create_application_deployment(context):
         'application': context.properties['application'],
         'autoscalers': [{
             'name': 'f5-demo',
-            'zone': context.properties['zone']
+            'zone': context.properties['zones'][0]
         }],
         'cost': context.properties['cost'],
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'instanceGroupManagers': [{
-          'name': 'f5-demo',
-          'zone': context.properties['zone']
+            'name': 'f5-demo',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
         }],
         'instanceTemplates': [{
             'name': 'f5-demo',
@@ -91,6 +97,7 @@ def create_application_deployment(context):
         'instanceTemplateVersion': 1,
         'instanceType': 'n1-standard-1',
         'owner': context.properties['owner'],
+        'region': context.properties['region'],
         'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
@@ -104,6 +111,9 @@ def create_bastion_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -115,14 +125,17 @@ def create_bastion_deployment(context):
         'application': context.properties['application'],
         'autoscalers': [{
             'name': 'bastion',
-            'zone': context.properties['zone']
+            'zone': context.properties['zones'][0]
         }],
         'cost': context.properties['cost'],
         'environment': context.properties['environment'],
         'group': context.properties['group'],
         'instanceGroupManagers': [{
-          'name': 'bastion',
-          'zone': context.properties['zone']
+            'name': 'bastion',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
         }],
         'instanceTemplates': [{
             'name': 'bastion',
@@ -137,6 +150,7 @@ def create_bastion_deployment(context):
             }]
         }],
         'owner': context.properties['owner'],
+        'region': context.properties['region'],
         'uniqueString': context.properties['uniqueString']
       },
       'metadata': {
@@ -150,6 +164,19 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    secret_id = context.properties['bigIpSecretId'] if \
+        'bigIpSecretId' in context.properties else ''
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
+    zones = []
+    for zone in context.properties['zones']:
+        zones = zones + [{'zone': 'zones/' + zone}]
     depends_on_array = []
     if not context.properties['update']:
         depends_on_array.append(net_name)
@@ -166,13 +193,13 @@ def create_bigip_deployment(context):
         'name': 'bigip-autoscale',
         'type': '../../modules/bigip-autoscale/bigip_autoscale.py',
         'properties': {
+          'allowUsageAnalytics': allow_usage_analytics,
           'application': context.properties['application'],
-          'availabilityZone': context.properties['zone'],
           'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
           'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
           'autoscalers': [{
               'name': 'bigip',
-              'zone': context.properties['zone'],
+              'zone': context.properties['zones'][0],
               'autoscalingPolicy': {
                 'minNumReplicas': context.properties['bigIpScalingMinSize'],
                 'maxNumReplicas': context.properties['bigIpScalingMaxSize'],
@@ -206,8 +233,11 @@ def create_bigip_deployment(context):
           ],
           'imageName': context.properties['bigIpImageName'],
           'instanceGroupManagers': [{
-              'name': 'bigip',
-              'zone': context.properties['zone']
+            'name': 'bigip',
+            'distributionPolicy': {
+                'targetShape': 'EVEN',
+                'zones': zones
+            }
           }],
           'instanceTemplates': [{
               'name': 'bigip'
@@ -220,10 +250,8 @@ def create_bigip_deployment(context):
           'project': context.env['project'],
           'provisionPublicIp': context.properties['provisionPublicIp'],
           'region': context.properties['region'],
-          'serviceAccountEmail': context.properties['uniqueString'] + \
-              '-admin@' + \
-                  context.env['project'] + \
-                      '.iam.gserviceaccount.com',
+          'secretId': secret_id,
+          'serviceAccountEmail': service_account_email,
           'subnetSelfLink': sub_ref,
           'targetPools': [{
               'name': 'bigip',
@@ -396,12 +424,13 @@ def generate_config(context):
     net_name = generate_name(prefix, 'network')
 
     resources = [create_network_deployment(context)] + \
-                [create_access_deployment(context)] + \
                 [create_application_deployment(context)] + \
                 [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)]
     outputs = []
 
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
 
     if not context.properties['provisionPublicIp']:
         resources = resources + [create_bastion_deployment(context)]

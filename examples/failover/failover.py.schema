@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a pair of bigip's HA deployment along with all required resources to support deployment.
   title: F5 failover template
-  version: 2.4.0.0
+  version: 2.5.0.0
 
 imports:
   - path: failover.py
@@ -17,10 +17,15 @@ imports:
   - path: ../modules/network/network.py
 
 required:
+  - bigIpSecretId
   - restrictedSrcAddressMgmt
   - restrictedSrcAddressApp
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   appContainerName:
     default: 'f5devcentral/f5-demo-app:latest'
     description: Enter the name of the docker container you want to run as your application
@@ -54,7 +59,7 @@ properties:
     description: Management interface private IP address for bigip-vm-02.
     type: string
   bigIpImageName:
-    default: f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809
+    default: f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
     description: BIG-IP image name
     type: string
   bigIpInstanceType:
@@ -63,27 +68,34 @@ properties:
     type: string
   bigIpPeerAddr:
     default: 10.0.1.11
-    description: Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. |
+    description: Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide the first instances Self IP address. |
     type: string
   bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitConfig02:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
     default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
+  bigIpHostname01:
+    default: failover01.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
+    type: string
+  bigIpHostname02:
+    default: failover02.local
+    description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
+    type: string
+  bigIpSecretId:
+    description: The ID of the Google secret manager secret where the BIG-IP password used for clustering is stored.
+    type: string
   cfeTag:
     default: bigip_high_availability_solution
     description: Cloud Failover deployment tag value.
-    type: string
-  cfeBucket:
-    default: cfe-storage
-    description: Cloud Failover storage bucket value.
     type: string
   cost:
     default: f5cost
@@ -119,10 +131,12 @@ properties:
     default: myuniqstr
     description: Unique String used when creating object names or Tags.
     type: string
-  zone:
-    default: us-west1-a
-    description: Enter the zone where you want to deploy the application, for example 'us-west1-a'.
-    type: string
+  zones:
+    description: Array of Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'.
+    type: array
+    default:
+      - us-west1-a
+      - us-west1-b
 
 outputs:
   properties:

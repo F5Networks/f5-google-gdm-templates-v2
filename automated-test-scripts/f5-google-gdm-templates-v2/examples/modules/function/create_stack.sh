@@ -1,5 +1,5 @@
 #  expectValue = "completed successfully"
-#  scriptTimeout = 5
+#  scriptTimeout = 10
 #  replayEnabled = false
 #  replayTimeout = 0
 

@@ -1,7 +1,7 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0s
+# Version 2.5.0.0s
 #
 # Example of the bigip-Standalone Usage.
 #
@@ -36,9 +36,11 @@ resources:
       additionalMetadataTags:
         bigip-peer-addr: 10.0.0.1
         service-address-01-public-ip: 100.100.100.100
+      allowUsageAnalytics: true
       bigIpRuntimeInitConfig: https://myConfigUrl
       bigIpRuntimeInitPackageUrl: https://myPackageUrl
-      imageName: f5-bigip-16-0-1-1-0-0-6-payg-best-200mbps-210129040615
+      hostname: bigip01.local
+      imageName: f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
       instanceType: n1-standard-4
       name: bigip-vm-01
       networkInterfaces:

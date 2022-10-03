@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -64,6 +64,11 @@ def create_instance_template(context, instance_template):
     environment =  context.properties['environment'] if 'environment' in context.properties else 'f5env'
     group = context.properties['group'] if 'group' in context.properties else 'f5group'
     owner = context.properties['owner'] if 'owner' in context.properties else 'f5owner'
+    bigiq_secret_id = str(context.properties['bigIqSecretId']) if \
+        'bigIqSecretId' in context.properties else ''
+    secret_id = str(context.properties['secretId']) if \
+        'secretId' in context.properties else ''
+    telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     properties = {}
 
     # Setup Defaults - property updated to given value when property exists in config
@@ -122,9 +127,18 @@ def create_instance_template(context, instance_template):
                                     '! grep -q \'provision asm\' /config/bigip_base.conf && echo \'sys provision asm { level nominal }\' >> /config/bigip_base.conf',
                                     '',
                                     '# VARS FROM TEMPLATE',
-                                    'PACKAGE_URL=' + context.properties['bigIpRuntimeInitPackageUrl'],
+                                    'PACKAGE_URL=' + str(context.properties['bigIpRuntimeInitPackageUrl']),
                                     '',
-                                    'RUNTIME_CONFIG=' + context.properties['bigIpRuntimeInitConfig'],
+                                    'RUNTIME_CONFIG=' + str(context.properties['bigIpRuntimeInitConfig']),
+                                    '',
+                                    'BIGIQ_SECRET_ID=' + bigiq_secret_id,
+                                    '',
+                                    'SECRET_ID=' + secret_id,
+                                    '',
+                                    'TELEMETRY_FLAG=' + telemetry_flag,
+                                    '',
+                                    'echo $BIGIQ_SECRET_ID > /config/cloud/bigiq_secret_id',
+                                    'echo $SECRET_ID > /config/cloud/secret_id',
                                     '',
                                     '# Download or render f5-bigip-runtime-init config',
                                     'if [[ "${RUNTIME_CONFIG}" =~ ^http.* ]]; then',
@@ -140,10 +154,10 @@ def create_instance_template(context, instance_template):
                                     'done',
                                     '',
                                     '# Run',
-                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.4.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
+                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.5.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
-                                    'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf',
+                                    'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf ${TELEMETRY_FLAG}',
                                     'echo $(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Startup Script Finish'
                                     ])
             },
@@ -183,12 +197,11 @@ def create_instance_template(context, instance_template):
 def create_instance_group(context, instance_group_manager):
     """Create autoscale instance group."""
     # Build instance property lists
-    required_properties = ['zone']
+    required_properties = ['distributionPolicy']
     optional_properties = [
         'autoHealingPolicies',
         'baseInstanceName',
         'description',
-        'distributionPolicy',
         'instanceTemplate',
         'namedPorts',
         'statefulPolicy',
@@ -213,17 +226,19 @@ def create_instance_group(context, instance_group_manager):
         'baseInstanceName': base_instance_name,
         'instanceTemplate': '$(ref.' + instance_template_name + '.selfLink)',
         'name': instance_group_manager_name,
+        'region': context.properties['region'],
         'targetPools': ['$(ref.' + target_pool_name + '.selfLink)'],
         'targetSize': 2,
         'updatePolicy': {
-            'minimalAction': 'REPLACE',
-            'type': 'PROACTIVE'
+            'type': 'PROACTIVE',
+            'instanceRedistributionType': 'PROACTIVE',
+            'minimalAction': 'REPLACE'
         }
     })
     properties.update(populate_properties(instance_group_manager, required_properties, optional_properties))
     instance_group_manager_config = {
         'name': instance_group_manager_name,
-        'type': 'compute.beta.instanceGroupManager',
+        'type': 'compute.beta.regionInstanceGroupManager',
         'properties': properties
     }
     return instance_group_manager_config
@@ -255,13 +270,14 @@ def create_autoscaler(context, autoscaler):
             'coolDownPeriodSec': 60
         },
         'name': autoscaler_name,
+        'region': context.properties['region'],
         'target': '$(ref.' + instance_group_manager_name + '.selfLink)',
     })
 
     properties.update(populate_properties(autoscaler, required_properties, optional_properties))
     autoscaler_config = {
         'name': autoscaler_name,
-        'type': 'compute.v1.autoscalers',
+        'type': 'compute.v1.regionAutoscalers',
         'properties': properties
     }
     return autoscaler_config

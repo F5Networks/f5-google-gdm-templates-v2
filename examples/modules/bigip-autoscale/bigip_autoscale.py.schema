@@ -5,7 +5,7 @@ info:
   title: F5 BIGIP Autoscale module
   author: F5 Networks
   description: Creates a BIGIP autoscale group.
-  version: 2.4.0.0
+  version: 2.5.0.0
 
 imports:
   - path: bigip_autoscale.py
@@ -25,6 +25,10 @@ required:
     - uniqueString
 
 properties:
+  allowUsageAnalytics:
+    default: true
+    description: This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent.
+    type: boolean
   application:
     description: Application label.
     default: f5app

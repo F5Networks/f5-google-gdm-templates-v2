@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 
 """Creates full stack for POC"""
@@ -72,15 +72,25 @@ def create_bigip_deployment(context):
     depends_on_array.append(public_ip_name)
     additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
 
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    hostname = context.properties['bigIpHostname'] if \
+        'bigIpHostname' in context.properties else 'bigip01.local'
+    license_key = context.properties['bigIpLicenseKey'] if \
+        'bigIpLicenseKey' in context.properties else ''
+
     bigip_config = [{
         'name': 'bigip-quickstart',
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'additionalMetadataTags': additionalMetadataTags,
+            'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
+            'licenseKey': license_key,
             'name': 'bigip-vm-01',
             'networkInterfaces': interface_config_array,
             'region': context.properties['region'],
@@ -102,6 +112,19 @@ def create_bigip_deployment(context):
             'dependsOn': depends_on_array
         }
     }]
+
+    if 'bigIpServiceAccountEmail' in context.properties:
+        bigip_config[0]['properties']['serviceAccounts'] = [
+            {
+                'email': context.properties['bigIpServiceAccountEmail'],
+                'scopes': [
+                    'https://www.googleapis.com/auth/compute',\
+                    'https://www.googleapis.com/auth/devstorage.read_write',\
+                    'https://www.googleapis.com/auth/cloud-platform'
+                ]
+            }
+        ]
+
     return bigip_config
 
 def create_dag_deployment(context):

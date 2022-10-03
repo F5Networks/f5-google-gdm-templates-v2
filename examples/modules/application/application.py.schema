@@ -12,7 +12,7 @@ info:
       - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
-  version: 2.4.0.0
+  version: 2.5.0.0
 
 imports:
   - path: application.py
@@ -64,7 +64,11 @@ properties:
           instanceGroupManagers:
             - name: f5-demo
               targetSize: 1
-              zone: us-west1-a
+              distributionPolicy: 
+                targetShape: EVEN
+                zones:
+                  - zones/us-west1-a
+                  - zones/us-west1-b
   instances:
     type: array
     description: |

@@ -38,11 +38,14 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
-| additionalMetadataTags | No |  | object | Dictionary of key value pairs to add as Metadata Tags. | 
+| additionalMetadataTags | No |  | object | Dictionary of key value pairs to add as Metadata Tags. |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | bigIpRuntimeInitPackageUrl | Yes |  | string | URL for BIG-IP Runtime Init package. | 
 | bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| hostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters. |
 | imageName | Yes |  | string | BIG-IP image name.|
 | instanceType | Yes |  | string | Instance type assigned to the application. For example: `n1-standard-1`.|
+| licenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance. Leave this parameter blank if deploying the PAYG solution. |
 | name | Yes |  | string | Name used for instance.| 
 | networkInterfaces | Yes |  | array | Array of interface configurations for Instance. A minimum of one is required.|
 | networkInterfaces.accessConfigs | No |  | string | Used to define ONE_TO_ONE_NATS (external public address) for interface.|
@@ -51,6 +54,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | networkInterfaces.networkIP | No |  | string | Defines static IP attached to interface.|
 | networkInterfaces.subnetwork | Yes |  | string | Defines subnetwork attached to interface.|
 | region | Yes |  | string | Enter the region where you want to deploy the application. For example: `us-west1`.|
+| secretId | No |  | string | Supply the of the Google secret manager secret to create READ permissions for. For example, if customizing your runtime-init config with an admin password, logging credential, etc. |
 | storageBuckets | Yes |  | string | Creates storage buckets.| 
 | tags.items | No |  | array | An array of tags used to match traffic against network interfaces.|
 | targetInstances | Yes |  | array | List of settings for provisioning target instances. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/targetInstances). |

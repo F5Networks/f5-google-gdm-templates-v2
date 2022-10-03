@@ -1,7 +1,7 @@
 ---
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0s
+# Version 2.5.0.0s
 imports:
   - path: application.py
 resources:
@@ -26,7 +26,11 @@ resources:
         - description: My instance group
           name: f5-demo
           targetSize: 1
-          zone: us-west1-a
+          distributionPolicy:
+            targetShape: EVEN
+            zones:
+              - zone: zones/us-west1-a
+              - zone: zones/us-west1-b
       instanceType: n1-standard-1
       instanceTemplates:
         - description: My autoscale application
@@ -43,5 +47,6 @@ resources:
       instanceTemplateVersion: 1
       name: myapp-deployment
       owner: myowner
+      region: us-west1
       uniqueString: myuniquestr
     type: application.py

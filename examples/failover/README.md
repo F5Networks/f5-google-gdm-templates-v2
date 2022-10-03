@@ -66,24 +66,25 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Diagram
 
-![Configuration Example](diagram.gif)
+![Configuration Example](diagrams/diagram.gif)
 
 For information about this type of deployment, see the F5 Cloud Failover Extension [documentation](https://clouddocs.f5.com/products/extensions/f5-cloud-failover/latest/userguide/gcp.html).
 
 ## Prerequisites
 
+- This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) uploaded to the project for access to the BIG-IP instances.
+
 - This solution requires a **secret** stored in Google Cloud [Secrets Manager](
 https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
- containing the password used to cluster and access the failover Pair. For example, to create a secret using the GCLOUD CLI: 
+ containing the password used to cluster and access the failover pair. For example, to create a secret named `mySecretId` using the GCLOUD CLI: 
   ```bash
-  # Use an editor of your choice to create file called password.txt. 
-  # IMPORANT: Ensure there is no newline at the end of the file.
-  $ gcloud secrets create mySecretId --data-file="password.txt"
+  # Ensure there is no newline at the end of the secret
+  $ echo -n 'YOUR_BIGIP_PASSWORD' | gcloud secrets create mySecretId --data-file=- ; history -d $(history 1)
   ```
-  - *NOTE:*
-    - By default, the secret name used is `mySecretId`. To change this, see [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more details.
-    - Ensure there is no newline at the end of the file. For example: `echo -n 'YourStrongPassword' > password.txt` where using "-n" option to avoid newlines. Otherwise, use an editor to not have in bash history.
-- This solution requires an [SSH key](https://cloud.google.com/compute/docs/instances/adding-removing-ssh-keys) uploaded the project for access to the BIG-IP instances.
+  - *NOTE regarding the example above:* 
+      - Uses echo's "-n" option to avoid a newline at the end of the secret.
+      - Use history's "-d" to delete the command from the shell's history.
+
 - You must have installed the [Google Cloud SDK](https://cloud.google.com/sdk/downloads).
 - This solution requires a Google Cloud account that can provision objects described in the solution using the gcloud CLI:
   ```bash
@@ -96,6 +97,12 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 ## Important Configuration Notes
 
 - By default, this solution modifies the username **admin** with a password set to value of the Google Secrets Manager secret which is provided in the BIGIP_PASSWORD parameter of the BIG-IP Runtime Init runtime_parameters configuration.
+
+- By default, this solution creates required IAM roles, permissions, and service account. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account with applied permissions to the BIG-IP instance(s). See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources. Ensure it contains the required permissions for the secret provided with **bigIpSecretId**. See [IAM Permissions by Solution Type](../../modules/access/README.md#iam-permissions-by-solution-type) for a detailed list of the permissions required by this solution.
+
+- When specifying values for the **bigIpInstanceType** parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+
+- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
 
 - This solution requires Internet access for:
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
@@ -117,11 +124,11 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
 
 - If you would like to view all available images, run the following command from the **gcloud** command line: `$ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`
 
-- This directory contains a schema file which helps manage the required fields and set defaults to optional fields. For example, if you omit the property for bigIpRuntimeInitPackageUrl in your configuration file, we set the default URL to the latest available version.
+- This directory contains a schema file which helps manage the required fields and set defaults to optional fields. For example, if you omit the property for **bigIpRuntimeInitPackageUrl** in your configuration file, we set the default URL to the latest available version.
 
-- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+- This deployment can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality for this deployment by supplying **false** for the value of the **allowUsageAnalytics** input parameter. To disable the BIG-IP system from also sending information, you can disable it system-wide by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
 
-- This template can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5).
+
 
 - See [trouble shooting steps](#troubleshooting-steps) for more details.
 
@@ -131,21 +138,28 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 
 | Parameter | Required | Default | Type |  Description |
 | --- | --- | --- | --- | --- |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server(s). If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application Tag. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
-| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpHostname01 | No | failover01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
+| bigIpHostname02 | No | failover02.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-8'. |
 | bigIpExternalSelfIp01 | No | 10.0.1.11 | string | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpExternalSelfIp02 | No | 10.0.1.12 | string | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
 | bigIpInternalSelfIp01 | No | 10.0.2.11 | string | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpInternalSelfIp02 | No | 10.0.2.12 | string | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpLicenseKey01 | No |  | string | Supply the F5 BYOL license key for BIG-IP instance 01 if deploying a BYOL image. |
+| bigIpLicenseKey02 | No |  | string | Supply the F5 BYOL license key for BIG-IP instance 02 if deploying a BYOL image. |
 | bigIpMgmtAddress01 | No | 10.0.0.11 | string | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtAddress02 | No | 10.0.0.12 | string | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
-| bigIpPeerAddr | No | 10.0.1.11 | string | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
-| bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpPeerAddr | No | 10.0.1.11 | string | Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide the first instances Self IP address. |
+| bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
-| cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
+| cfeBucket | No | cfe-storage | string | Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension. If a value is not provided, a storage bucket will be created using the value of the uniqueString input parameter. For example: **myuniqstr-cfe-storage**. |
+| bigIpSecretId | **Yes** |  | string | Supply the ID of the Google secret manager secret where the BIG-IP password used for clustering is stored. For example: **mySecretId**. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance(s). If a value is not provided, a service account will be created. Example value: `your-service-account@your-project.iam.gserviceaccount.com` |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
@@ -153,10 +167,12 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | owner | No | f5owner | string | Owner Tag. |
 | provisionPublicIp | No | true | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example 'X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name | 
 
 ### Existing Network Template Input Parameters
 
@@ -164,40 +180,48 @@ Note: These are specified in the configuration file. See sample_failover_existin
 
 | Parameter | Required | Default | Type | Description |
 | --- | --- | --- | --- | --- |
+| allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | application | No | f5app | string | Application Tag. |
-| bigIpImageName | No | f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-2-2-0-0-28-payg-best-plus-25mbps-220505080809`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
-| bigIpInstanceType | No | n1-standard-4 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
+| bigIpHostname01 | No | failover01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
+| bigIpHostname02 | No | failover02.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-8'. |
 | bigIpExternalSelfIp01 | No | 10.0.1.11 | string | External Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpExternalSelfIp02 | No | 10.0.1.12 | string | External Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
 | bigIpInternalSelfIp01 | No | 10.0.2.11 | string | Internal Private IP Address for BIGIP Instance A. IP address parameter must be in the form x.x.x.x. |
 | bigIpInternalSelfIp02 | No | 10.0.2.12 | string | Internal Private IP Address for BIGIP Instance B. IP address parameter must be in the form x.x.x.x. |
+| bigIpLicenseKey01 | No |  | string | Supply the F5 BYOL license key for BIG-IP instance 01 if deploying a BYOL image. |
+| bigIpLicenseKey02 | No |  | string | Supply the F5 BYOL license key for BIG-IP instance 02 if deploying a BYOL image. |
 | bigIpMgmtAddress01 | No | 10.0.0.11 | string | Management Private IP Address for BIGIP Instance 01. IP address parameter must be in the form x.x.x.x. |
 | bigIpMgmtAddress02 | No | 10.0.0.12 | string | Management Private IP Address for BIGIP Instance 02. IP address parameter must be in the form x.x.x.x. |
-| bigIpPeerAddr | No | 10.0.1.11 | string | Type the static self IP address of the remote host here. Leave empty if not configuring peering with a remote host on this device. IP address parameter must be in the form x.x.x.x. |
-| bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml | --- | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
-| bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpPeerAddr | No | 10.0.1.11 | string | Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide the first instances Self IP address. |
+| bigIpRuntimeInitConfig01 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml | --- | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| bigIpRuntimeInitConfig02 | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run| string | Supply a URL to the bigip-runtime-init package. |
-| cfeBucket | No | cfe-storage | string | Bucket name used by Cloud Failover Extension. |
+| bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance(s). If a value is not provided, a service account will be created. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
+| bigIpSecretId | **Yes** |  | string | Supply the ID of the Google secret manager secret where the BIG-IP password used for clustering is stored. For example: **mySecretId**. |
+| cfeBucket | No | cfe-storage | string | Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension. If a value is not provided, a storage bucket will be created using the value of the uniqueString input parameter. For example: **myuniqstr-cfe-storage**. |
 | cfeTag | No | bigip_high_availability_solution | string | Cloud Failover deployment tag value. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
 | owner | No | f5owner | string | Owner Tag. |
-| networks | Yes |  | Object | Networks object which provides names for mgmt and app networks |
-| networks.externalNetworkName | Yes |  | string | External network name |
+| networks | **Yes** |  | Object | Networks object which provides names for mgmt and app networks |
+| networks.externalNetworkName | **Yes** |  | string | External network name |
 | networks.interlanNetworkName | No |  | string | Internal network name |  
 | networks.mgmtNetworkName | No |  | string | Management network name | 
 | provisionPublicIp | No | false | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
-| restrictedSrcAddressApp | Yes |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
-| restrictedSrcAddressMgmt | Yes |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
-| subnets | Yes |  | object | Subnet object which provides names for mgmt and app subnets |
-| subnets.appSubnetName | Yes |  | string | Management subnet name |
-| subnets.internalSubnetName | Yes |  | string | Internal subnet name |  
-| subnets.mgmtSubnetName | Yes |  | string | Management subnet name | 
+| restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
+| restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
+| subnets | **Yes** |  | object | Subnet object which provides names for mgmt and app subnets |
+| subnets.appSubnetName | **Yes** |  | string | Management subnet name |
+| subnets.internalSubnetName | **Yes** |  | string | Internal subnet name |  
+| subnets.mgmtSubnetName | **Yes** |  | string | Management subnet name | 
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
-| zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
-
+| zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
+| zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
+| zones[1] | No | us-west1-b | string | BIG-IP instance B zone name | 
 
 
 ### Template Outputs
@@ -307,8 +331,8 @@ Example from sample_failover.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig01: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
-    bigIpRuntimeInitConfig02: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
+    bigIpRuntimeInitConfig01: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
+    bigIpRuntimeInitConfig02: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
@@ -331,33 +355,60 @@ F5 has provided the following example configuration files in the `examples/failo
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
 
-By default, this solution deploys 3NIC BIG-IP instances using these examples:
-  - `runtime-init-conf-3nic-payg-instance01.yaml`
-  - `runtime-init-conf-3nic-payg-instance02.yaml`
+By default, this solution deploys a 3-NIC PAYG BIG-IPs:
+  - The **Full Stack** (failover.py) references the:
+     - `runtime-init-conf-3nic-payg-instance01-with-app.yaml`
+     - `runtime-init-conf-3nic-payg-instance02-with-app.yaml`
+     
+     BIG-IP config files, which includes an example virtual service, and can be used as is. This example configuration does not require any modifications to deploy successfully *(Disclaimer: "Successfully" implies the template deploys without errors and deploys BIG-IP WAFs capable of passing traffic. To be fully functional as designed, you would need to have satisfied the [Prerequisites](#prerequisites))*. However, in production, these files would commonly be customized. Some examples of small customizations or modifications are provided below. 
+  - The **Existing Network Stack** (failover-existing-network.py) references the:
+    - `runtime-init-conf-3nic-payg-instance01.yaml`
+    - `runtime-init-conf-3nic-payg-instance02.yaml`
+  
+    BIG-IP config files, which only provides basic system onboarding and does not **NOT** include an example virtual service, and can be used as is.
 
-- When specifying values for the bigIpInstanceType parameter, ensure that the instance type you select is appropriate for the 3 NIC deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
-
-However, most other changes require modifying the configurations themselves. For example:
-
-To deploy a **BYOL** instance:
-
-1. Edit/modify the Declarative Onboarding (DO) declaration in the corresponding `byol` runtime-init config files with the new `regKey` value.
-
-    Example: 
-    ```yaml
-    My_License:
-      class: License
-      licenseType: regKey
-      regKey: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
-    ```
-
-2. Publish/host the customized runtime-init config file at a location reachable by the BIG-IP at deploy time (for example: github, Google Storage, etc.)
-3. Update the **bigIpRuntimeInitConfig01** and **bigIpRuntimeInitConfig02** input parameters to reference the new URLs of the updated configurations.
-4. Update the **bigIpImageName** input parameter to use `byol` image.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").
+To deploy **BYOL** instances:
+  1. Update the **bigIpImageName** input parameter to use `byol` images.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").
       Example:
       ```yaml
-      bigIpImageName: f5-bigip-16-1-2-2-0-0-28-byol-all-modules-2boot-loc-0505081937
+      bigIpImageName: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536
       ```
+
+  2. Update the **bigIpLicenseKey01** and **bigIpLicenseKey02** input parameters to reference the unique registration keys to use when licensing the BIG-IP instances.
+      Example:
+      ```yaml
+      bigIpLicenseKey01: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
+      bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
+      ```
+  3. Update the **bigIpRuntimeInitConfig01** and **bigIpRuntimeInitConfig02** input parameters to reference the corresponding `byol` config files (for example, `runtime-init-conf-3nic-byol-instance01-with-app.yaml` and `runtime-init-conf-3nic-byol-instance02-with-app.yaml`).
+
+However, most changes require customizing the example configuration files. 
+
+To change BIG-IP configuration(s):
+
+1. Edit/modify the declaration(s) in the example runtime-init config file(s) with the new `<VALUES>`. For example, if you wanted to change the DNS or NTP settings, update values in the Declarative Onboarding declaration(s):
+
+    Example:
+
+    ```yaml
+              My_Dns:
+                class: DNS
+                nameServers:
+                  - <YOUR_CUSTOM_DNS_SERVER>
+              My_License:
+                class: License
+                licenseType: regKey
+                regKey: '{{{LICENSE_KEY}}}'
+              My_Ntp:
+                class: NTP
+                servers:
+                  - <YOUR_CUSTOM_NTP_SERVER>
+                timezone: UTC
+    ```
+
+2. Publish/host the customized runtime-init config(s) file at a location reachable by the BIG-IP at deploy time (for example: github, Google Storage, etc.)
+3. Update the **bigIpRuntimeInitConfig** input parameter(s) to reference the new URL(s) of the updated BIG-IP configuration(s).
+
 
 In order deploy additional **virtual services**:
 
@@ -558,7 +609,7 @@ For information on the Cloud Failover solution, see [F5 Cloud Failover Extension
 ## Deleting this Solution
 
 
-As Google Deployment Manager does not delete storage buckets that contain data, in order to delete this deployment, you will first need to manually empty and/or delete the storage bucket created for the Cloud Failover Extension (provided via *cfeBucket* parameter). Go to *Google Cloud Console -> S3* and search for *cfeBucket* bucket name, select the box associated with it and then click the "Delete" button. 
+As Google Deployment Manager does not delete storage buckets that contain data, in order to delete this deployment, you will first need to manually empty and/or delete the storage bucket created for the Cloud Failover Extension (provided via *cfeBucket* parameter or in the format **uniqueString-cfe-storage** if a value was not provided). Go to *Google Cloud Console -> S3* and search for *cfeBucket* bucket name, select the box associated with it and then click the "Delete" button. 
 
 You can now delete the deployment.
 
@@ -612,7 +663,7 @@ If all deployments completed "successfully" but maybe the BIG-IP or Service is n
     - _/var/log/cloud-init-output.log_
   - runtime-init Logs:
     - _/var/log/cloud/startup-script.log_: This file contains events that happen prior to execution of f5-bigip-runtime-init. If the files required by the deployment fail to download, for example, you will see those events logged here.
-    - _/var/log/cloud/bigipRuntimeInit.log_: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
+    - _/var/log/cloud/bigIpRuntimeInit.log_: This file contains events logged by the f5-bigip-runtime-init onboarding utility. If the configuration is invalid causing onboarding to fail, you will see those events logged here. If deployment is successful, you will see an event with the body "All operations completed successfully".
   - Automation Tool Chain Logs:
     - _/var/log/restnoded/restnoded.log_: This file contains events logged by the F5 Automation Toolchain components. If an Automation Toolchain declaration fails to deploy, you will see more details for those events logged here.
 - _GENERAL LOG TIP_: Search most critical error level errors first (for example, egrep -i err /var/log/<Logname>).
@@ -670,8 +721,8 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 16.1.202000                 | 16.1.2.2 Build 0.0.28  |
-| 14.1.406000                 | 14.1.4.6 Build 0.0.8   |
+| 16-1-3-1-0-0-11             | 16.1.3.1 Build 0.0.11  |
+| 14-1-4-6-0-0-8              | 14.1.4.6 Build 0.0.8   |
 
 **Note**: Due to an issue (ID 1013209) with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
 

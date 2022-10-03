@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 
 """Creates full stack for POC"""
@@ -66,7 +66,7 @@ def create_access_deployment(context):
         'uniqueString': context.properties['uniqueString']
       }
     }
-    return [deployment]
+    return deployment
 
 def create_bigip_deployment(context, num_nics, instance_number):
     """ Create bigip-standalone module deployment """
@@ -113,8 +113,9 @@ def create_bigip_deployment(context, num_nics, instance_number):
         depends_on_array.append(subnet_name)
         interface_config_array.append(interface_config)
     if instance_number == 1:
+        storage_name = context.properties['cfeBucket'] if 'cfeBucket' in context.properties else generate_name(prefix, 'cfe-storage')
         storage_config = [{
-            'name': context.properties['cfeBucket'],
+            'name': storage_name,
             'labels': {
                 'f5_cloud_failover_label': context.properties['cfeTag']
                 }
@@ -122,28 +123,50 @@ def create_bigip_deployment(context, num_nics, instance_number):
     else:
         storage_config = []
 
+    zone = context.properties['zones'][instance_number - 1]
+
     # Populate Metadata Tags
     additionalMetadataTags = {}
 
-    # Populate Failover Peer
-    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if instance_number == 2 else None
+    # Populate Failover Peer IP and hostname
+    additionalMetadataTags.update({'bigip-peer-addr': context.properties['bigIpPeerAddr']}) if \
+        instance_number == 2 else None
+    additionalMetadataTags.update({'bigip-peer-hostname': context.properties['bigIpHostname01'] if \
+        instance_number == 2 else context.properties['bigIpHostname02']})
 
     # Populate Example VIPs
     public_ip_name = generate_name(prefix, 'public-ip-01')
     depends_on_array.append(public_ip_name)
     additionalMetadataTags.update({'service-address-01-public-ip': '$(ref.' + public_ip_name + '.address)'})
 
+    allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
+        'allowUsageAnalytics' in context.properties else True
+    hostname = context.properties['bigIpHostname0' + str(instance_number)] if \
+        'bigIpHostname0' + str(instance_number) in context.properties else 'bigip0' + str(instance_number) + '.local'
+    license_key = context.properties['bigIpLicenseKey0' + str(instance_number)] if \
+        'bigIpLicenseKey0' + str(instance_number) in context.properties else ''
+    service_account_email = context.properties['bigIpServiceAccountEmail'] if \
+        'bigIpServiceAccountEmail' in context.properties else \
+            context.properties['uniqueString'] + \
+                '-admin@' + \
+                    context.env['project'] + \
+                        '.iam.gserviceaccount.com'
+
     bigip_config = [{
         'name': 'bigip-failover-0' + str(instance_number),
         'type': '../modules/bigip-standalone/bigip_standalone.py',
         'properties': {
             'additionalMetadataTags': additionalMetadataTags,
+            'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
+            'licenseKey': license_key,
             'name': 'bigip-vm-0' + str(instance_number),
             'networkInterfaces': interface_config_array,
+            'secretId': context.properties['bigIpSecretId'],
             'storageBuckets': storage_config,
             'region': context.properties['region'],
             'labels': {
@@ -151,8 +174,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             },
             'serviceAccounts': [
                 {
-                    'email': context.properties['uniqueString'] + \
-                        '-admin@' + context.env['project'] + '.iam.gserviceaccount.com',
+                    'email': service_account_email,
                     'scopes': [
                         'https://www.googleapis.com/auth/compute',\
                         'https://www.googleapis.com/auth/devstorage.read_write',\
@@ -173,7 +195,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
                 'name': 'bigip-vm-0' + str(instance_number)
             }],
             'uniqueString': context.properties['uniqueString'],
-            'zone': context.properties['zone']
+            'zone': zone
         },
         'metadata': {
             'dependsOn': depends_on_array
@@ -192,6 +214,7 @@ def create_application_deployment(context, num_nics):
     else:
         net_name = generate_name(prefix, 'int-network-0' + \
             str(num_nics - 1))
+    zone = context.properties['zones'][0]
     depends_on_array = []
     depends_on_array.append(net_name)
     depends_on_array.append(subnet_name)
@@ -220,7 +243,7 @@ def create_application_deployment(context, num_nics):
                 'network': '$(ref.' + net_name + '.selfLink)',
                 'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
             }],
-            'zone': context.properties['zone']
+            'zone':zone
         }],
         'uniqueString': context.properties['uniqueString'],
       },
@@ -235,6 +258,7 @@ def create_bastion_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = generate_name(prefix, 'mgmt-network')
     subnet_name = generate_name(prefix, 'mgmt-subnet')
+    zone = context.properties['zones'][0]
     depends_on_array = []
     depends_on_array.append(net_name)
     depends_on_array.append(subnet_name)
@@ -260,7 +284,7 @@ def create_bastion_deployment(context):
                     'network': '$(ref.' + net_name + '.selfLink)',
                     'subnetwork': '$(ref.' + subnet_name + '.selfLink)'
                 }],
-                'zone': context.properties['zone']
+                'zone': zone
             }],
             'uniqueString': context.properties['uniqueString']
         },
@@ -479,12 +503,15 @@ def generate_config(context):
         str(num_nics - 1))
 
     resources = create_network_deployment(context, num_nics) + \
-        create_access_deployment(context) + \
-        create_bigip_deployment(context, num_nics, 1) + \
-        create_bigip_deployment(context, num_nics, 2) + \
-        create_application_deployment(context, num_nics) + \
-        create_dag_deployment(context, num_nics)
+                create_bigip_deployment(context, num_nics, 1) + \
+                create_bigip_deployment(context, num_nics, 2) + \
+                create_application_deployment(context, num_nics) + \
+                create_dag_deployment(context, num_nics)
     outputs = []
+
+    if not 'bigIpServiceAccountEmail' in context.properties:
+        resources = resources + [create_access_deployment(context)]
+
     mgmt_nic_index = '0' if num_nics == 1 else '1'
     mgmt_port = '8443' if num_nics == 1 else '443'
 
