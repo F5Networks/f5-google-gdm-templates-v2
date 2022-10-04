@@ -134,7 +134,7 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -162,7 +162,7 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -268,7 +268,7 @@ Example from sample_quickstart.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
@@ -364,7 +364,7 @@ For illustration purposes, this solution pre-provisions IP addresses and the run
 2. _BIG-IP_ - Creating Virtual Services that match those additional Services
    - Updating the [AS3](https://clouddocs.f5.com/products/extensions/f5-appsvcs-extension/latest/userguide/composing-a-declaration.html) declaration with additional Virtual Services (see **virtualAddresses:**).
 
-See [diagram](diagram-multiple-vips.png) for example of adding virtual services.
+See [diagram](diagrams/diagram-multiple-vips.png) for example of adding virtual services.
 
 _NOTE: For cloud resources, templates can be customized to pre-provision and update additional resources (for example: various combinations of NICs, forwarding rules, alias addresses, IAM roles, etc.). Please see [Getting Help](#getting-help) for more information. For BIG-IP configurations, you can leverage any REST or Automation Tool Chain clients like [Ansible](https://ansible.github.io/workshops/exercises/ansible_f5/3.0-as3-intro/),[Terraform](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/bigip_as3),etc._
 

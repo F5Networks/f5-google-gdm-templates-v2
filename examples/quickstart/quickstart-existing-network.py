@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.4.0.0
+# Version 2.5.0.0
 
 
 """Creates full stack for POC"""
