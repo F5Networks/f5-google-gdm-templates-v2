@@ -28,6 +28,9 @@ resources:
       allowUsageAnalytics: true
       ### (OPTIONAL) Application label.
       application: f5app
+      ### (OPTIONAL) BIG-IP custom image ID.
+      # Supply the identifier of a custom image used to create the BIG-IP instance(s).
+      # bigIpCustomImageId: myProjectName/global/images/f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
       ### (OPTIONAL) External interface private IP address for bigip1.
       bigIpExternalSelfIp01: 10.0.1.11
       ### (OPTIONAL) External interface private IP address for bigip2.
