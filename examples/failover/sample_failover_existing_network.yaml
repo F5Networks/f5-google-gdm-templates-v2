@@ -28,16 +28,16 @@ resources:
   - name: failover-py
     properties:
       ### (OPTIONAL) This deployment can send anonymous statistics to F5
-      # to help us determine how to improve our solutions.
-      # If you select 'false' statistics are not sent.
+      #   to help us determine how to improve our solutions.
+      #   If you select 'false' statistics are not sent.
       allowUsageAnalytics: true
       ### (OPTIONAL) Application label.
       application: f5app
       ### (OPTIONAL) BIG-IP custom image ID.
-      # Uncomment the parameter below to supply the identifier of a non marketplace custom image
-      # (for example, clones or those created by the F5 BIG-IP Image Generator),
-      # starting with the project name. Example value: 'myProjectName/global/images/myImageName'
-      # bigIpCustomImageId: myProjectName/global/images/myImageName
+      #   Uncomment the parameter below to supply the identifier of a non marketplace custom image
+      #   (for example, clones or those created by the F5 BIG-IP Image Generator),
+      #   starting with the project name. Example value: 'myProjectName/global/images/myImageName'
+      #   bigIpCustomImageId: myProjectName/global/images/myImageName
       ### (OPTIONAL) External interface private IP address for bigip1.
       bigIpExternalSelfIp01: 10.0.1.11
       ### (OPTIONAL) External interface private IP address for bigip2.
@@ -59,14 +59,14 @@ resources:
       ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
       ### (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 01.
-      # Leave this parameter commented out if deploying the PAYG solution.
-      # bigIpLicenseKey01: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
+      #   Leave this parameter commented out if deploying the PAYG solution.
+      #   bigIpLicenseKey01: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
       ### (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 02.
-      # Leave this parameter commented out if deploying the PAYG solution.
-      # bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
+      #   Leave this parameter commented out if deploying the PAYG solution.
+      #   bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
       ### (OPTIONAL) Provide the static address of the remote peer used for clustering.
-      # In this failover solution, clustering is initiated from the second instance (02)
-      # to the first instance (01) so you would provide the first instances Self IP address.
+      #   In this failover solution, clustering is initiated from the second instance (02)
+      #   to the first instance (01) so you would provide the first instances Self IP address.
       bigIpPeerAddr: 10.0.1.11
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig01: >-
@@ -77,25 +77,25 @@ resources:
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
       ### (REQUIRED) BIG-IP secret ID.
-      # Supply the ID of the Google secret manager secret where the BIG-IP password used for
-      # clustering is stored. For example: 'mySecretId'.
+      #   Supply the ID of the Google secret manager secret where the BIG-IP password used for
+      #   clustering is stored. For example: 'mySecretId'.
       bigIpSecretId:
       ### (OPTIONAL) BIG-IP service account email.
-      # Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
-      # Uncomment the parameter below and replace 'your-service-account@yourproject' value
-      # with your existing service account email.
-      # Note: If left commented and a value is not provided, a service account will be created
-      # using the value of the uniqueString input parameter and the project name.
-      # For example: 'myuniqstr-admin@myproject.iam.gserviceaccount.com'.
-      # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
+      #   Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
+      #   Uncomment the parameter below and replace 'your-service-account@yourproject' value
+      #   with your existing service account email.
+      #   Note: If left commented and a value is not provided, a service account will be created
+      #   using the value of the uniqueString input parameter and the project name.
+      #   For example: 'myuniqstr-admin@myproject.iam.gserviceaccount.com'.
+      #   bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
       ### (OPTIONAL) Cloud Failover deployment tag value.
       cfeTag: bigip_high_availability_solution
       ### (OPTIONAL) Cloud Failover storage bucket value.
-      # Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension.
-      # Uncomment the parameter below and replace 'your-unique-name' value with your unique name.
-      # Note: If left commented and a value is not provided, a storage bucket will be created
-      # using the value of the uniqueString input parameter. For example: 'myuniqstr-cfe-storage'.
-      # cfeBucket: your-unique-name
+      #   Supply a unique name for a CFE storage bucket created and used by Cloud Failover Extension.
+      #   Uncomment the parameter below and replace 'your-unique-name' value with your unique name.
+      #   Note: If left commented and a value is not provided, a storage bucket will be created
+      #   using the value of the uniqueString input parameter. For example: 'myuniqstr-cfe-storage'.
+      #   cfeBucket: your-unique-name
       ### (OPTIONAL) Cost Center label.
       cost: f5cost
       ### (OPTIONAL) Environment Center label.
@@ -103,11 +103,11 @@ resources:
       ### (OPTIONAL) Group label.
       group: f5group
       ### (REQUIRED) This parameter is used for providing existing networks names.
-      # For example,
-      # networks:
-      #   mgmtNetworkName: myuniqstr-mgmt
-      #   externalNetworkName: myuniqstr-app
-      #   internalNetworkName: myuniqstr-internal
+      #   For example,
+      #   networks:
+      #     mgmtNetworkName: myuniqstr-mgmt
+      #     externalNetworkName: myuniqstr-app
+      #     internalNetworkName: myuniqstr-internal
       networks:
         mgmtNetworkName:
         externalNetworkName:
@@ -115,46 +115,46 @@ resources:
       ### (OPTIONAL) Owner label.
       owner: f5owner
       ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface.
-      # By default, this is set to true. If set to false, the solution will deploy a bastion host
-      # instead in order to provide access.
+      #   By default, this is set to true. If set to false, the solution will deploy a bastion host
+      #   instead in order to provide access.
       provisionPublicIp: true
       ### (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
       region: us-west1
       ### (REQUIRED) This field restricts web application access (ports 80 and 443)
-      # to a specific network or address. Enter an IP address or address range in CIDR notation.
-      # For example, '55.55.55.55/32'.
-      # The network address should be in array format. For example:
-      # restrictedSrcAddressApp:
-      #   - 0.0.0.0/0
+      #   to a specific network or address. Enter an IP address or address range in CIDR notation.
+      #   For example, '55.55.55.55/32'.
+      #   The network address should be in array format. For example:
+      #   restrictedSrcAddressApp:
+      #     - 0.0.0.0/0
       restrictedSrcAddressApp:
       ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
-      # Provide a yaml list of addresses or networks in CIDR notation,
-      # for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
-      # Please restrict the IP address range to your client, for example '- X.X.X.X/32'.
-      # Production should never expose the BIG-IP Management interface to the Internet.
-      # NOTE:
-      # - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
-      # - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the
-      # Bastion's source network as in the example below (w/ RFC 1918 block).
-      # restrictedSrcAddressMgmt:
-      #   - 10.0.0.0/24     # Bastion Host on Mgmt Network
-      #   - 55.55.55.55/32  # Client to Bastion Host
+      #   Provide a yaml list of addresses or networks in CIDR notation,
+      #   for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
+      #   Please restrict the IP address range to your client, for example '- X.X.X.X/32'.
+      #   Production should never expose the BIG-IP Management interface to the Internet.
+      #   NOTE:
+      #   - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
+      #   - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the
+      #   Bastion's source network as in the example below (w/ RFC 1918 block).
+      #   restrictedSrcAddressMgmt:
+      #     - 10.0.0.0/24     # Bastion Host on Mgmt Network
+      #     - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
       ### (REQUIRED) This parameter is used for providing management and application subnets names.
-      # For example,
-      # subnets:
-      #   mgmtSubnetName: myuniqstr-mgmt
-      #   appSubnetName: myuniqstr-app
-      #   internalSubnetName: myuniqstr-internal
+      #   For example,
+      #   subnets:
+      #     mgmtSubnetName: myuniqstr-mgmt
+      #     appSubnetName: myuniqstr-app
+      #     internalSubnetName: myuniqstr-internal
       subnets:
         mgmtSubnetName:
         appSubnetName:
         internalSubnetName:
       ### (OPTIONAL) A string that will be used in naming cloud resources.
-      # Because some resources require globally unique names, we recommend using a unique value.
+      #   Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
       ### (OPTIONAL) Enter the Google availability zone where you want to deploy the BIG-IP VE instance,
-      # for example 'us-west1-a'.
+      #   for example 'us-west1-a'.
       zones:
         - us-west1-a
         - us-west1-b
