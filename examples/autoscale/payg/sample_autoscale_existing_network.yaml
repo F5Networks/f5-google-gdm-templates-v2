@@ -30,108 +30,108 @@ resources:
   - name: autoscale-existing-network-py
     type: autoscale.py
     properties:
-      ### (OPTIONAL) This deployment can send anonymous statistics to F5
-      #   to help us determine how to improve our solutions.
-      #   If you select 'false' statistics are not sent.
+      ###  (OPTIONAL) This deployment can send anonymous statistics to F5
+      #    to help us determine how to improve our solutions.
+      #    If you select 'false' statistics are not sent.
       allowUsageAnalytics: true
-      ### (OPTIONAL) Application label.
+      ###  (OPTIONAL) Application label.
       application: f5app
-      ### (OPTIONAL): Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.
+      ###  (OPTIONAL): Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.
       bigIpCoolDownPeriodSec: 60
-      ### (OPTIONAL) BIG-IP custom image ID.
-      #   Uncomment the parameter below to supply the identifier of a non marketplace custom image (for example, clones)
-      #   starting with the project name. Example value: 'myProjectName/global/images/myImageName'
+      ###  (OPTIONAL) BIG-IP custom image ID.
+      #    Uncomment the parameter below to supply the identifier of a non marketplace custom image (for example, clones)
+      #    starting with the project name. Example value: 'myProjectName/global/images/myImageName'
       # bigIpCustomImageId: myProjectName/global/images/myImageName
-      ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
+      ###  (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
         https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
-      ### (OPTIONAL) Supply a URL for the bigip-runtime-init package.
+      ###  (OPTIONAL) Supply a URL for the bigip-runtime-init package.
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
-      ### (OPTIONAL) The name of a public F5 Marketplace image to deploy.
-      #   If you would like to view all available public images, run the following gcloud command:
-      #   gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
+      ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy.
+      #    If you would like to view all available public images, run the following gcloud command:
+      #    gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
       bigIpImageName: f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250
-      ### (OPTIONAL) Version of the instance template to create. When updating deployment properties
+      ###  (OPTIONAL) Version of the instance template to create. When updating deployment properties
       # o f the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
-      ### (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
+      ###  (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
-      ### (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
+      ###  (OPTIONAL): High CPU Percentage threshold to begin scaling out BIG-IP VE instances.
       bigIpScaleOutCpuThreshold: 0.8
-      ### (OPTIONAL): Maximum number of BIG-IP instances that can be created in the Auto Scale Group.
+      ###  (OPTIONAL): Maximum number of BIG-IP instances that can be created in the Auto Scale Group.
       bigIpScalingMaxSize: 8
-      ### (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
+      ###  (OPTIONAL): Minimum number of BIG-IP instances you want available in the Auto Scale Group.
       bigIpScalingMinSize: 1
-      ### (OPTIONAL) BIG-IP secret ID.
-      #   Supply the of the Google secret manager secret to create READ permissions for.
-      #   For example, if customizing your runtime-init config with an admin password, logging credential, etc.
+      ###  (OPTIONAL) BIG-IP secret ID.
+      #    Supply the of the Google secret manager secret to create READ permissions for.
+      #    For example, if customizing your runtime-init config with an admin password, logging credential, etc.
       # bigIpSecretId: mySecretId
-      ### (OPTIONAL) BIG-IP service account email.
-      #   Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
-      #   Uncomment the parameter below and replace 'your-service-account@yourproject' value
-      #   with your existing service account email.
-      #   Note: If left commented and a value is not provided, a service account will be created
-      #   using the value of the uniqueString input parameter and the project name.
-      #   For example: 'myuniqstr-admin@myproject.iam.gserviceaccount.com'.
+      ###  (OPTIONAL) BIG-IP service account email.
+      #    Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
+      #    Uncomment the parameter below and replace 'your-service-account@yourproject' value
+      #    with your existing service account email.
+      #    Note: If left commented and a value is not provided, a service account will be created
+      #    using the value of the uniqueString input parameter and the project name.
+      #    For example: 'myuniqstr-admin@myproject.iam.gserviceaccount.com'.
       # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
-      ### (OPTIONAL) Cost Center label.
+      ###  (OPTIONAL) Cost Center label.
       cost: f5cost
-      ### (OPTIONAL) Environment Center label.
+      ###  (OPTIONAL) Environment Center label.
       environment: f5env
-      ### (OPTIONAL) Owner label.
+      ###  (OPTIONAL) Owner label.
       owner: f5owner
-      ### (OPTIONAL) Group label.
+      ###  (OPTIONAL) Group label.
       group: f5group
-      ### (OPTIONAL) Enter the name of the Google Cloud log that will receive WAF events.
+      ###  (OPTIONAL) Enter the name of the Google Cloud log that will receive WAF events.
       logId: f5-waf-logs
-      ### (REQUIRED) The existing network name. For example: 'myuniqstr-network'
+      ###  (REQUIRED) The existing network name. For example: 'myuniqstr-network'
       networkName:
-      ### (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface.
-      #   By default, this is set to true. If set to false, the solution will deploy a bastion host
-      #   instead in order to provide access.
+      ###  (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface.
+      #    By default, this is set to true. If set to false, the solution will deploy a bastion host
+      #    instead in order to provide access.
       provisionPublicIp: true
-      ### (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
+      ###  (OPTIONAL) Enter the Google Region in which you want to deploy BIG-IP, for example 'us-west1'.
       region: us-west1
-      ### (REQUIRED) This field restricts web application access (ports 80 and 443)
-      #   to a specific network or address. Enter an IP address or address range in CIDR notation.
-      #   For example, '55.55.55.55/32'.
-      #   The network address should be in array format. For example:
-      #   restrictedSrcAddressApp:
-      #     - 0.0.0.0/0
+      ###  (REQUIRED) This field restricts web application access (ports 80 and 443)
+      #    to a specific network or address. Enter an IP address or address range in CIDR notation.
+      #    For example, '55.55.55.55/32'.
+      #    The network address should be in array format. For example:
+      #    restrictedSrcAddressApp:
+      #      - 0.0.0.0/0
       restrictedSrcAddressApp:
-      ### (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
-      #   Provide a yaml list of addresses or networks in CIDR notation,
-      #   for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
-      #   Please restrict the IP address range to your client, for example '- X.X.X.X/32'.
-      #   Production should never expose the BIG-IP Management interface to the Internet.
-      #   NOTE:
-      #   - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
-      #   - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the
-      #   Bastion's source network as in the example below (w/ RFC 1918 block).
-      #   restrictedSrcAddressMgmt:
-      #     - 10.0.0.0/24     # Bastion Host on Mgmt Network
-      #     - 55.55.55.55/32  # Client to Bastion Host
+      ###  (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
+      #    Provide a yaml list of addresses or networks in CIDR notation,
+      #    for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
+      #    Please restrict the IP address range to your client, for example '- X.X.X.X/32'.
+      #    Production should never expose the BIG-IP Management interface to the Internet.
+      #    NOTE:
+      #    - The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.).
+      #    - If using a Bastion Host (when ProvisionPublicIp = false), you must also include the
+      #    Bastion's source network as in the example below (w/ RFC 1918 block).
+      #    restrictedSrcAddressMgmt:
+      #      - 10.0.0.0/24     # Bastion Host on Mgmt Network
+      #      - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
         - 10.0.0.0/8
-      ### (REQUIRED) This parameter is used for providing management and application subnets names.
-      #   For example,
-      #   subnets:
-      #     mgmtSubnetName: myuniqstr-mgmt
-      #     appSubnetName: myuniqstr-app
+      ###  (REQUIRED) This parameter is used for providing management and application subnets names.
+      #    For example,
+      #    subnets:
+      #      mgmtSubnetName: myuniqstr-mgmt
+      #      appSubnetName: myuniqstr-app
       subnets:
         mgmtSubnetName:
         appSubnetName:
-      ### (OPTIONAL) A string that will be used in naming cloud resources.
-      #   Because some resources require globally unique names, we recommend using a unique value.
+      ###  (OPTIONAL) A string that will be used in naming cloud resources.
+      #    Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr
-      ### (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources.
-      #   By default, this is set to false.
-      #   Specify false when first deploying and right before deleting.
-      #   Specify true when updating the deployment. See README for more details.
+      ###  (OPTIONAL) This specifies when to add dependency statements to the autoscale related resources.
+      #    By default, this is set to false.
+      #    Specify false when first deploying and right before deleting.
+      #    Specify true when updating the deployment. See README for more details.
       update: false
-      ### (OPTIONAL) Enter the Google availability zones where you want to deploy
-      #   the BIG-IP VE instances, for example 'us-west1-a'.
+      ###  (OPTIONAL) Enter the Google availability zones where you want to deploy
+      #    the BIG-IP VE instances, for example 'us-west1-a'.
       zones:
         - us-west1-a
         - us-west1-b
