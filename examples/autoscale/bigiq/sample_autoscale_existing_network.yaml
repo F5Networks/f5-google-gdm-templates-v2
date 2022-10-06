@@ -42,7 +42,7 @@ resources:
       #   Uncomment the parameter below to supply the identifier of a non marketplace custom image
       #   (for example, clones or those created by the F5 BIG-IP Image Generator),
       #   starting with the project name. Example value: 'myProjectName/global/images/myImageName'
-      #   bigIpCustomImageId: myProjectName/global/images/myImageName
+      # bigIpCustomImageId: myProjectName/global/images/myImageName
       ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
         https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
@@ -67,7 +67,7 @@ resources:
       ### (OPTIONAL) BIG-IP secret ID.
       #   Supply the of the Google secret manager secret to create READ permissions for.
       #   For example, if customizing your runtime-init config with an admin password, logging credential, etc.
-      #   bigIpSecretId: mySecretId
+      # bigIpSecretId: mySecretId
       ### (OPTIONAL) BIG-IP service account email.
       #   Supply an email of an existing service account to be assigned to the BIG-IP instance(s).
       #   Uncomment the parameter below and replace 'your-service-account@yourproject' value
@@ -75,7 +75,7 @@ resources:
       #   Note: If left commented and a value is not provided, a service account will be created
       #   using the value of the uniqueString input parameter and the project name.
       #   For example: 'myuniqstr-admin@myproject.iam.gserviceaccount.com'.
-      #   bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
+      # bigIpServiceAccountEmail: your-service-account@yourproject.iam.gserviceaccount.com
       ### (REQUIRED) BIG-IQ secret ID.
       #   Supply the ID of the Google secret manager secret containing the password for BIG-IQ
       #   used during BIG-IP licensing via BIG-IQ.
