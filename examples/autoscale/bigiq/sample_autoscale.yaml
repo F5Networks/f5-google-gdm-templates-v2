@@ -42,7 +42,7 @@ resources:
       ### (OPTIONAL): Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot.
       bigIpCoolDownPeriodSec: 60
       ### (OPTIONAL) BIG-IP custom image ID.
-          # Supply the identifier of a non marketplace custom image 
+          # Uncomment the parameter below to supply the identifier of a non marketplace custom image 
           # (for example, clones or those created by the F5 BIG-IP Image Generator), 
           # starting with the project name. Example value: 'myProjectName/global/images/myImageName'
       # bigIpCustomImageId: myProjectName/global/images/myImageName
