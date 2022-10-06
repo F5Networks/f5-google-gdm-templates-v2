@@ -68,6 +68,8 @@ def create_instance_template(context, instance_template):
         'bigIqSecretId' in context.properties else ''
     secret_id = str(context.properties['secretId']) if \
         'secretId' in context.properties else ''
+    source_image = ''.join([COMPUTE_URL_BASE, 'projects/', context.properties['customImageId'],]) if context.properties['customImageId'] else \
+        ''.join([COMPUTE_URL_BASE, 'projects/f5-7626-networks-public/global/images/', context.properties['imageName'],])
     telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     properties = {}
 
@@ -94,11 +96,7 @@ def create_instance_template(context, instance_template):
             'boot': True,
             'autoDelete': True,
             'initializeParams': {
-                'sourceImage': ''.join([COMPUTE_URL_BASE,
-                                        'projects/f5-7626-networks-public',
-                                        '/global/images/',
-                                        context.properties['imageName'],
-                                        ])
+                'sourceImage': source_image
             }
         }],
         'networkInterfaces': [{

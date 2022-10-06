@@ -100,6 +100,8 @@ def create_bigip_deployment(context, num_nics, instance_number):
 
     allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
         'allowUsageAnalytics' in context.properties else True
+    custom_image_id = context.properties['bigIpCustomImageId'] if \
+        'bigIpCustomImageId' in context.properties else ''
     hostname = context.properties['bigIpHostname0' + str(instance_number)] if \
         'bigIpHostname0' + str(instance_number) in context.properties else 'bigip0' + str(instance_number) + '.local'
     license_key = context.properties['bigIpLicenseKey0' + str(instance_number)] if \
@@ -119,6 +121,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'customImageId': custom_image_id,
             'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],

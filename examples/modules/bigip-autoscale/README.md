@@ -45,6 +45,7 @@ This Google Deployment Manager template creates an autoscale group of BIG-IP ins
 | bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
 | bigIqSecretId | No |  | string | Supply the of the Google secret manager secret containing the password for BIG-IQ used during BIG-IP licensing via BIG-IQ. |
 | cost | No | f5cost | string | Cost Center label. |
+| customImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
 | environment | No | f5env | string | Environment label. | 
 | group | No | f5group | string | Group label. |
 | healthChecks | Yes |  | array | List of declaration of settings used for provisioning HealthChecks which defines health checks used by other cloud resources. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/healthChecks). |
