@@ -27,6 +27,7 @@ cp /tmp/examples/quickstart/sample_quickstart_existing_network.yaml ${tmpl_path}
 /usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip_app}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip_mgmt}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.bigIpCustomImageId = \"<CUSTOM IMAGE ID>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpLicenseKey = \"${license_key}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpRuntimeInitConfig = \"<BIGIP RUNTIME INIT CONFIG>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpImageName = \"<IMAGE NAME>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
