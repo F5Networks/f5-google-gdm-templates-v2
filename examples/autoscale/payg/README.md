@@ -84,6 +84,15 @@ This solution leverages traditional Autoscale configuration management practices
 
 - By default, this solution creates required IAM roles, permissions, and service account. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account with applied permissions to the BIG-IP instance(s). See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources. See [IAM Permissions by Solution Type](../../modules/access/README.md#iam-permissions-by-solution-type) for a detailed list of the permissions required by this solution.
 
+- To change the BIG-IP image to another marketplace image, update the **bigIpImageName** parameter. To view all the available marketplace images, you can run the following **gcloud** command:
+    ```bash
+    $ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
+    ```
+  To change the BIG-IP image to a non marketplace **custom** image (for example, clones), update the **bigIpCustomImageId** parameter. Provide the identifier of a custom image. For example:
+
+    ```myProjectName/global/images/myImageName```
+
+
 - This solution requires Internet access for: 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via GitHub.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
   - Contacting native cloud services for various cloud integrations: 
@@ -120,7 +129,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server. If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application label. |
-| bigIpCustomImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
+| bigIpCustomImageId | No |  | string | Identifier of a non marketplace custom image (for example, clones), starting with the project name. Example value: `myProjectName/global/images/myImageName` |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
 | bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
@@ -156,7 +165,7 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
 | bigIpCustomImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
-| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |

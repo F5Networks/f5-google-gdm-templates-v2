@@ -80,12 +80,21 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 ## Important Configuration Notes
 
-- By default, this solution creates a username **admin** with a **temporary** password set to value of the BIG-IP's **Instance ID**. <br>
+- By default, this solution creates a username **admin** with a ***temporary*** password set to value of the BIG-IP's **Instance ID**. <br>
 ***IMPORTANT**: You should change this temporary password immediately following deployment.*
 
 - By default, this solution does not create IAM resources. By specifying a value for the **bigIpServiceAccountEmail** input parameter, you can assign a pre-existing IAM service account to the BIG-IP instance. See GCP IAM [documentation](https://cloud.google.com/iam/docs/service-accounts) for more information on creating these resources.
 
-- When specifying values for the bigIpInstanceType and numNics parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+- To change the BIG-IP image to another marketplace image, update the **bigIpImageName** parameter. To view all the available marketplace images, you can run the following **gcloud** command:
+    ```bash
+    $ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
+    ```
+  To change the BIG-IP image to a non marketplace **custom** image (for example, clones or those created by the F5 BIG-IP Image Generator), update the **bigIpCustomImageId** parameter. Provide the identifier of a custom image. For example:
+
+    ```myProjectName/global/images/myImageName```
+
+
+- When specifying values for the **bigIpInstanceType** and **numNics** parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
 - **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
 
@@ -109,8 +118,6 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 - In this solution, the BIG-IP VE has the [LTM](https://f5.com/products/big-ip/local-traffic-manager-ltm) and [ASM](https://f5.com/products/big-ip/application-security-manager-asm) modules enabled to provide advanced traffic management and web application security functionality.
 
-- If you would like to view all available images, run the following command from the **gcloud** command line: `$ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`
-
 - This directory contains a schema file which helps manage the required fields and set defaults to optional fields. For example, if you omit the property for **bigIpRuntimeInitPackageUrl** in your configuration file, we set the default URL to the latest available version.
 
 - This deployment can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality for this deployment by supplying **false** for the value of the **allowUsageAnalytics** input parameter. To disable the BIG-IP system from also sending information, you can disable it system-wide by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
@@ -130,9 +137,9 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | appContainerName | No | 'f5devcentral/f5-demo-app:latest' | string | The name of a container to download and install which is used for the example application server(s). If this value is left blank, the application module template is not deployed. |
 | application | No | f5app | string | Application Tag. |
-| bigIpCustomImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
+| bigIpCustomImageId | No |  | string | Supply the identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName` |
 | bigIpHostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
@@ -159,9 +166,9 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | --- | --- | --- | --- | --- |
 | allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | application | No | f5app | string | Application label. |
-| bigIpCustomImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
+| bigIpCustomImageId | No |  | string | Identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName` |
 | bigIpHostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of BIG-IP custom image found in the Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-1-0-0-11-payg-best-plus-25mbps-220721054250`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.5.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
