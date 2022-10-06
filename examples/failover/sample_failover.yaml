@@ -72,7 +72,7 @@ resources:
       # bigIpLicenseKey01: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
       ### (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 02.
       #   Leave this parameter commented out if deploying the PAYG solution.
-      #   bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
+      # bigIpLicenseKey02: AAAAA-BBBBB-CCCCC-DDDDD-FFFFFFF
       ### (OPTIONAL) Provide the static address of the remote peer used for clustering.
       #   In this failover solution, clustering is initiated from the second instance (02)
       #   to the first instance (01) so you would provide the first instances Self IP address.
