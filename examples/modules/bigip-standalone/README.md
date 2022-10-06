@@ -42,6 +42,7 @@ This Google Deployment Manager template creates a single BIG-IP instance; each i
 | allowUsageAnalytics | No | true | boolean | This deployment can send anonymous statistics to F5 to help us determine how to improve our solutions. If you select **false** statistics are not sent. |
 | bigIpRuntimeInitPackageUrl | Yes |  | string | URL for BIG-IP Runtime Init package. | 
 | bigIpRuntimeInitConfig | Yes |  | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration. |
+| customImageId | No |  | string | Identifier of a custom image, starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName`. You can find the names of F5 marketplace images by running the command: `gcloud compute images list --project myProjectName --filter="name~myImageName"`. |
 | hostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters. |
 | imageName | Yes |  | string | BIG-IP image name.|
 | instanceType | Yes |  | string | Instance type assigned to the application. For example: `n1-standard-1`.|
