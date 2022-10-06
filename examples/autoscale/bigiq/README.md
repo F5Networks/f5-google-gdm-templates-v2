@@ -108,7 +108,7 @@ https://cloud.google.com/secret-manager/docs/creating-and-accessing-secrets)
     ```bash
     $ gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
     ```
-  To change the BIG-IP image to a non marketplace **custom** image (for example, clones or those created by the F5 BIG-IP Image Generator), update the **bigIpCustomImageId** parameter. Provide the identifier of a custom image. For example:
+  To change the BIG-IP image to a non marketplace **custom** image (for example, clones or those created by the [F5 BIG-IP Image Generator](https://github.com/F5devcentral/f5-bigip-image-generator)), update the **bigIpCustomImageId** parameter. Provide the identifier of a custom image. For example:
 
     ```myProjectName/global/images/myImageName```
 
