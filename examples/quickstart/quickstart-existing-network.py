@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.5.0.0
+# Version 2.6.0.0
 
 
 """Creates full stack for POC"""
@@ -18,13 +18,15 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     for nics in range(context.properties['numNics']):
         access_config = {}
+        # Multi-NIC first interface
         if context.properties['numNics'] != 1 and nics == 0:
             net_name = context.properties['networks']['externalNetworkName']
-            subnet_name = context.properties['subnets']['appSubnetName']
+            subnet_name = context.properties['subnets']['externalSubnetName']
             interface_description = 'Interface used for external traffic'
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
             }
+        # Single NIC
         elif nics == 0:
             net_name = context.properties['networks']['mgmtNetworkName']
             subnet_name = context.properties['subnets']['mgmtSubnetName']
@@ -35,6 +37,7 @@ def create_bigip_deployment(context):
                 }
             else:
                 access_config = {'accessConfigs': []}
+        # Multi-NIC second interface
         elif nics == 1:
             net_name = context.properties['networks']['mgmtNetworkName']
             subnet_name = context.properties['subnets']['mgmtSubnetName']
@@ -45,6 +48,7 @@ def create_bigip_deployment(context):
                 }
             else:
                 access_config = {'accessConfigs': []}
+        # Multi-NIC third interface
         else:
             net_name = context.properties['networks']['internalNetworkName']
             subnet_name = context.properties['subnets']['internalSubnetName']
@@ -74,6 +78,8 @@ def create_bigip_deployment(context):
 
     allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
         'allowUsageAnalytics' in context.properties else True
+    custom_image_id = context.properties['bigIpCustomImageId'] if \
+        'bigIpCustomImageId' in context.properties else ''
     hostname = context.properties['bigIpHostname'] if \
         'bigIpHostname' in context.properties else 'bigip01.local'
     license_key = context.properties['bigIpLicenseKey'] if \
@@ -87,6 +93,7 @@ def create_bigip_deployment(context):
             'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig'],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'customImageId': custom_image_id,
             'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
             'instanceType': context.properties['bigIpInstanceType'],
@@ -131,8 +138,6 @@ def create_dag_deployment(context):
     """ Create dag module deployment """
     prefix = context.properties['uniqueString']
     mgmt_net_name = context.properties['networks']['mgmtNetworkName']
-    ext_net_name = context.properties['networks']['externalNetworkName']
-    int_net_name = context.properties['networks']['internalNetworkName']
     if context.properties['numNics'] == 1:
         ext_net_name = context.properties['networks']['mgmtNetworkName']
         int_net_name = context.properties['networks']['mgmtNetworkName']
@@ -149,16 +154,14 @@ def create_dag_deployment(context):
     internal_net_ref = COMPUTE_URL_BASE + 'projects/' + \
                        context.env['project'] + '/global/networks/' + int_net_name
     int_net_cidr = '10.0.' + str(context.properties['numNics'] - 1) + '.0/24'
+    mgmt_port = 8443
     depends_on_array = []
     depends_on_array.append(mgmt_net_name)
-    mgmt_port = 8443
     if context.properties['numNics'] > 1:
         depends_on_array.append(ext_net_name)
         mgmt_port = 443
     if context.properties['numNics'] > 2:
         depends_on_array.append(int_net_name)
-    if context.properties['numNics'] > 3:
-        depends_on_array.append(ext_net_name)
     target_instance_name = generate_name(prefix, 'bigip-vm-01-ti')
     public_ip_name = generate_name(prefix, 'public-ip-01')
 

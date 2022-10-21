@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.5.0.0
+# Version 2.6.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -68,6 +68,8 @@ def create_instance_template(context, instance_template):
         'bigIqSecretId' in context.properties else ''
     secret_id = str(context.properties['secretId']) if \
         'secretId' in context.properties else ''
+    source_image = ''.join([COMPUTE_URL_BASE, 'projects/', context.properties['customImageId'],]) if context.properties['customImageId'] else \
+        ''.join([COMPUTE_URL_BASE, 'projects/f5-7626-networks-public/global/images/', context.properties['imageName'],])
     telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     properties = {}
 
@@ -94,11 +96,7 @@ def create_instance_template(context, instance_template):
             'boot': True,
             'autoDelete': True,
             'initializeParams': {
-                'sourceImage': ''.join([COMPUTE_URL_BASE,
-                                        'projects/f5-7626-networks-public',
-                                        '/global/images/',
-                                        context.properties['imageName'],
-                                        ])
+                'sourceImage': source_image
             }
         }],
         'networkInterfaces': [{
@@ -154,7 +152,7 @@ def create_instance_template(context, instance_template):
                                     'done',
                                     '',
                                     '# Run',
-                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.5.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
+                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.6.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
                                     'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf ${TELEMETRY_FLAG}',

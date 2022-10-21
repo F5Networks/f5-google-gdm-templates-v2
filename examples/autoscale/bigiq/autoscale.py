@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.5.0.0
+# Version 2.6.0.0
 
 # pylint: disable=W,C,R
 
@@ -166,6 +166,8 @@ def create_bigip_deployment(context):
     subnet_name = generate_name(prefix, 'mgmt-subnet')
     allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
         'allowUsageAnalytics' in context.properties else True
+    custom_image_id = context.properties['bigIpCustomImageId'] if \
+        'bigIpCustomImageId' in context.properties else ''
     secret_id = context.properties['bigIpSecretId'] if \
         'bigIpSecretId' in context.properties else ''
     service_account_email = context.properties['bigIpServiceAccountEmail'] if \
@@ -219,6 +221,7 @@ def create_bigip_deployment(context):
               }
           }],
           'cost': context.properties['cost'],
+          'customImageId': custom_image_id,
           'environment': context.properties['environment'],
           'group': context.properties['group'],
           'healthChecks': [

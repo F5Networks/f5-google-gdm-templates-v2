@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.5.0.0
+# Version 2.6.0.0
 
 """Creates BIGIP Instance"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -101,6 +101,8 @@ def create_instance(context):
     name = context.properties.get('name') or \
         context.env['name']
     instance_name = generate_name(context.properties['uniqueString'], name)
+    source_image = ''.join([COMPUTE_URL_BASE, 'projects/', context.properties['customImageId'],]) if context.properties['customImageId'] else \
+        ''.join([COMPUTE_URL_BASE, 'projects/f5-7626-networks-public/global/images/', context.properties['imageName'],])
     properties = {}
     # Setup Defaults - property updated to given value when property exists in config
     properties.update({
@@ -112,9 +114,7 @@ def create_instance(context):
                 'boot': True,
                 'autoDelete': True,
                 'initializeParams': {
-                    'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
-                    'f5-7626-networks-public/global/images/', context.properties['imageName'],
-                    ])
+                    'sourceImage': source_image
                 }
             }],
             'hostname': ''.join([instance_name, '.c.',
@@ -290,7 +290,7 @@ def metadata(context):
                                     '       /usr/bin/printf \'%s\\n\' "${RUNTIME_CONFIG}" | jq .  > /config/cloud/runtime-init-conf.yaml',
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.5.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.6.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml ${TELEMETRY_FLAG}',
                                     '   /usr/bin/touch /config/startup_finished',
