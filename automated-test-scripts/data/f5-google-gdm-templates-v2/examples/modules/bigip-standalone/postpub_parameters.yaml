@@ -13,7 +13,7 @@ DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/main/examples/modules/dag/dag.py
 DESCRIPTION: network-<DEWPOINT JOB ID>
 HOST NAME: test.example.com
-IMAGE NAME: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536
+IMAGE NAME: f5-bigip-16-1-3-2-0-0-4-byol-all-modules-2boot-loc-20914235403
 INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface
