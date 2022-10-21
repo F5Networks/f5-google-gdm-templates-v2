@@ -6,7 +6,7 @@ AVAILABILITY ZONE BIGIP 1: <REGION>-a
 AVAILABILITY ZONE BIGIP 2: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config.yaml
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
-IMAGE NAME: f5-bigip-16-1-3-1-0-0-11-byol-all-modules-2boot-loc-0721055536
+IMAGE NAME: f5-bigip-16-1-3-2-0-0-4-byol-all-modules-2boot-loc-20914235403
 INSTANCE NAME: <UNIQUESTRING>-bigip-vm-01
 INSTANCE NAME2: <UNIQUESTRING>-bigip-vm-02
 INSTANCE TYPE: n1-standard-16

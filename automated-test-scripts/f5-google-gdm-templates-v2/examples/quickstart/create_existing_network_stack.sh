@@ -11,6 +11,21 @@ if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
     src_ip_mgmt=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .ipCidrRange')
 fi
 
+mgmt_network='<UNIQUESTRING>-network0-network'
+mgmt_subnet='<UNIQUESTRING>-subnet0-subnet'
+external_network=''
+external_subnet=''
+internal_network=''
+internal_subnet=''
+if [[ <NUMBER NICS> -gt 1 ]]; then
+    external_network='<UNIQUESTRING>-network1-network'
+    external_subnet='<UNIQUESTRING>-subnet1-subnet'
+fi
+if [[ <NUMBER NICS> -gt 2 ]]; then
+    internal_network='<UNIQUESTRING>-network2-network'
+    internal_subnet='<UNIQUESTRING>-subnet2-subnet'
+fi
+
 # Add lic key if byol
 license_key=''
 if [[ "<LICENSE TYPE>" == "byol" ]]; then
@@ -35,12 +50,12 @@ cp /tmp/examples/quickstart/sample_quickstart_existing_network.yaml ${tmpl_path}
 /usr/bin/yq e ".resources[0].properties.bigIpServiceAccountEmail = \"dewpt-ha-service-account@f5-7656-pdsoleng-dev.iam.gserviceaccount.com\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.numNics = <NUMBER NICS>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.provisionPublicIp = <PROVISION PUBLIC IP>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networks.externalNetworkName = \"<UNIQUESTRING>-network1-network\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networks.internalNetworkName = \"<UNIQUESTRING>-network2-network\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.networks.mgmtNetworkName = \"<UNIQUESTRING>-network0-network\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-subnet0-subnet\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-subnet1-subnet\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
-/usr/bin/yq e ".resources[0].properties.subnets.internalSubnetName = \"<UNIQUESTRING>-subnet2-subnet\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.networks.externalNetworkName = \"${external_network}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.networks.internalNetworkName = \"${internal_network}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.networks.mgmtNetworkName = \"${mgmt_network}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"${mgmt_subnet}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnets.externalSubnetName = \"${external_subnet}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.subnets.internalSubnetName = \"${internal_subnet}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.zone = \"<AVAILABILITY ZONE>\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
