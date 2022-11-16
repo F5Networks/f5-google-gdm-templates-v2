@@ -65,11 +65,6 @@ extension_services:
             target: external
             network: '{{{EXTERNAL_GW}}}/32'
             mtu: 1460
-          externalIntRoute:
-            class: Route
-            gw: '{{{EXTERNAL_GW}}}'
-            network: '{{{EXTERNAL_NETWORK}}}/{{{EXTERNAL_BITMASK}}}'
-            mtu: 1460
           default:
             class: Route
             gw: '{{{EXTERNAL_GW}}}'
@@ -156,11 +151,6 @@ extension_services:
             target: external
             network: '{{{EXTERNAL_GW}}}/32'
             mtu: 1460
-          externalIntRoute:
-            class: Route
-            gw: '{{{EXTERNAL_GW}}}'
-            network: '{{{EXTERNAL_NETWORK}}}/{{{EXTERNAL_BITMASK}}}'
-            mtu: 1460
           default:
             class: Route
             gw: '{{{EXTERNAL_GW}}}'
@@ -170,11 +160,6 @@ extension_services:
             class: Route
             target: internal
             network: '{{{INTERNAL_GW}}}/32'
-            mtu: 1460
-          internalIntRoute:
-            class: Route
-            gw: '{{{INTERNAL_GW}}}'
-            network: '{{{INTERNAL_NETWORK}}}/{{{INTERNAL_BITMASK}}}'
             mtu: 1460
           external:
             class: VLAN
@@ -310,36 +295,4 @@ runtime_parameters:
       field: ip
       index: 2
       ipcalc: first
-  - name: EXTERNAL_BITMASK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 0
-      ipcalc: bitmask
-  - name: INTERNAL_BITMASK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
-      ipcalc: bitmask
-  - name: EXTERNAL_NETWORK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 0
-      ipcalc: base
-  - name: INTERNAL_NETWORK
-    type: metadata
-    metadataProvider:
-      environment: gcp
-      type: network
-      field: ip
-      index: 2
-      ipcalc: base
 post_onboard_enabled: []

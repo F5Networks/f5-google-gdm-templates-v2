@@ -96,11 +96,27 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 - When specifying values for the **bigIpInstanceType** and **numNics** parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
-- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+- **Important**: 
+  - For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+  - Due to GCP specific networking, Self IPs are created with a /32 prefix vs. the usual subnet prefix. See [https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#i_am_having_connectivity_issues_when_using_a_netmask_that_is_not_32](https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#i_am_having_connectivity_issues_when_using_a_netmask_that_is_not_32). This means, to reach hosts on directly attached networks, you need to create an additional subnet prefix route to the subnet's local gateway. For example, for a typical Self IP 10.0.2.11/24 on a 10.0.2.0/24 subnet, create a route:
+    
+    Declarative Onboarding snippet:
+    ```
+          local_subnet_route:
+            class: Route
+            network: '10.0.2.0/24'
+            gw: 10.0.2.1
+    ```
+    CLI:
+    ```
+    tmsh create net route local_subnet_route network 10.0.2.0/24 gw 10.0.2.1
+    ```
+    By default, traffic to hosts on the **external network** will go out the default route via the external network's gateway. If you created a full-stack with example application, traffic to hosts on the **application network** will be routed via the internal network's gateway. However, if you need to contact hosts on the locally attached **internal network** (or have additional locally attached networks), create additional subnet prefix route(s) like above.
+
 
 - This solution requires Internet access for:
 
-  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
+  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
   - Contacting native cloud services for various cloud integrations:
 
     - _Onboarding_:
