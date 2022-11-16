@@ -39,6 +39,14 @@ runtime_parameters:
       field: ip
       index: 0
       ipcalc: first
+  - name: INTERNAL_GW
+    type: metadata
+    metadataProvider:
+      environment: gcp
+      type: network
+      field: ip
+      index: 2
+      ipcalc: first
   - name: MGMT_GW
     type: metadata
     metadataProvider:
@@ -116,6 +124,16 @@ extension_services:
             mtu: 1460
             network: default
             gw: '{{{MGMT_GW}}}'
+          externalGwRoute:
+            class: Route
+            target: external
+            network: '{{{EXTERNAL_GW}}}/32'
+            mtu: 1460
+          internalGwRoute:
+            class: Route
+            target: internal
+            network: '{{{INTERNAL_GW}}}/32'
+            mtu: 1460
           external:
             class: VLAN
             tag: 4094
@@ -125,7 +143,7 @@ extension_services:
                 tagged: false
           external-self:
             class: SelfIp
-            address: '{{{SELF_IP_EXTERNAL}}}/24'
+            address: '{{{SELF_IP_EXTERNAL}}}/32'
             vlan: external
             allowService: none
             trafficGroup: traffic-group-local-only
@@ -138,23 +156,8 @@ extension_services:
                 tagged: false
           internal-self:
             class: SelfIp
-            address: '{{{SELF_IP_INTERNAL}}}/24'
+            address: '{{{SELF_IP_INTERNAL}}}/32'
             vlan: internal
             allowService: none
             trafficGroup: traffic-group-local-only
-post_onboard_enabled:
-  - name: create_google_routes
-    type: inline
-    commands:
-      - "EXT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/gateway);\
-        \ tmsh create net route ext_gw_int network $EXT_GW/32 interface external"
-      - "INT_GW=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/2/gateway);\
-        \ tmsh create net route int_gw_int network $INT_GW/32 interface internal"
-      - "MGMT_SELF_IP=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/ip);\
-        \ MGMT_MASK=$(curl -sH 'Metadata-Flavor: Google' http://169.254.169.254/computeMetadata/v1/instance/network-interfaces/0/subnetmask);\
-        \ MGMT_NETWORK=$(ipcalc -n $MGMT_SELF_IP $MGMT_MASK | sed -n 's/^NETWORK=\\\
-        (.*\\)/\\1/p'); MGMT_PREFIX=$(ipcalc -p $MGMT_SELF_IP $MGMT_MASK | sed -n\
-        \ 's/^PREFIX=\\(.*\\)/\\1/p'); tmsh create sys management-route dhclient_route1\
-        \ network $MGMT_SELF_IP/32 type interface; tmsh create sys management-route\
-        \ dhclient_route2 gateway $MGMT_SELF_IP network $MGMT_NETWORK/$MGMT_PREFIX"
-      - tmsh save sys config
+post_onboard_enabled: []
