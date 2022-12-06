@@ -104,14 +104,21 @@ resources:
       group: f5group
       ###  (REQUIRED) This parameter is used for providing existing networks names.
       #    For example,
-      #    networks:
-      #      mgmtNetworkName: myuniqstr-mgmt
-      #      externalNetworkName: myuniqstr-app
-      #      internalNetworkName: myuniqstr-internal
+      #    For a 2 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: myuniqstr-mgmt
+      #         externalNetworkName: myuniqstr-external
+      #    For a 3 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: myuniqstr-mgmt
+      #         externalNetworkName: myuniqstr-external
+      #         internalNetworkName: myuniqstr-internal
       networks:
         mgmtNetworkName:
         externalNetworkName:
         internalNetworkName:
+      ###  (OPTIONAL) Enter valid number of network interfaces (2-3) to create on the BIG-IP VE instances.
+      numNics: 3
       ###  (OPTIONAL) Owner label.
       owner: f5owner
       ###  (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface.
@@ -142,13 +149,18 @@ resources:
       restrictedSrcAddressMgmt:
       ###  (REQUIRED) This parameter is used for providing subnets names.
       #    For example,
-      #    subnets:
-      #      mgmtSubnetName: myuniqstr-mgmt
-      #      appSubnetName: myuniqstr-app  # external subnet
-      #      internalSubnetName: myuniqstr-internal
+      #    For 2 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: myuniqstr-mgmt
+      #       externalSubnetName: myuniqstr-external
+      #    For a 3 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: myuniqstr-mgmt
+      #       externalSubnetName: myuniqstr-external
+      #       internalSubnetName: myuniqstr-internal
       subnets:
         mgmtSubnetName:
-        appSubnetName:
+        externalSubnetName:
         internalSubnetName:
       ###  (OPTIONAL) A string that will be used in naming cloud resources.
       #    Because some resources require globally unique names, we recommend using a unique value.

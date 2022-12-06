@@ -187,6 +187,7 @@ Note: These are specified in the configuration file. See sample_quickstart.yaml
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
+| numNics | No | 3 | integer | Enter valid number of network interfaces (2-3) to create on the BIG-IP VE instance. |
 | owner | No | f5owner | string | Owner Tag. |
 | provisionPublicIp | No | true | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
@@ -229,19 +230,20 @@ Note: These are specified in the configuration file. See sample_failover_existin
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
 | group | No | f5group | string | Group Tag. |
+| numNics | No | 3 | integer | Enter valid number of network interfaces (2-3) to create on the BIG-IP VE instance. |
 | owner | No | f5owner | string | Owner Tag. |
 | networks | **Yes** |  | Object | Networks object which provides names for mgmt and app networks |
-| networks.externalNetworkName | **Yes** |  | string | External network name |
-| networks.interlanNetworkName | No |  | string | Internal network name |  
-| networks.mgmtNetworkName | No |  | string | Management network name | 
+| networks.externalNetworkName | **Yes** |  | string | External network name. Required for 2 NIC deployments. |
+| networks.internalNetworkName | No |  | string | Internal network name. Required for 3 NIC deployments. |  
+| networks.mgmtNetworkName | No |  | string | Management network name. Required for 2 NIC deployments. | 
 | provisionPublicIp | No | false | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
 | restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
 | restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | subnets | **Yes** |  | object | Subnet object which provides names for mgmt and app subnets |
-| subnets.appSubnetName | **Yes** |  | string | Management subnet name |
-| subnets.internalSubnetName | **Yes** |  | string | Internal subnet name |  
-| subnets.mgmtSubnetName | **Yes** |  | string | Management subnet name | 
+| subnets.externalSubnetName | **Yes** |  | string | External network subnet name. Required for 2 NIC deployments. |
+| subnets.internalSubnetName | No |  | string | External network subnet name. Required for 3 NIC deployments. |  
+| subnets.mgmtSubnetName | **Yes** |  | string | External network subnet name. Required for 2 NIC deployments. | 
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE, application, and bastion instances, for example 'us-west1-a'. |
 | zones[0] | No | us-west1-a | string | BIG-IP instance A zone name | 
@@ -364,22 +366,30 @@ Example from sample_failover.yaml:
 F5 has provided the following example configuration files in the `examples/failover/bigip-configurations` folder:
 
 - These examples install Automation Tool Chain packages for a PAYG licensed deployment.
+  - `runtime-init-conf-2nic-payg-instance01.yaml`
+  - `runtime-init-conf-2nic-payg-instance02.yaml`
   - `runtime-init-conf-3nic-payg-instance01.yaml`
   - `runtime-init-conf-3nic-payg-instance02.yaml`
 - These examples install Automation Tool Chain packages and create WAF-protected services for a PAYG licensed deployment.
+  - `runtime-init-conf-2nic-payg-instance01-with-app.yaml`
+  - `runtime-init-conf-2nic-payg-instance02-with-app.yaml`
   - `runtime-init-conf-3nic-payg-instance01-with-app.yaml`
   - `runtime-init-conf-3nic-payg-instance02-with-app.yaml`
 - These examples install Automation Tool Chain packages for a BYOL licensed deployment.
+  - `runtime-init-conf-2nic-byol-instance01.yaml`
+  - `runtime-init-conf-2nic-byol-instance02.yaml`
   - `runtime-init-conf-3nic-byol-instance01.yaml`
   - `runtime-init-conf-3nic-byol-instance02.yaml`
 - These examples install Automation Tool Chain packages and create WAF-protected services for a BYOL licensed deployment.
+  - `runtime-init-conf-2nic-byol-instance01-with-app.yaml`
+  - `runtime-init-conf-2nic-byol-instance02-with-app.yaml`
   - `runtime-init-conf-3nic-byol-instance01-with-app.yaml`
   - `runtime-init-conf-3nic-byol-instance02-with-app.yaml`
 - `Rapid_Deployment_Policy_13_1.xml` - This ASM security policy is supported for BIG-IP 13.1 and later.
 
 See [F5 BIG-IP Runtime Init](https://github.com/F5Networks/f5-bigip-runtime-init) for more examples.
 
-By default, this solution deploys a 3-NIC PAYG BIG-IPs:
+By default, this solution deploys 3-NIC PAYG BIG-IPs:
   - The **Full Stack** (failover.py) references the:
      - `runtime-init-conf-3nic-payg-instance01-with-app.yaml`
      - `runtime-init-conf-3nic-payg-instance02-with-app.yaml`
@@ -390,6 +400,20 @@ By default, this solution deploys a 3-NIC PAYG BIG-IPs:
     - `runtime-init-conf-3nic-payg-instance02.yaml`
   
     BIG-IP config files, which only provides basic system onboarding and does not **NOT** include an example virtual service, and can be used as is.
+
+To deploy **2NIC** instances:
+
+1. Update the **numNics** input parameter to **2**.
+2. Update the **bigIpRuntimeInitConfig01** and **bigIpRuntimeInitConfig02** input parameters to reference the corresponding `2nic` config files (for example, `runtime-init-conf-2nic-payg-instance01.yaml` and `runtime-init-conf-2nic-payg-instance02.yaml`).
+3. If deploying the existing network stack, update the network related parameters to remove references to the internal network and subnet. For example, the **networks** and **subnets** parameters:
+      ```yaml
+      networks:
+        mgmtNetworkName: myuniqstr-mgmt
+        externalNetworkName: myuniqstr-external
+      subnets:
+        mgmtSubnetName: myuniqstr-mgmt
+        externalSubnetName: myuniqstr-external
+      ```
 
 To deploy **BYOL** instances:
   1. Update the **bigIpImageName** input parameter to use `byol` images.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").

@@ -32,7 +32,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
         access_config = {}
         if nics == 0:
             net_name = context.properties['networks']['externalNetworkName']
-            subnet_name = context.properties['subnets']['appSubnetName']
+            subnet_name = context.properties['subnets']['externalSubnetName']
             interface_description = 'Interface used for external traffic'
             access_config = {
                 'accessConfigs': [{ 'name': 'External NAT', 'type': 'ONE_TO_ONE_NAT' }]
@@ -341,7 +341,7 @@ def create_dag_deployment(context, num_nics):
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
-    num_nics = 3
+    num_nics = context.properties['numNics'] if 'numNics' in context.properties else 3
     name = context.properties.get('name') or \
            context.env['name']
     prefix = context.properties['uniqueString']

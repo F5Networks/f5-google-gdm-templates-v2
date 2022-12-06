@@ -111,6 +111,8 @@ resources:
       environment: f5env
       ###  (OPTIONAL) Group label.
       group: f5group
+      ###  (OPTIONAL) Enter valid number of network interfaces (2-3) to create on the BIG-IP VE instances.
+      numNics: 3
       ###  (OPTIONAL) Owner label.
       owner: f5owner
       ###  (OPTIONAL) Provision Public IP addresses for the BIG-IP Management interface.
