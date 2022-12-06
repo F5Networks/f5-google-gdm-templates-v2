@@ -25,6 +25,7 @@ DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
 NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 3
+NUMBER NICS: 3
 LICENSE TYPE: payg
 OS IMAGE: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
 PROVISION PUBLIC IP: false

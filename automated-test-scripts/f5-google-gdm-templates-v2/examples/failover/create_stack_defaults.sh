@@ -24,7 +24,7 @@ if echo "<TEMPLATE URL>" | grep -q "existing-network"; then
     /usr/bin/yq e ".resources[0].properties.networks.internalNetworkName = \"<UNIQUESTRING>-network2-network\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.networks.mgmtNetworkName = \"<UNIQUESTRING>-network0-network\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.subnets.mgmtSubnetName = \"<UNIQUESTRING>-subnet0-subnet\"" -i $config_file
-    /usr/bin/yq e ".resources[0].properties.subnets.appSubnetName = \"<UNIQUESTRING>-subnet1-subnet\"" -i $config_file
+    /usr/bin/yq e ".resources[0].properties.subnets.externalSubnetName = \"<UNIQUESTRING>-subnet1-subnet\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.subnets.internalSubnetName = \"<UNIQUESTRING>-subnet2-subnet\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.region = \"<REGION>\"" -i $config_file
     /usr/bin/yq e ".resources[0].properties.uniqueString = \"<UNIQUESTRING>\"" -i $config_file

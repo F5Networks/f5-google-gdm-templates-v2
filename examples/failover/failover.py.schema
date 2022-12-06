@@ -109,6 +109,10 @@ properties:
     default: f5group
     description: Group label.
     type: string
+  numNics:
+    default: 3
+    description: Number of interfaces to create with your BIG-IP instances.
+    type: integer
   owner:
     default: f5owner
     description: Owner label.

@@ -22,6 +22,7 @@ cp /tmp/examples/failover/sample_failover.yaml ${tmpl_path}<DEWPOINT JOB ID>.yam
 # Update Config File using sample_failover.yaml 
 /usr/bin/yq e ".resources[0].name = \"failover-py\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.allowUsageAnalytics = False" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
+/usr/bin/yq e ".resources[0].properties.numNics = <NUMBER NICS>" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressApp[0] = \"${src_ip}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.restrictedSrcAddressMgmt[0] = \"${src_ip}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml
 /usr/bin/yq e ".resources[0].properties.bigIpLicenseKey01 = \"${license_key_01}\"" -i ${tmpl_path}<DEWPOINT JOB ID>.yaml

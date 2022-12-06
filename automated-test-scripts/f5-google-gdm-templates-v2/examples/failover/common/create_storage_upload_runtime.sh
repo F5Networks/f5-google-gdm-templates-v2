@@ -5,15 +5,15 @@
 
 # copy local runtime config b4 making changes
 if [[ "<PROVISION DEMO APP>" == "True" ]]; then
-    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance01-with-app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance02-with-app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
+    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>-instance01-with-app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
+    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>-instance02-with-app.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
     # Use local files for waf policies
     /usr/bin/yq e ".extension_services.service_operations.[2].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
     /usr/bin/yq e ".extension_services.service_operations.[2].value.Tenant_1.Shared.Custom_WAF_Policy.url = \"https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/Rapid_Deployment_Policy_13_1.xml\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
     do_index=3
 else
-    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance01.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-3nic-<LICENSE TYPE>-instance02.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
+    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>-instance01.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
+    cp $PWD/examples/failover/bigip-configurations/runtime-init-conf-<NUMBER NICS>nic-<LICENSE TYPE>-instance02.yaml $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
     do_index=2
 fi
 
