@@ -16,9 +16,11 @@ onStart:
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 - ../../../common/delete_instance_group.sh
+- ../../../common/delete_target_pool.sh
 onFail:
 - ../../../common/delete_stack.sh
 - ../../../common/verify_delete.sh
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 - ../../../common/delete_instance_group.sh
+- ../../../common/delete_target_pool.sh
