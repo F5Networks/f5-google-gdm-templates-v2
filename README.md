@@ -1,14 +1,14 @@
-# F5 Google Cloud Deployment Manager Templates
+# F5 BIG-IP Google Cloud Deployment Manager Templates
 
 [![Releases](https://img.shields.io/github/release/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/releases)
 [![Issues](https://img.shields.io/github/issues/F5Networks/f5-google-gdm-templates-v2.svg)](https://github.com/F5Networks/f5-google-gdm-templates-v2/issues)
 
-## F5 Google Cloud Deployment Manager 2.0
+## F5 BIG-IP Google Cloud Deployment Manager 2.0
 
 
 ## Introduction
 
-Welcome to the GitHub repository for F5's Google Cloud Deployment Manager Templates v2. All of the templates in this repository have been developed by F5 Networks engineers. This repository contains one main directory: *examples*.
+Welcome to the GitHub repository for F5 BIG-IP Google Cloud Deployment Manager Templates v2. All of the templates in this repository have been developed by F5 Networks engineers. This repository contains one main directory: *examples*.
 
 - **examples**<br>
   These are our next-generation Cloud Solutions Templates 2.0 (CST2), which have been designed to improve the user experience with fewer templates, simplify full-stack deployments, enable customization via a new modular nested/linked architecture, and more. The example templates in this directory have been tested and verified to work as-is and are intended to provide reference deployments of F5 BIG-IP Virtual Editions. 
@@ -42,7 +42,7 @@ If you find an issue, we would love to hear about it.
 
 ### Copyright
 
-Copyright 2014-2022 F5 Networks Inc.
+Copyright 2014-2023 F5 Networks Inc.
 
 ### License
 
