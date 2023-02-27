@@ -5,7 +5,7 @@ info:
   title: F5 Dag/Ingress
   author: F5 Networks
   description: Creates cloud resources to get traffic to BIG-IP solutions.
-  version: 2.6.0.0
+  version: 2.7.0.0
 
 
 imports:

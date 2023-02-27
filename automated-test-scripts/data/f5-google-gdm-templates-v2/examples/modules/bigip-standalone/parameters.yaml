@@ -12,7 +12,7 @@ DAG STACK NAME: <UNIQUESTRING>-dag
 DAG TEMPLATE URL: file://$PWD/examples/modules/dag/dag.py
 DESCRIPTION: <UNIQUESTRING>-network
 HOST NAME: test.example.com
-IMAGE NAME: f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054
+IMAGE NAME: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
 INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface

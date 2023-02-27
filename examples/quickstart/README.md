@@ -96,11 +96,27 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
 - When specifying values for the **bigIpInstanceType** and **numNics** parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
 
-- **Important**: For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+- **Important**: 
+  - For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
+  - Due to GCP specific networking, Self IPs are created with a /32 prefix vs. the usual subnet prefix. See [https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#i_am_having_connectivity_issues_when_using_a_netmask_that_is_not_32](https://cloud.google.com/vpc/docs/create-use-multiple-interfaces#i_am_having_connectivity_issues_when_using_a_netmask_that_is_not_32). This means, to reach hosts on directly attached networks, you need to create an additional subnet prefix route to the subnet's local gateway. For example, for a typical Self IP 10.0.2.11/24 on a 10.0.2.0/24 subnet, create a route:
+    
+    Declarative Onboarding snippet:
+    ```
+          local_subnet_route:
+            class: Route
+            network: '10.0.2.0/24'
+            gw: 10.0.2.1
+    ```
+    CLI:
+    ```
+    tmsh create net route local_subnet_route network 10.0.2.0/24 gw 10.0.2.1
+    ```
+    By default, traffic to hosts on the **external network** will go out the default route via the external network's gateway. If you created a full-stack with example application, traffic to hosts on the **application network** will be routed via the internal network's gateway. However, if you need to contact hosts on the locally attached **internal network** (or have additional locally attached networks), create additional subnet prefix route(s) like above.
+
 
 - This solution requires Internet access for:
 
-  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self-IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
+  - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via github.com). Internet access is required via the management interface and then via a dataplane interface (for example, external Self IP) once a default route is configured. See [Overview of Mgmt Routing](https://support.f5.com/csp/article/K13284) for more details. By default, as a convenience, this solution provisions Public IPs to enable this but in a production environment, outbound access should be provided by a `routed` SNAT service (for example: Cloud NAT, custom firewall, etc.). _NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image, using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html)._
   - Contacting native cloud services for various cloud integrations:
 
     - _Onboarding_:
@@ -139,10 +155,10 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | application | No | f5app | string | Application Tag. |
 | bigIpCustomImageId | No |  | string | Supply the identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName` |
 | bigIpHostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.6.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.7.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -168,10 +184,10 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | application | No | f5app | string | Application label. |
 | bigIpCustomImageId | No |  | string | Identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name, used to create the BIG-IP instance(s). Example value: `myProjectName/global/images/myImageName` |
 | bigIpHostname | No | bigip01.local | string | Supply the hostname you would like to use for the BIG-IP instance. The hostname must be in fqdn format and contain fewer than 63 characters. |
-| bigIpImageName | No | f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728 | string | Name of a public BIG-IP image found in Google Cloud Marketplace. Example value: `f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.6.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.7.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
@@ -277,7 +293,7 @@ Example from sample_quickstart.yaml:
 
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.6.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.7.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg.yaml
 ```
 
 **IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to github **must** use the raw file format.
@@ -339,7 +355,7 @@ To deploy a **BYOL** instance:
   1. Update the **bigIpImageName** input parameter to use `byol` image.  (gcloud compute images list --project f5-7626-networks-public --filter="name~byol").
       Example:
       ```yaml
-      bigIpImageName: f5-bigip-16-1-3-2-0-0-4-byol-all-modules-2boot-loc-20914235403
+      bigIpImageName: f5-bigip-16-1-3-3-0-0-3-byol-all-modules-2boot-loc-21222235920
       ```
   2. Update the **bigIpLicenseKey** input parameter to reference the registration key to use when licensing the BIG-IP instance.
       Example:
@@ -667,8 +683,8 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 16-1-3-2-0-0-4              | 16.1.3.2 Build 0.0.4  |
-| 14-1-5-2-0-0-3              | 14.1.5.2 Build 0.0.3  |
+| 16-1-3-3-0-0-3              | 16.1.3.3 Build 0.0.3  |
+| 14-1-5-3-0-0-5              | 14.1.5.3 Build 0.0.5  |
 
 **Note**: Due to an issue (ID 1013209) with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.
 

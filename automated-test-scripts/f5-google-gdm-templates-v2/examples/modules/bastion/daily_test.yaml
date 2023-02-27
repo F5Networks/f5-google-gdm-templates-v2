@@ -16,6 +16,8 @@ onStart:
 - ../../../common/verify_delete_dag.sh
 - ../../../common/delete_stack.sh
 - ../../../common/verify_delete.sh
+- ../../../common/delete_instance_group.sh
+- ../../../common/delete_target_pool.sh
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh
 onFail:
@@ -23,5 +25,7 @@ onFail:
 - ../../../common/verify_delete_dag.sh
 - ../../../common/delete_stack.sh
 - ../../../common/verify_delete.sh
+- ../../../common/delete_instance_group.sh
+- ../../../common/delete_target_pool.sh
 - ../../../common/delete_network_stack.sh
 - ../../../common/verify_delete_network.sh

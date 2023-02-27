@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.6.0.0
+# Version 2.7.0.0
 
 
 """Creates full stack for POC"""
@@ -489,7 +489,7 @@ def create_dag_deployment(context, num_nics):
 def generate_config(context):
     """ Entry point for the deployment resources. """
 
-    num_nics = 3
+    num_nics = context.properties['numNics'] if 'numNics' in context.properties else 3
     name = context.properties.get('name') or \
            context.env['name']
     prefix = context.properties['uniqueString']

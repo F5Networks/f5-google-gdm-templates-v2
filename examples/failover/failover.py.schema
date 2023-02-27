@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a pair of bigip's HA deployment along with all required resources to support deployment.
   title: F5 failover template
-  version: 2.6.0.0
+  version: 2.7.0.0
 
 imports:
   - path: failover.py
@@ -59,7 +59,7 @@ properties:
     description: Management interface private IP address for bigip-vm-02.
     type: string
   bigIpImageName:
-    default: f5-bigip-16-1-3-2-0-0-4-payg-best-plus-25mbps-220914234054
+    default: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
     description: BIG-IP image name
     type: string
   bigIpInstanceType:
@@ -71,11 +71,11 @@ properties:
     description: Provide the static address of the remote peer used for clustering. In this failover solution, clustering is initiated from the second instance (02) to the first instance (01) so you would provide the first instances Self IP address. |
     type: string
   bigIpRuntimeInitConfig01:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.6.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.7.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01-with-app.yaml
     description: For BIGIP instance 1,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitConfig02:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.6.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.7.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02-with-app.yaml
     description: For BIGIP instance 2,  supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
@@ -109,6 +109,10 @@ properties:
     default: f5group
     description: Group label.
     type: string
+  numNics:
+    default: 3
+    description: Number of interfaces to create with your BIG-IP instances.
+    type: integer
   owner:
     default: f5owner
     description: Owner label.
