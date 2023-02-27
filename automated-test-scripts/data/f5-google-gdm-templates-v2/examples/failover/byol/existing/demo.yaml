@@ -11,7 +11,7 @@ BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bi
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
 CUSTOM IMAGE ID: ''
 DESCRIPTION: ''
-IMAGE NAME: f5-bigip-16-1-3-2-0-0-4-byol-all-modules-2boot-loc-20914235403
+IMAGE NAME: f5-bigip-16-1-3-3-0-0-3-byol-all-modules-2boot-loc-21222235920
 INSTANCE NAME: <UNIQUESTRING>-bigip-vm-01
 INSTANCE NAME2: <UNIQUESTRING>-bigip-vm-02
 INSTANCE TYPE: n1-standard-16
@@ -27,6 +27,7 @@ DAG TEMPLATE URL: 'file://$PWD/examples/modules/dag/dag.py'
 NETWORK STACK NAME: <UNIQUESTRING>-network
 NETWORK TEMPLATE URL: 'file://$PWD/examples/modules/network/network.py'
 NUMBER NETWORKS: 3
+NUMBER NICS: 2
 LICENSE TYPE: byol
 OS IMAGE: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
 PROVISION PUBLIC IP: true
