@@ -10,7 +10,7 @@ info:
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/instances
       - https://cloud.google.com/storage/docs/json_api/v1/buckets
-  version: 2.6.0.0
+  version: 2.7.0.0
 imports:
   - path: bigip_standalone.py
 
