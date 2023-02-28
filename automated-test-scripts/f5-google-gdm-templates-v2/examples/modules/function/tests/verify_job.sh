@@ -4,8 +4,7 @@
 #  replayTimeout = 3
 
 
-
-response=$(gcloud scheduler jobs list --format=json | jq .[].name)
+response=$(gcloud scheduler jobs list --location <REGION> --format=json | jq .[].name)
 
 if echo $response | grep job-<DEWPOINT JOB ID> ; then
     echo "JOB CREATION PASSED"
