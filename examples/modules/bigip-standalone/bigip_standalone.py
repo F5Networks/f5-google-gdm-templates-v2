@@ -101,7 +101,7 @@ def create_instance(context):
     name = context.properties.get('name') or \
         context.env['name']
     instance_name = generate_name(context.properties['uniqueString'], name)
-    source_image = ''.join([COMPUTE_URL_BASE, 'projects/', context.properties['customImageId'],]) if context.properties['customImageId'] else \
+    source_image = ''.join([COMPUTE_URL_BASE, 'projects/', context.properties['customImageId'],]) if 'customImageId' in context.properties and context.properties['customImageId'] else \
         ''.join([COMPUTE_URL_BASE, 'projects/f5-7626-networks-public/global/images/', context.properties['imageName'],])
     properties = {}
     # Setup Defaults - property updated to given value when property exists in config
