@@ -40,7 +40,7 @@ google-autoscale-bigiq-existing-test:
 google-gdm-failover-example-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/byol/full/prod.yaml"
@@ -50,7 +50,7 @@ google-gdm-failover-example-test-byol:
 google-gdm-failover-example-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod.yaml"
@@ -71,7 +71,7 @@ google-gdm-failover-existing-test-byol:
 google-gdm-failover-existing-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/existing/prod.yaml"
@@ -82,7 +82,7 @@ google-gdm-failover-existing-test-payg:
 google-gdm-quickstart-test-byol:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 0
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_2nic.yaml"
@@ -95,7 +95,7 @@ google-gdm-quickstart-test-byol:
 google-gdm-quickstart-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_2nic.yaml"
@@ -119,7 +119,7 @@ google-gdm-quickstart-existing-network-test-byol:
 google-gdm-quickstart-existing-network-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/quickstart/daily_test_existing.yaml"
   run: "random"
-  random-num-of-tests: 2
+  random-num-of-tests: 1
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_2nic.yaml"
