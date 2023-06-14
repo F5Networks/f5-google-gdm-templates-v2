@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.7.0.0
+# Version 2.8.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
