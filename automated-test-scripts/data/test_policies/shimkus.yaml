@@ -50,7 +50,7 @@ google-gdm-failover-example-test-byol:
 google-gdm-failover-example-test-payg:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/failover/daily_test_full.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 2
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/failover/payg/full/prod.yaml"
