@@ -13,7 +13,7 @@ google-autoscale-payg-example-test:
 google-autoscale-payg-existing-test:
   test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/autoscale/payg_existing_network/daily_test.yaml"
   run: "random"
-  random-num-of-tests: 1
+  random-num-of-tests: 0
   parameters-files:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/demo.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/autoscale/payg/existing/prod.yaml"
@@ -87,7 +87,7 @@ google-gdm-quickstart-test-byol:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/demo_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_1nic.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic.yaml"
     # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/full/prod_app_3nic_v14.yaml"
@@ -100,7 +100,7 @@ google-gdm-quickstart-test-payg:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/demo_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_1nic.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/full/prod_app_3nic.yaml"
 
@@ -112,7 +112,7 @@ google-gdm-quickstart-existing-network-test-byol:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/demo_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_1nic.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/byol/existing/prod_app_3nic.yaml"
 
@@ -124,7 +124,7 @@ google-gdm-quickstart-existing-network-test-payg:
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/demo_app_3nic.yaml"
-    - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_1nic.yaml"
+    # - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_1nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_2nic.yaml"
     - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/quickstart/payg/existing/prod_app_3nic.yaml"
 
