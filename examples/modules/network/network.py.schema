@@ -10,7 +10,7 @@ info:
     For more information on this resource:
       - https://cloud.google.com/compute/docs/reference/rest/v1/networks
       - https://cloud.google.com/compute/docs/reference/rest/v1/subnetworks
-  version: 2.7.0.0
+  version: 2.8.0.0
 imports:
   - path: network.py
 
