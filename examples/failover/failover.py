@@ -162,6 +162,7 @@ def create_bigip_deployment(context, num_nics, instance_number):
             'allowUsageAnalytics': allow_usage_analytics,
             'bigIpRuntimeInitConfig': context.properties['bigIpRuntimeInitConfig0' + str(instance_number)],
             'bigIpRuntimeInitPackageUrl': context.properties['bigIpRuntimeInitPackageUrl'],
+            'cfeTag': context.properties['cfeTag'],
             'customImageId': custom_image_id,
             'hostname': hostname,
             'imageName': context.properties['bigIpImageName'],
