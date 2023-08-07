@@ -26,8 +26,6 @@ extension_services:
           class: Tenant
           My_DbVariables:
             class: DbVariables
-            provision.extramb: 1000
-            restjavad.useextramb: true
             config.allow.rfc3927: enable
             dhclient.mgmt: disable
             tm.tcpudptxchecksum: Software-only
@@ -94,11 +92,11 @@ extension_services:
           logLevel: silly
         externalStorage:
           scopingTags:
-            f5_cloud_failover_label: bigip_high_availability_solution
+            f5_cloud_failover_label: "{{{FAILOVER_TAG}}}"
         failoverAddresses:
           enabled: true
           scopingTags:
-            f5_cloud_failover_label: bigip_high_availability_solution
+            f5_cloud_failover_label: "{{{FAILOVER_TAG}}}"
           requireScopingTags: false
     - extensionType: do
       type: inline
@@ -112,8 +110,6 @@ extension_services:
           class: Tenant
           My_DbVariables:
             class: DbVariables
-            provision.extramb: 1000
-            restjavad.useextramb: true
             config.allow.rfc3927: enable
             dhclient.mgmt: disable
             tm.tcpudptxchecksum: Software-only
@@ -247,6 +243,12 @@ runtime_parameters:
   - name: UNIQUE
     type: url
     value: http://169.254.169.254/computeMetadata/v1/instance/attributes/unique-string
+    headers:
+      - name: Metadata-Flavor
+        value: Google
+  - name: FAILOVER_TAG
+    type: url
+    value: http://169.254.169.254/computeMetadata/v1/instance/attributes/failover-tag
     headers:
       - name: Metadata-Flavor
         value: Google

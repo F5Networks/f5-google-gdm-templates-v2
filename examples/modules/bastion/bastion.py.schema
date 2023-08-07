@@ -116,7 +116,7 @@ properties:
   osImage:
     description: Self link for OS Image
     type: string
-    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts'
+    default: 'projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts'
   owner:
     description: Owner label.
     type: string
