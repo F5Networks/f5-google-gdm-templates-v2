@@ -5,7 +5,7 @@ info:
   title: F5 Autoscale WAF PAYG template
   author: F5 Networks
   description: Creates an Autoscale WAF PAYG deployment.
-  version: 2.8.0.0
+  version: 2.9.0.0
 
 imports:
   - path: autoscale.py
@@ -61,7 +61,7 @@ properties:
     description: Instance type assigned to the application, for example 'n1-standard-1'.
     type: string
   bigIpRuntimeInitConfig:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.8.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-payg-with-app.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
