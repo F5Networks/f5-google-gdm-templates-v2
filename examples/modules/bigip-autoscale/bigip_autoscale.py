@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.8.0.0
+# Version 2.9.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -120,8 +120,8 @@ def create_instance_template(context, instance_template):
                                     'exec 2>&1\n',
                                     'echo $(date +"%Y-%m-%dT%H:%M:%S.%3NZ") : Startup Script Start',
                                     '# Optional optimizations required as early as possible in boot sequence before MCDP starts up.',
-                                    '/usr/bin/setdb provision.extramb 1000',
-                                    '/usr/bin/setdb restjavad.useextramb true',
+                                    '/usr/bin/setdb provision.extramb 1000 || true',
+                                    '/usr/bin/setdb provision.restjavad.extramb 1384 || /usr/bin/setdb restjavad.useextramb true || true',
                                     '/usr/bin/setdb iapplxrpm.timeout 300 || true',
                                     '/usr/bin/setdb icrd.timeout 180 || true',
                                     '/usr/bin/setdb restjavad.timeout 180 || true',
@@ -156,7 +156,7 @@ def create_instance_template(context, instance_template):
                                     'done',
                                     '',
                                     '# Run',
-                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.8.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
+                                    'bash "/var/config/rest/downloads/${PACKAGE_URL##*/}" -- \'--cloud gcp --telemetry-params templateName:v2.9.0.0/examples/modules/bigip-autoscale/bigip_autoscale.py\'',
                                     '',
                                     '# Execute Runtime-init',
                                     'bash "/usr/local/bin/f5-bigip-runtime-init" --config-file /config/cloud/runtime-init.conf ${TELEMETRY_FLAG}',

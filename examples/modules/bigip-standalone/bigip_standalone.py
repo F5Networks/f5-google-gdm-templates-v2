@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.8.0.0
+# Version 2.9.0.0
 
 """Creates BIGIP Instance"""
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
@@ -189,6 +189,8 @@ def metadata(context):
         'secretId' in context.properties else ''
     license_key = str(context.properties['licenseKey']) if \
         'licenseKey' in context.properties else ''
+    cfeTag = str(context.properties['cfeTag']) if \
+        'cfeTag' in context.properties else ''
     telemetry_flag = '' if context.properties['allowUsageAnalytics'] else '--skip-telemetry'
     metadata_config = {
                 'items': [
@@ -215,8 +217,8 @@ def metadata(context):
                                     '   #!/bin/bash',
                                     '   /usr/bin/touch /config/nic_swap_flag',
                                     '   /usr/bin/setdb provision.managementeth eth1',
-                                    '   /usr/bin/setdb provision.extramb 1000',
-                                    '   /usr/bin/setdb restjavad.useextramb true',
+                                    '   /usr/bin/setdb provision.extramb 1000 || true',
+                                    '   /usr/bin/setdb provision.restjavad.extramb 1384 || /usr/bin/setdb restjavad.useextramb true || true',
                                     '   /usr/bin/setdb iapplxrpm.timeout 300 || true',
                                     '   /usr/bin/setdb icrd.timeout 180 || true',
                                     '   /usr/bin/setdb restjavad.timeout 180 || true',
@@ -294,7 +296,7 @@ def metadata(context):
                                     '       /usr/bin/printf \'%s\\n\' "${RUNTIME_CONFIG}" | jq .  > /config/cloud/runtime-init-conf.yaml',
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.8.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.9.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml ${TELEMETRY_FLAG}',
                                     '   /usr/bin/touch /config/startup_finished',
@@ -314,6 +316,10 @@ def metadata(context):
                                     'fi'
                                     ])
                     )
+                },
+                {
+                    'key': 'failover-tag',
+                    'value': cfeTag
                 },
                 {
                     'key': 'hostname',

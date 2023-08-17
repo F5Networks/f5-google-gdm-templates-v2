@@ -42,7 +42,7 @@ This Google Deployment Manager template creates a bastion host used for accessin
 | instanceTemplates | No |  | array | Required when provisioning autoscale group. List of declaration of settings used for provisioning instanceTemplates. More information around REST APIs is on [Google Cloud Documentation](https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates). |
 | instanceTemplateVersion | No | 1 | integer | Version of the instance template to create. When updating deployment properties of the application instances, you must provide a unique value for this parameter. |
 | instanceType | Yes | n1-standard-1 | string | App instance type. For example: `n1-standard-1` |
-| osImage | No | 'projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts' | string | Self link for OS Image.  |
+| osImage | No | 'projects/ubuntu-os-cloud/global/images/family/ubuntu-2004-lts' | string | Self link for OS Image.  |
 | owner | No | f5owner | string | Owner label. |
 | uniqueString | Yes |  | string | Unique String used when creating object names or Tags. For example: `my-deployment` |
 | zone | Yes |  | string | Name of the availability zone where the standalone bastion instance will be placed. |

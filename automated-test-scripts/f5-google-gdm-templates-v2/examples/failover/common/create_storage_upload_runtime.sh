@@ -17,12 +17,6 @@ else
     do_index=2
 fi
 
-# Update CFE tag
-/usr/bin/yq e ".extension_services.service_operations.[1].value.externalStorage.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-/usr/bin/yq e ".extension_services.service_operations.[1].value.failoverAddresses.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
-/usr/bin/yq e ".extension_services.service_operations.[1].value.externalStorage.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-/usr/bin/yq e ".extension_services.service_operations.[1].value.failoverAddresses.scopingTags.f5_cloud_failover_label = \"<DEWPOINT JOB ID>\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config2.yaml
-
 # Uncomment this 2 debug
 # /usr/bin/yq e ".controls.logLevel = \"silly\"" -i $PWD/examples/failover/bigip-configurations/<STACK NAME>-config.yaml
 echo "Config 1:"
