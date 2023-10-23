@@ -113,6 +113,16 @@ resources:
       #         mgmtNetworkName: myuniqstr-mgmt
       #         externalNetworkName: myuniqstr-external
       #         internalNetworkName: myuniqstr-internal
+      #    Or when deploying into a shared VPC:
+      #    For a 2 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-mgmt
+      #         externalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-external
+      #    For a 3 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-mgmt
+      #         externalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-external
+      #         internalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-internal
       networks:
         mgmtNetworkName:
         externalNetworkName:
@@ -158,6 +168,16 @@ resources:
       #       mgmtSubnetName: myuniqstr-mgmt
       #       externalSubnetName: myuniqstr-external
       #       internalSubnetName: myuniqstr-internal
+      #    Or when deploying into a shared VPC:
+      #    For 2 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-mgmt
+      #       externalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-external
+      #    For a 3 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-mgmt
+      #       externalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-external
+      #       internalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-internal
       subnets:
         mgmtSubnetName:
         externalSubnetName:

@@ -93,8 +93,9 @@ By default, this solution creates a 3 VPC Networks, an example Web Application i
 
     ```myProjectName/global/images/myImageName```
 
-
 - When specifying values for the **bigIpInstanceType** and **numNics** parameters, ensure that the instance type you select is appropriate for the deployment scenario. See [Google Machine Families](https://cloud.google.com/compute/docs/machine-types) for more information.
+
+- When deploying the existing stack solution, you can provide network and subnet resource names in either simple format (`myMgmtNetworkName`) or as a self link (`projects/myVpcProjectName/global/networks/myMgmtNetworkName`), which can be used to deploy instances into a shared VPC. ***IMPORTANT***: When using self links, you **MUST** 1. have access to the specified VPCs, and 2. provide all network and subnet names in self link format. Failure to do so will result in an error. See the [Existing Network Parameters](#existing-network-template-input-parameters) for examples.
 
 - **Important**: 
   - For multi-NIC deployments, this solution configures the second interface of the instance as the MGMT interface. This allows the first interface to be used by Google Cloud resources such as forwarding rules and load balancers for application traffic. To connect to the MGMT interface (nic1) get the IP address from the instance properties and use your management tool of choice. Note: The Google Cloud console and gcloud SSH connection options target nic0 and will not connect to the instance correctly.
@@ -196,17 +197,17 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | numNics | No | 3 | integer | Enter valid number of network interfaces (1-3) to create on the BIG-IP VE instance. |
 | owner | No | f5owner | string | Owner Tag. |
 | networks | **Yes** |  | object | Networks object which provides names for the networks |
-| networks.mgmtNetworkName | **Yes** |  | string | Management network name. Required for 1 NIC deployments. | 
-| networks.externalNetworkName | **Yes** |  | string | External network name. Required for 2 NIC deployments. |
-| networks.internalNetworkName | **Yes** |  | string | Internal network name. Required for 3 NIC deployments. |  
+| networks.mgmtNetworkName | **Yes** |  | string | Management network name. Required for 1 NIC deployments. The network name can be either a simple name or a self link. Example: `myMgmtNetworkName` or `projects/myVpcProjectName/global/networks/myMgmtNetworkName` | 
+| networks.externalNetworkName | **Yes** |  | string | External network name. Required for 2 NIC deployments. The network name can be either a simple name or a self link. Example: `myExternalNetworkName` or `projects/myVpcProjectName/global/networks/myExternalNetworkName` |
+| networks.internalNetworkName | **Yes** |  | string | Internal network name. Required for 3 NIC deployments. The network name can be either a simple name or a self link. Example: `myInternalNetworkName` or `projects/myVpcProjectName/global/networks/myInternalNetworkName` |  
 | provisionPublicIp | No | false | boolean | Provision Public IP address(es) for the BIG-IP Management interface(s). By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access to the BIG-IP. |
 | region | No | us-west1 | string | The cloud region used for this deployment, for example us-west1. |
 | restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
 | restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | subnets | **Yes** |  | object | Subnet object which provides names for the subnets |
-| subnets.mgmtSubnetName | **Yes** |  | string | Management Network subnet name. Required for 1 NIC deployments. | 
-| subnets.externalSubnetName | **Yes** |  | string | External Network subnet name. Required for 2 NIC deployments. |
-| subnets.internalSubnetName | **Yes** |  | string | Internal Network subnet name. Required for 3 NIC deployments. | 
+| subnets.mgmtSubnetName | **Yes** |  | string | Management Network subnet name. Required for 1 NIC deployments. The subnet name can be either a simple name or a self link. Example: `myMgmtSubnetName` or `projects/myVpcProjectName/regions/myRegion/subnetworks/myMgmtSubnetName` | 
+| subnets.externalSubnetName | **Yes** |  | string | External Network subnet name. Required for 2 NIC deployments. Required for 1 NIC deployments. The subnet name can be either a simple name or a self link. Example: `myExternalSubnetName` or `projects/myVpcProjectName/regions/myRegion/subnetworks/myExternalSubnetName` |
+| subnets.internalSubnetName | **Yes** |  | string | Internal Network subnet name. Required for 3 NIC deployments. Required for 1 NIC deployments. The subnet name can be either a simple name or a self link. Example: `myInternalSubnetName` or `projects/myVpcProjectName/regions/myRegion/subnetworks/myInternalSubnetName` | 
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | zone | No | us-west1-a | string | Enter the availability zone where you want to deploy the application, for example 'us-west1-a'. |
 
