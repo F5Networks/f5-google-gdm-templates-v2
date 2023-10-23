@@ -92,7 +92,6 @@ This solution leverages traditional Autoscale configuration management practices
 
     ```myProjectName/global/images/myImageName```
 
-
 - This solution requires Internet access for: 
   - Downloading additional F5 software components used for onboarding and configuring the BIG-IP (via GitHub.com). *NOTE: access via web proxy is not currently supported. Other options include 1) hosting the file locally and modifying the runtime-init package url and configuration files to point to local URLs instead or 2) baking them into a custom image (BYOL images only), using the [F5 Image Generation Tool](https://clouddocs.f5.com/cloud/public/v1/ve-image-gen_index.html).*
   - Contacting native cloud services for various cloud integrations: 
@@ -112,6 +111,8 @@ This solution leverages traditional Autoscale configuration management practices
 - In this solution, the BIG-IP VE has the [LTM](https://f5.com/products/big-ip/local-traffic-manager-ltm) and [ASM](https://f5.com/products/big-ip/application-security-manager-asm) modules enabled to provide advanced traffic management and web application security functionality. 
 
 - You are required to specify which Availability Zones you are deploying the application in. See [Google Cloud Availability Zones](https://cloud.google.com/compute/docs/regions-zones) for a list of regions and their corresponding availability zones.
+
+- When deploying the existing stack solution, you can provide network and subnet resource names in either simple format (`myNetworkName`) or as a self link (`projects/myVpcProjectName/global/networks/myNetworkName`), which can be used to deploy instances into a shared VPC. ***IMPORTANT***: When using self links, you **MUST** 1. have access to the specified VPCs, and 2. provide all network and subnet names in self link format. Failure to do so will result in an error. See the [Existing Network Parameters](#existing-network-parameters) for examples.
 
 - This deployment can send non-identifiable statistical information to F5 Networks to help us improve our templates. You can disable this functionality for this deployment by supplying **false** for the value of the **allowUsageAnalytics** input parameter. To disable the BIG-IP system from also sending information, you can disable it system-wide by setting the **autoPhonehome** system class property value to false in the F5 Declarative Onboarding declaration. See [Sending statistical information to F5](#sending-statistical-information-to-f5) and [Changing the BIG-IP Deployment](#changing-the-big-ip-deployment) for more BIG-IP customization details.
 
@@ -182,14 +183,14 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | group | No | f5group | string | Group Tag. |
 | owner | No | f5owner | string | Owner label. |
 | logId | No | f5-waf-logs | string | Enter the name of the Google Cloud log that will receive WAF events. |
-| networkName | **Yes** |  | string | The existing network name. |
+| networkName | **Yes** |  | string | The existing network name. The network name can be either a simple name or a self link. Example: `myNetworkName` or `projects/myVpcProjectName/global/networks/myNetworkName` |
 | provisionPublicIp | No | true | boolean | Provision Public IP addresses for the BIG-IP Management interface. By default, this is set to true. If set to false, the solution will deploy a bastion host instead in order to provide access.  |
 | region | No | us-west1 | string | Google Cloud region used for this deployment, for example 'us-west1'. |
 | restrictedSrcAddressApp | **Yes** |  | array | An IP address range (CIDR) that can be used to restrict access web traffic (80/443) to the BIG-IP instances, for example 'X.X.X.X/32' for a host, '0.0.0.0/0' for the Internet, etc. **NOTE**: The VPC CIDR is automatically added for internal use. |
 | restrictedSrcAddressMgmt | **Yes** |  | array | An IP address range (CIDR) used to restrict SSH and management GUI access to the BIG-IP Management or bastion host instances. Provide a YAML list of addresses or networks in CIDR notation, for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc. NOTE: If using a Bastion Host (when ProvisionPublicIp = false), you must also include the Bastion's source network, for example '- 10.0.0.0/8'. **IMPORTANT**: The VPC CIDR is automatically added for internal use (access via bastion host, clustering, etc.). Please restrict the IP address range to your client, for example '- X.X.X.X/32'. Production should never expose the BIG-IP Management interface to the Internet. |
 | subnets | **Yes** | | object | Subnet object which provides names for mgmt and app subnets |
-| subnets.mgmtSubnetName | **Yes** | | string | Management subnet name | 
-| subnets.appSubnetName | **Yes** | | string | Application subnet name |
+| subnets.mgmtSubnetName | **Yes** | | string | Management subnet name. The subnet name can be either a simple name or a self link. Example: `myMgmtSubnetName` or `projects/myVpcProjectName/regions/myRegion/subnetworks/myMgmtSubnetName` | 
+| subnets.appSubnetName | **Yes** | | string | Application subnet name. The subnet name can be either a simple name or a self link. Example: `myAppSubnetName` or `projects/myVpcProjectName/regions/myRegion/subnetworks/myAppSubnetName` |
 | uniqueString | No | myuniqstr | string | A prefix that will be used to name template resources. Because some resources require globally unique names, we recommend using a unique value. |
 | update | No | false | boolean | This specifies when to add dependency statements to the autoscale related resources. By default, this is set to false. Specify false when first deploying and right before deleting. Specify True when updating the deployment. See [updating this solution](#updating-this-solution) section below.|
 | zones | No |  | array | Enter the Google availability zones where you want to deploy the BIG-IP VE instances, for example 'us-west1-a'. |

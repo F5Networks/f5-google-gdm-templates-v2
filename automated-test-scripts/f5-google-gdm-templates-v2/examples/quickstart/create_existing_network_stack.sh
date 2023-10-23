@@ -11,19 +11,19 @@ if [[ "<PROVISION PUBLIC IP>" == "False" ]]; then
     src_ip_mgmt=$(gcloud compute networks subnets list --format json | jq -r --arg n "<UNIQUESTRING>-subnet0-subnet" '.[] | select(.name | contains($n)) | .ipCidrRange')
 fi
 
-mgmt_network='<UNIQUESTRING>-network0-network'
-mgmt_subnet='<UNIQUESTRING>-subnet0-subnet'
+mgmt_network='projects/f5-7656-pdsoleng-dev/global/networks/<UNIQUESTRING>-network0-network'
+mgmt_subnet='projects/f5-7656-pdsoleng-dev/regions/<REGION>/subnetworks/<UNIQUESTRING>-subnet0-subnet'
 external_network=''
 external_subnet=''
 internal_network=''
 internal_subnet=''
 if [[ <NUMBER NICS> -gt 1 ]]; then
-    external_network='<UNIQUESTRING>-network1-network'
-    external_subnet='<UNIQUESTRING>-subnet1-subnet'
+    external_network='projects/f5-7656-pdsoleng-dev/global/networks/<UNIQUESTRING>-network1-network'
+    external_subnet='projects/f5-7656-pdsoleng-dev/regions/<REGION>/subnetworks/<UNIQUESTRING>-subnet1-subnet'
 fi
 if [[ <NUMBER NICS> -gt 2 ]]; then
-    internal_network='<UNIQUESTRING>-network2-network'
-    internal_subnet='<UNIQUESTRING>-subnet2-subnet'
+    internal_network='projects/f5-7656-pdsoleng-dev/global/networks/<UNIQUESTRING>-network2-network'
+    internal_subnet='projects/f5-7656-pdsoleng-dev/regions/<REGION>/subnetworks/<UNIQUESTRING>-subnet2-subnet'
 fi
 
 # Add lic key if byol

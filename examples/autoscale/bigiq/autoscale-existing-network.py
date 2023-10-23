@@ -5,6 +5,7 @@
 # pylint: disable=W,C,R
 
 """Creates the application."""
+import re
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
 
@@ -32,11 +33,15 @@ def create_bigip_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = context.properties['networkName']
     subnet_name = context.properties['subnets']['mgmtSubnetName']
-    net_ref = COMPUTE_URL_BASE + 'projects/' + \
-              context.env['project'] + '/global/networks/' + net_name
-    sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
-          '/regions/' + context.properties['region'] + \
-          '/subnetworks/' + subnet_name
+    if context.shared_vpc == 'true':
+        net_ref = net_name
+        sub_ref = subnet_name
+    else:
+        net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                context.env['project'] + '/global/networks/' + net_name
+        sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
+                '/regions/' + context.properties['region'] + \
+                '/subnetworks/' + subnet_name
     allow_usage_analytics = context.properties['allowUsageAnalytics'] if \
         'allowUsageAnalytics' in context.properties else True
     custom_image_id = context.properties['bigIpCustomImageId'] if \
@@ -137,11 +142,15 @@ def create_dag_deployment(context):
     prefix = context.properties['uniqueString']
     net_name = context.properties['networkName']
     subnet_name = context.properties['subnets']['mgmtSubnetName']
-    net_ref = COMPUTE_URL_BASE + 'projects/' + \
-              context.env['project'] + '/global/networks/' + net_name
-    sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
-          '/regions/' + context.properties['region'] + \
-          '/subnetworks/' + subnet_name
+    if context.shared_vpc == 'true':
+        net_ref = net_name
+        sub_ref = subnet_name
+    else:
+        net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                context.env['project'] + '/global/networks/' + net_name
+        sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
+                '/regions/' + context.properties['region'] + \
+                '/subnetworks/' + subnet_name
 
     target_pool_name = generate_name(prefix, 'bigip-tp')
     instance_group_name = generate_name(prefix, 'bigip-igm')
@@ -320,6 +329,12 @@ def generate_config(context):
     deployment_name = generate_name(prefix, name)
     bigip_igm_name = generate_name(prefix, 'bigip-igm')
     fr_name = generate_name(prefix, 'fr-01')
+
+    net_match = re.search(r'^projects/[a-z]([-a-z0-9]*[a-z0-9])?/global/networks/[a-z]([-a-z0-9]*[a-z0-9])?', \
+                context.properties['networkName'])
+    subnet_match = re.search(r'^projects/[a-z]([-a-z0-9]*[a-z0-9])?/regions/[a-z]([-a-z0-9]*[a-z0-9])/subnetworks/[a-z]([-a-z0-9]*[a-z0-9])?', \
+                context.properties['subnets']['mgmtSubnetName'])
+    context.shared_vpc = 'true' if net_match and subnet_match else 'false'
 
     resources = [create_bigip_deployment(context)] + \
                 [create_dag_deployment(context)] + \
