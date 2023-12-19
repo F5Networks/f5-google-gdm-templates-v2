@@ -44,7 +44,7 @@ resources:
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy.
       #    If you would like to view all available public images, run the following gcloud command:
       #    gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
-      bigIpImageName: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
+      bigIpImageName: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
       ###  (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
       ###  (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance.

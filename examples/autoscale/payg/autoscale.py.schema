@@ -49,7 +49,7 @@ properties:
     description: Minimum number of BIG-IP instances you want available in the Auto Scale Group.
     type: integer
   bigIpImageName:
-    default: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
+    default: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
     description: BIG-IP image name
     type: string
   bigIpInstanceTemplateVersion:

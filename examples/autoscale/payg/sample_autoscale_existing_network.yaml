@@ -51,7 +51,7 @@ resources:
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy.
       #    If you would like to view all available public images, run the following gcloud command:
       #    gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
-      bigIpImageName: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
+      bigIpImageName: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
       ###  (OPTIONAL) Version of the instance template to create. When updating deployment properties
       # o f the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1
