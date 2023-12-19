@@ -160,7 +160,7 @@ These are specified in the configuration file. See sample_quickstart.yaml
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
@@ -189,7 +189,7 @@ These are specified in the configuration file. See sample_quickstart-existing-ne
 | bigIpInstanceType | No | n1-standard-8 | string | Instance type assigned to the application, for example 'n1-standard-4'. |
 | bigIpLicenseKey | No |  | string | Supply the F5 BYOL license key for the BIG-IP instance if deploying a BYOL image. |
 | bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
-| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
+| bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpServiceAccountEmail | No |  | string | Supply an email of an existing service account to be assigned to the BIG-IP instance. If a value is not provided, a service account will not be assigned to the instance. Example value: `your-service-account@your-project.iam.gserviceaccount.com`. |
 | cost | No | f5cost | string | Cost Center Tag. |
 | environment | No | f5env | string | Environment Tag. |
