@@ -5,7 +5,7 @@ info:
   title: F5 Autoscale WAF BIGIQ template
   author: F5 Networks
   description: Creates an Autoscale WAF BIGIQ deployment.
-  version: 2.9.0.0
+  version: 3.0.0.0
 
 imports:
   - path: autoscale-existing-network.py

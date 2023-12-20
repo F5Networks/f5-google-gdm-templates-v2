@@ -5,7 +5,7 @@ info:
   title: F5 Autoscale WAF PAYG template
   author: F5 Networks
   description: Creates an Autoscale WAF PAYG deployment.
-  version: 2.9.0.0
+  version: 3.0.0.0
 
 imports:
   - path: autoscale.py
