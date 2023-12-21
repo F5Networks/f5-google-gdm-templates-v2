@@ -10,7 +10,8 @@ extension_packages:
       extensionVersion: 3.48.0
       extensionHash: d732b0e5e462bd5a7b253022ed13dd72afcc30696f0606f4acef47ec02dc31bb
     - extensionType: cf
-      extensionUrl: https://cdn.f5.com/product/cloudsolutions/f5-cloud-failover-extension/develop/v2.0.1/f5-cloud-failover-2.0.1-1.noarch.rpm
+      extensionVersion: 2.0.2
+      extensionHash: 35b5ee18cc0f3d864cfbf5eeb2f830c073d9e3a7947e440a05419ffdae5c19f9
 extension_services:
   service_operations:
     - extensionType: do
