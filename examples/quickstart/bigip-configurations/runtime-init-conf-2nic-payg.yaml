@@ -11,7 +11,7 @@ runtime_parameters:
         value: Google
   - name: BIGIP_PASSWORD
     type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/id
+    value: http://169.254.169.254/computeMetadata/v1/instance/name
     headers:
       - name: Metadata-Flavor
         value: Google

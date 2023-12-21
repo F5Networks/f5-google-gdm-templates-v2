@@ -456,11 +456,11 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
     gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpManagementPrivateIp")).finalValue'
     ```
 
-- Obtain the vmId of the BIG-IP Virtual Machine *(will be used for password later)*:
-  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bigIpInstanceId**.
+- Obtain the name of the BIG-IP Virtual Machine *(will be used for password later)*:
+  - **Console**: Navigate to **Deployment Manager > Deployments > *DEPLOYMENT_NAME* > Overview > Layout > Resources > Outputs > bigIpInstanceName**.
   - **Google CLI**: 
     ```bash
-    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceId")).finalValue'
+    gcloud deployment-manager manifests describe --deployment=${DEPLOYMENT_NAME} --format="value(layout)" | yq '.resources[0].outputs[] | select(.name | contains("bigIpInstanceName")).finalValue'
     ```
 
 #### SSH
@@ -474,7 +474,7 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
   ```bash
   ssh admin@${IP_ADDRESS_FROM_OUTPUT}
   ```
-  At prompt, enter the default password **Instance ID** of the BIG-IP VM instance.
+  At prompt, enter the default password **bigIpInstanceName** of the BIG-IP VM instance.
 
 
 - OR if you are going through a bastion host (when **provisionPublicIP** = **false**):
@@ -517,8 +517,8 @@ OR if you are going through a bastion host (when **provisionPublicIP** = **false
 - Open a browser to the Management URL:
   - NOTE: By default, the BIG-IP's WebUI starts with a self-signed cert. Follow your browsers instructions for accepting self-signed certs (for example, if using Chrome, click inside the page and type this "thisisunsafe". If using Firefox, click "Advanced" button, Click "Accept Risk and Continue").
   - Provide
-    - username: quickstart
-    - password: **Instance ID**
+    - username: admin
+    - password: **bigIpInstanceName**
 
 ### Further Exploring
 

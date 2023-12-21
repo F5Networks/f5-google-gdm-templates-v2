@@ -14,7 +14,7 @@ runtime_parameters:
     value: file:///config/cloud/license_key
   - name: BIGIP_PASSWORD
     type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/id
+    value: http://169.254.169.254/computeMetadata/v1/instance/name
     headers:
       - name: Metadata-Flavor
         value: Google
