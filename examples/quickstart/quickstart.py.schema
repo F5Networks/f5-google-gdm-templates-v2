@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a standalone bigip deployment along with all required resources to support deployment.
   title: F5 quickstart template
-  version: 2.9.0.0
+  version: 3.0.0.0
 
 imports:
   - path: quickstart.py
@@ -37,7 +37,7 @@ properties:
     description: Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
     type: string
   bigIpImageName:
-    default: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
+    default: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
     description: BIG-IP image name
     type: string
   bigIpInstanceType:
@@ -49,7 +49,7 @@ properties:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.6.2/dist/f5-bigip-runtime-init-1.6.2-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.1/dist/f5-bigip-runtime-init-2.0.1-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
   cost:
