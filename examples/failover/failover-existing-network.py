@@ -1,9 +1,10 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 2.9.0.0
+# Version 3.0.0.0
 
 
 """Creates full stack for POC"""
+import re
 COMPUTE_URL_BASE = 'https://www.googleapis.com/compute/v1/'
 
 
@@ -55,12 +56,15 @@ def create_bigip_deployment(context, num_nics, instance_number):
             interface_description = 'Interface used for internal traffic'
             if nics == 2:
                 network_ip = context.properties['bigIpInternalSelfIp0' + str(instance_number)]
-
-        net_ref = COMPUTE_URL_BASE + 'projects/' + \
-                  context.env['project'] + '/global/networks/' + net_name
-        sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
-                  '/regions/' + context.properties['region'] + \
-                  '/subnetworks/' + subnet_name
+        if context.shared_vpc == 'true':
+            net_ref = net_name
+            sub_ref = subnet_name
+        else:
+            net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                    context.env['project'] + '/global/networks/' + net_name
+            sub_ref = COMPUTE_URL_BASE + 'projects/' + context.env['project'] + \
+                    '/regions/' + context.properties['region'] + \
+                    '/subnetworks/' + subnet_name
         interface_config = {
             'description': interface_description,
             'network': net_ref,
@@ -181,13 +185,17 @@ def create_dag_deployment(context, num_nics):
     else:
         app_net_name = context.properties['networks']['externalNetworkName']
         int_net_name = context.properties['networks']['internalNetworkName']
-    mgmt_net_ref = COMPUTE_URL_BASE + 'projects/' + \
-                   context.env['project'] + '/global/networks/' + mgmt_net_name
-    external_net_ref = COMPUTE_URL_BASE + 'projects/' + \
-                       context.env['project'] + '/global/networks/' + ext_net_name
-    internal_net_ref = COMPUTE_URL_BASE + 'projects/' + \
-                       context.env['project'] + '/global/networks/' + int_net_name
-
+    if context.shared_vpc == 'true':
+        mgmt_net_ref = mgmt_net_name
+        external_net_ref = ext_net_name
+        internal_net_ref = int_net_name
+    else:
+        mgmt_net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                    context.env['project'] + '/global/networks/' + mgmt_net_name
+        external_net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                        context.env['project'] + '/global/networks/' + ext_net_name
+        internal_net_ref = COMPUTE_URL_BASE + 'projects/' + \
+                        context.env['project'] + '/global/networks/' + int_net_name
     int_net_cidr = '10.0.' + str(num_nics - 1) + '.0/24'
     mgmt_port = 8443
     public_ip_name = generate_name(prefix, 'public-ip-01')
@@ -351,6 +359,12 @@ def generate_config(context):
     bigip_instance_name = generate_name(prefix, 'bigip-vm-01')
     bigip_instance_name2 = generate_name(prefix, 'bigip-vm-02')
     fr_name = generate_name(prefix, 'fr-01')
+
+    net_match = re.search(r'^projects/[a-z]([-a-z0-9]*[a-z0-9])?/global/networks/[a-z]([-a-z0-9]*[a-z0-9])?', \
+                context.properties['networks']['mgmtNetworkName'])
+    subnet_match = re.search(r'^projects/[a-z]([-a-z0-9]*[a-z0-9])?/regions/[a-z]([-a-z0-9]*[a-z0-9])/subnetworks/[a-z]([-a-z0-9]*[a-z0-9])?', \
+                context.properties['subnets']['mgmtSubnetName'])
+    context.shared_vpc = 'true' if net_match and subnet_match else 'false'
 
     resources = create_bigip_deployment(context, num_nics, 1) + \
                 create_bigip_deployment(context, num_nics, 2) + \

@@ -9,13 +9,14 @@ TMP_DIR=/tmp/<DEWPOINT JOB ID>
 # source test functions
 source ${TMP_DIR}/test_functions.sh
 
-instance_id=$(gcloud compute instances list --filter="name~'<UNIQUESTRING>-<INSTANCE NAME>'" --format=json | jq -r .[].id )
+instance_name=$(gcloud compute instances list --filter="name~'<UNIQUESTRING>-<INSTANCE NAME>'" --format=json | jq -r .[].name )
+echo "instance_name: ${instance_name}"
 
 if [[ <PROVISION PUBLIC IP> == True ]]; then
     IP=$(get_mgmt_ip <UNIQUESTRING>-bigip-vm-01 <AVAILABILITY ZONE> public)
     echo "IP: ${IP}"
     ssh-keygen -R $IP 2>/dev/null
-    RESPONSE=$(sshpass -p $instance_id ssh -o StrictHostKeyChecking=no admin@${IP} "bash -c 'cat /var/log/cloud/bigIpRuntimeInit.log | grep \"All operations finished successfully\"'")
+    RESPONSE=$(sshpass -p ${instance_name} ssh -o StrictHostKeyChecking=no admin@${IP} "bash -c 'cat /var/log/cloud/bigIpRuntimeInit.log | grep \"All operations finished successfully\"'")
 else
     BASTION_IP=$(get_bastion_ip <UNIQUESTRING>-bastion-vm-01 <AVAILABILITY ZONE>)
     IP=$(get_mgmt_ip <UNIQUESTRING>-bigip-vm-01 <AVAILABILITY ZONE> private)

@@ -55,7 +55,7 @@ resources:
       ###  (OPTIONAL) Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
       bigIpHostname02: failover02.local
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy. If you would like to view all available public images, run the following command from the 'gcloud' command line: '''gcloud compute images list --project f5-7626-networks-public --filter="name~f5"'''
-      bigIpImageName: f5-bigip-16-1-3-3-0-0-3-payg-best-plus-25mbps-221222234728
+      bigIpImageName: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
       ###  (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
       ###  (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 01.
@@ -75,7 +75,7 @@ resources:
         https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
       ###  (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
-        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v1.5.1/dist/f5-bigip-runtime-init-1.5.1-1.gz.run
+        https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run
       ###  (REQUIRED) BIG-IP secret ID.
       #    Supply the ID of the Google secret manager secret where the BIG-IP password used for
       #    clustering is stored. For example: 'mySecretId'.
@@ -113,6 +113,16 @@ resources:
       #         mgmtNetworkName: myuniqstr-mgmt
       #         externalNetworkName: myuniqstr-external
       #         internalNetworkName: myuniqstr-internal
+      #    Or when deploying into a shared VPC:
+      #    For a 2 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-mgmt
+      #         externalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-external
+      #    For a 3 NIC Deployment
+      #       networks:
+      #         mgmtNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-mgmt
+      #         externalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-external
+      #         internalNetworkName: projects/myVpcProjectName/global/networks/myuniqstr-internal
       networks:
         mgmtNetworkName:
         externalNetworkName:
@@ -158,6 +168,16 @@ resources:
       #       mgmtSubnetName: myuniqstr-mgmt
       #       externalSubnetName: myuniqstr-external
       #       internalSubnetName: myuniqstr-internal
+      #    Or when deploying into a shared VPC:
+      #    For 2 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-mgmt
+      #       externalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-external
+      #    For a 3 NIC Deployment
+      #     subnets:
+      #       mgmtSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-mgmt
+      #       externalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-external
+      #       internalSubnetName: projects/myVpcProjectName/regions/us-west1/subnetworks/myuniqstr-internal
       subnets:
         mgmtSubnetName:
         externalSubnetName:
