@@ -12,7 +12,7 @@ info:
       - https://cloud.google.com/compute/docs/reference/rest/v1/autoscalers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceGroupManagers
       - https://cloud.google.com/compute/docs/reference/rest/v1/instanceTemplates
-  version: 3.0.0.0
+  version: 3.1.0.0
 
 imports:
   - path: bastion.py
