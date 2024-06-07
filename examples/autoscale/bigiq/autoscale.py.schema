@@ -5,7 +5,7 @@ info:
   title: F5 Autoscale WAF BIGIQ template
   author: F5 Networks
   description: Creates an Autoscale WAF BIGIQ deployment.
-  version: 3.1.0.0
+  version: 3.2.0.0
 
 imports:
   - path: autoscale.py
@@ -71,7 +71,7 @@ properties:
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
-    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.1/dist/f5-bigip-runtime-init-2.0.1-1.gz.run
+    default: https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.2/dist/f5-bigip-runtime-init-2.0.2-1.gz.run
     description: URL for BIG-IP Runtime Init package
     type: string
   bigIqSecretId:
