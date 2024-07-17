@@ -5,7 +5,7 @@ info:
   author: F5 Networks
   description: Creates a standalone bigip deployment along with all required resources to support deployment.
   title: F5 quickstart existing network template
-  version: 3.2.0.0
+  version: 3.3.0.0
 
 imports:
   - path: quickstart-existing-network.py

@@ -1,6 +1,6 @@
 # Copyright 2021 F5 Networks All rights reserved.
 #
-# Version 3.2.0.0
+# Version 3.3.0.0
 
 # pylint: disable=W,C,R,duplicate-code,line-too-long
 
@@ -74,7 +74,7 @@ def create_instance(context, instance):
                 'autoDelete': True,
                 'initializeParams': {
                     'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
-                                    'centos-cloud/global/images/family/centos-7'])
+                                    'centos-cloud/global/images/family/centos-stream-9'])
                 }
             }],
             'hostname': ''.join([instance_name,
@@ -95,8 +95,10 @@ def create_instance(context, instance):
                 'items': [{
                     'key': 'startup-script',
                     'value': ''.join(['#!/bin/bash\n',
-                               'yum -y install docker\n',
-                               'service docker start\n',
+                               'yum install -y yum-utils\n',
+                               'yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo\n',
+                               'yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n',
+                               'systemctl start docker\n',
                                'docker run --name f5demo -p 80:80 -p 443:443 -d ',
                                 context.properties['appContainerName']])
                 }]
@@ -201,7 +203,7 @@ def create_instance_template(context, instance_templates):
                 'initializeParams': {
                     'sourceImage': ''.join([COMPUTE_URL_BASE, 'projects/',
                                             'centos-cloud/global/',
-                                            'images/family/centos-7'])
+                                            'images/family/centos-stream-9'])
                 }
             }],
             'networkInterfaces': create_nics(instance_templates),
@@ -209,8 +211,10 @@ def create_instance_template(context, instance_templates):
                 'items': [{
                     'key': 'startup-script',
                     'value': ''.join(['#!/bin/bash\n',
-                                        'yum -y install docker\n',
-                                        'service docker start\n',
+                                        'yum install -y yum-utils\n',
+                                        'yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo\n',
+                                        'yum install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin\n',
+                                        'systemctl start docker\n',
                                         'docker run --name f5demo -p 80:80 -p 443:443 -d ',
                                         context.properties['appContainerName']])
                 }]
