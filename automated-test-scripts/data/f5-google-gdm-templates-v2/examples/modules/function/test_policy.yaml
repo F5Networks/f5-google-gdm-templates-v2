@@ -1,8 +1,0 @@
----
-# Function Module  Tests
-google-gdm-function-module-test:
-    test-url: "file://automated-test-scripts/f5-google-gdm-templates-v2/examples/modules/function/daily_test.yaml"
-    run: "all"
-    parameters-files:
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/prepub_parameters.yaml"
-      - "automated-test-scripts/data/f5-google-gdm-templates-v2/examples/modules/function/prepub_parameters1.yaml"
