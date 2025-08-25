@@ -684,7 +684,7 @@ These templates have been tested and validated with the following versions of BI
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 17-1-1-0-2-6                | 17.1.1 Build 0.2.6     |
+| 17-5-1-0-80-7               | 17.5.1.0 Build 0.80.7  |
 | 16-1-4-1-0-53-5             | 16.1.4.1 Build 0.53.5  |
 
 **Note**: Due to an issue (ID 1013209) with the default ca-bundle, you may not host F5 BIG-IP Runtime Init configuration files in a Google Storage bucket when deploying BIG-IP v14 images.

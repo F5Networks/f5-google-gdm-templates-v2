@@ -818,7 +818,7 @@ These templates have only been explicitly tested and validated with the followin
 
 | Google BIG-IP Image Version | BIG-IP Version         |
 | --------------------------- | ---------------------- |
-| 17-1-1-0-2-6                | 17.1.1 Build 0.2.6     |
+| 17-5-1-0-80-7               | 17.5.1.0 Build 0.80.7  |
 | 16-1-4-1-0-53-5             | 16.1.4.1 Build 0.53.5  |
 
 These templates leverage Runtime-Init, which requires BIG-IP Versions 14.1.2.6 and up, and are assumed compatible to work. 
