@@ -45,14 +45,14 @@ resources:
       # bigIpCustomImageId: myProjectName/global/images/myImageName
       ###  (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format.
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
       ###  (OPTIONAL) Supply a URL for the bigip-runtime-init package.
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy.
       #    If you would like to view all available public images, run the following gcloud command:
       #    gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
-      bigIpImageName: f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828
+      bigIpImageName: f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311
       ###  (OPTIONAL) Version of the instance template to create. When updating deployment properties
       #    of the BIG-IP instances, you must provide a unique value for this parameter.
       bigIpInstanceTemplateVersion: 1

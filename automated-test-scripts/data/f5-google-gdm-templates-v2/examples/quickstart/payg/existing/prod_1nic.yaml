@@ -2,7 +2,7 @@
 AVAILABILITY ZONE: <REGION>-b
 BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config-with-app.yaml
 CUSTOM IMAGE ID: 'f5-7626-networks-public/global/images/<IMAGE NAME>'
-IMAGE NAME: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
+IMAGE NAME: f5-bigip-17-5-1-0-80-7-payg-best-plus-25mbps-250811064113
 INSTANCE NAME: bigip-vm-01
 INSTANCE TYPE: n1-standard-16
 INTERFACE NAME: Interface

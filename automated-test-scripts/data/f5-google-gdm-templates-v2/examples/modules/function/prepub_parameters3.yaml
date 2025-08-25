@@ -13,7 +13,7 @@ RUNTIME INIT UPDATE: 'update_<DEWPOINT JOB ID>-runtime.yaml'
 APP CONTAINER NAME: 'f5devcentral/f5-demo-app:latest'
 BIGIP VERSION: 16-1-2-2-0-0-28
 ENABLE FLOW LOGS: ''
-IMAGE NAME: f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828
+IMAGE NAME: f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311
 IMAGE SUFFIX: '210623021328'
 IMAGE TYPE: all-modules-2boot-loc
 INSTANCE TEMPLATE VERSION: 1

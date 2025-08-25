@@ -11,7 +11,7 @@ runtime_parameters:
         value: Google
   - name: BIGIP_PASSWORD
     type: url
-    value: http://169.254.169.254/computeMetadata/v1/instance/name
+    value: http://169.254.169.254/computeMetadata/v1/instance/id
     headers:
       - name: Metadata-Flavor
         value: Google
@@ -196,7 +196,7 @@ extension_services:
             Custom_WAF_Policy:
               class: WAF_Policy
               url: >-
-                https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/quickstart/bigip-configurations/Rapid_Deployment_Policy_13_1.xml
+                https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/quickstart/bigip-configurations/Rapid_Deployment_Policy_13_1.xml
               enforcementMode: blocking
               ignoreChanges: false
             Service_Address_01:
