@@ -156,11 +156,11 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
 | bigIpCustomImageId | No |  | string | Identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name. Example value: `myProjectName/global/images/myImageName` |
-| bigIpImageName | No | f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828 | string | Name of public BIG-IP image found in the Google Cloud Marketplace. Example value: `f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311 | string | Name of public BIG-IP image found in the Google Cloud Marketplace. Example value: `f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No |  1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | | n1-standard-8 | string | Instance type assigned to the application, for example '| n1-standard-8'. |
 | bigIpIpCidrRange | No | 10.0.0.0/24 | string | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
 | bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
@@ -191,11 +191,11 @@ Note: These are specified in the configuration file. See sample_autoscale.yaml
 | application | No | f5app | string | Application label. |
 | bigIpCoolDownPeriodSec | No | 60 | integer | Number of seconds Google Autoscaler waits to start checking BIG-IP instances on first boot. |
 | bigIpCustomImageId | No |  | string | Identifier of a non marketplace custom image (for example, clones or those created by the F5 BIG-IP Image Generator), starting with the project name. Example value: `myProjectName/global/images/myImageName` |
-| bigIpImageName | No | f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828 | string | Name of public BIG-IP image found in the Google Cloud Marketplace. Example value: `f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
+| bigIpImageName | No | f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311 | string | Name of public BIG-IP image found in the Google Cloud Marketplace. Example value: `f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311`. You can find the names of F5 marketplace images in the README for this template or by running the command: `gcloud compute images list --project f5-7626-networks-public --filter="name~f5"`. |
 | bigIpInstanceTemplateVersion | No |  1 | integer | Version of the instance template to create. When updating deployment properties of the BIG-IP instances, you must provide a unique value for this parameter. |
 | bigIpInstanceType | No | | n1-standard-8 | string | Instance type assigned to the application, for example '| n1-standard-8'. |
 | bigIpIpCidrRange | No | 10.0.0.0/24 | string | IP CIDR range used by the management network of the BIG-IP, for example '10.0.0.0/24'. |
-| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
+| bigIpRuntimeInitConfig | No | https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml | string | Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format. |
 | bigIpRuntimeInitPackageUrl | No | https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run | string | Supply a URL to the bigip-runtime-init package. |
 | bigIpScaleOutCpuThreshold | No | 0.8 | integer | High CPU Percentage threshold to begin scaling out BIG-IP VE instances. |
 | bigIpScalingMaxSize | No | 8 | integer | Maximum number of BIG-IP instances that can be created in the Auto Scale Group. |
@@ -279,7 +279,7 @@ You will most likely want or need to change the BIG-IP configuration. This gener
 Example from sample_autoscale.yaml
 ```yaml
     ### (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
-    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
+    bigIpRuntimeInitConfig: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0//examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
 ```
 
 ***IMPORTANT**: Note the "raw.githubusercontent.com". Any URLs pointing to GitHub **must** use the raw file format.*

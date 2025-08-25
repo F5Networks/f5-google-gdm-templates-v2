@@ -48,7 +48,7 @@ resources:
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy.
       #    If you would like to view all available public images, run the following gcloud command:
       #    gcloud compute images list --project f5-7626-networks-public --filter="name~f5"
-      bigIpImageName: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
+      bigIpImageName: f5-bigip-17-5-1-0-80-7-payg-best-plus-25mbps-250811064113
       ###  (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
       ###  (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance.
@@ -56,7 +56,7 @@ resources:
       # bigIpLicenseKey: AAAAA-BBBBB-CCCCC-DDDDD-EEEEEEE
       ###  (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/quickstart/bigip-configurations/runtime-init-conf-3nic-payg-with-app.yaml
       ###  (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.3/dist/f5-bigip-runtime-init-2.0.3-1.gz.run
@@ -89,6 +89,7 @@ resources:
       #    restrictedSrcAddressApp:
       #      - 0.0.0.0/0
       restrictedSrcAddressApp:
+        - 0.0.0.0/0
       ###  (REQUIRED) This parameter restricts network access to the BIG-IP's management interface.
       #    Provide a yaml list of addresses or networks in CIDR notation,
       #    for example, '- 55.55.55.55/32' for a host, '- 10.0.0.0/8' for a network, etc.
@@ -102,6 +103,7 @@ resources:
       #      - 10.0.0.0/24     # Bastion Host on Mgmt Network
       #      - 55.55.55.55/32  # Client to Bastion Host
       restrictedSrcAddressMgmt:
+        - 0.0.0.0/0
       ###  (OPTIONAL) A string that will be used in naming cloud resources.
       #    Because some resources require globally unique names, we recommend using a unique value.
       uniqueString: myuniqstr

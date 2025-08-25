@@ -11,7 +11,7 @@ BIGIP RUNTIME INIT CONFIG: https://storage.googleapis.com/<STACK NAME>-bucket/bi
 BIGIP RUNTIME INIT CONFIG 2: https://storage.googleapis.com/<STACK NAME>-bucket/bigip-configurations/<STACK NAME>-config2.yaml
 CUSTOM IMAGE ID: 'f5-7626-networks-public/global/images/<IMAGE NAME>'
 DESCRIPTION: ''
-IMAGE NAME: f5-bigip-17-1-1-0-2-6-byol-all-modules-2boot-loc-231101131828
+IMAGE NAME: f5-bigip-17-5-1-0-80-7-byol-all-modules-2boot-loc-250811065311
 INSTANCE NAME: <UNIQUESTRING>-bigip-vm-01
 INSTANCE NAME2: <UNIQUESTRING>-bigip-vm-02
 INSTANCE TYPE: n1-standard-16

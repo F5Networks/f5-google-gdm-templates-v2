@@ -296,7 +296,7 @@ def metadata(context):
                                     '       /usr/bin/printf \'%s\\n\' "${RUNTIME_CONFIG}" | jq .  > /config/cloud/runtime-init-conf.yaml',
                                     '   fi',
                                     '   # install and run f5-bigip-runtime-init',
-                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v2.9.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
+                                    '   bash /var/config/rest/downloads/f5-bigip-runtime-init.gz.run -- \'--cloud gcp --telemetry-params templateName:v3.4.0.0/examples/modules/bigip-standalone/bigip_standalone.py\'',
                                     '   /usr/bin/cat /config/cloud/runtime-init-conf.yaml',
                                     '   /usr/local/bin/f5-bigip-runtime-init --config-file /config/cloud/runtime-init-conf.yaml ${TELEMETRY_FLAG}',
                                     '   /usr/bin/touch /config/startup_finished',

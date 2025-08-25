@@ -16,7 +16,7 @@ NUM INTERNAL FORWARDING RULES: 1
 MGMT PORT: 8443
 ENABLE FLOW LOGS: ''
 HOST NAME: test.example.com
-IMAGE NAME: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
+IMAGE NAME: f5-bigip-17-5-1-0-80-7-payg-best-plus-25mbps-250811064113
 INSTANCE TYPE: n1-standard-8
 BIGIP RUNTIME INIT CONFIG: 'https://ak-metadata-package-poc.s3.amazonaws.com/runtime-init-gcp-conf.yaml'
 SCALING MAX: 8

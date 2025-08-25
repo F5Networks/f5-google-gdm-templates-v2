@@ -55,7 +55,7 @@ resources:
       ###  (OPTIONAL) Supply the hostname you would like to use for the BIG-IP instance. The hostname must contain fewer than 63 characters.
       bigIpHostname02: failover02.local
       ###  (OPTIONAL) The name of a public F5 Marketplace image to deploy. If you would like to view all available public images, run the following command from the 'gcloud' command line: '''gcloud compute images list --project f5-7626-networks-public --filter="name~f5"'''
-      bigIpImageName: f5-bigip-17-1-1-0-2-6-payg-best-plus-25mbps-231101130547
+      bigIpImageName: f5-bigip-17-5-1-0-80-7-payg-best-plus-25mbps-250811064113
       ###  (OPTIONAL) Instance type assigned to BIG-IP, for example 'n1-standard-8'.
       bigIpInstanceType: n1-standard-8
       ###  (OPTIONAL) Uncomment the parameter below to supply the F5 BYOL license key for BIG-IP instance 01.
@@ -70,9 +70,9 @@ resources:
       bigIpPeerAddr: 10.0.1.11
       ###  (OPTIONAL) Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format
       bigIpRuntimeInitConfig01: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance01.yaml
       bigIpRuntimeInitConfig02: >-
-        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v2.9.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
+        https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/failover/bigip-configurations/runtime-init-conf-3nic-payg-instance02.yaml
       ###  (OPTIONAL) Supply a URL for the bigip-runtime-init package
       bigIpRuntimeInitPackageUrl: >-
         https://cdn.f5.com/product/cloudsolutions/f5-bigip-runtime-init/v2.0.0/dist/f5-bigip-runtime-init-2.0.0-1.gz.run
