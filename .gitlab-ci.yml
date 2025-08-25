@@ -785,6 +785,7 @@ publish_to_github:
     - /(^publish-(v\d*[1-9]*\.)(\d).(\d).(\d))/
   script:
     # install jq
+    - echo "deb http://archive.debian.org/debian stretch main" > /etc/apt/sources.list
     - apt-get update
     - apt-get install -y jq
     # Execute Release script to push source to github repo.
