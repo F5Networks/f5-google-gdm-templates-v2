@@ -67,7 +67,7 @@ properties:
     decription: IP CIDR range used by the management network of the BIG-IP.
     type: string
   bigIpRuntimeInitConfig:
-    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.4.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
+    default: https://raw.githubusercontent.com/F5Networks/f5-google-gdm-templates-v2/v3.5.0.0/examples/autoscale/bigip-configurations/runtime-init-conf-bigiq-with-app.yaml
     description: Supply a URL to the bigip-runtime-init configuration file in YAML or JSON format, or an escaped JSON string to use for f5-bigip-runtime-init configuration.
     type: string
   bigIpRuntimeInitPackageUrl:
